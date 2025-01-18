@@ -1,0 +1,12 @@
+
+
+
+Install el paquete de supabase
+
+npm install @supabase/supabase-js
+
+
+hay que instalar tanStack Query
+
+npm i @tanstack/react-query
+
