@@ -3,9 +3,13 @@ import { Features } from "../components/home/Features";
 import { ProductGrid } from "../components/home/ProductGrid";
 import { popularProducts,  recentPoducts } from "../data/initialData"
 import { prepareProducts } from "../helpers";
+import { useProducts } from "../hooks";
 
 export const HomePage = () => {
+
   
+  
+
   const prepareRecentProducts = prepareProducts(recentPoducts);
   const preparePopularProducts = prepareProducts(popularProducts);
 
@@ -17,7 +21,7 @@ export const HomePage = () => {
         title="Nuevos Productos" products={prepareRecentProducts}
       />
       <ProductGrid 
-        title="Productos Destacados" products= {preparePopularProducts}      />
+        title="Productos Destacadosss" products= {preparePopularProducts}      />
       <Brands />
     </div>
   );

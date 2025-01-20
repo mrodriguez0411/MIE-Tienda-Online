@@ -11,9 +11,21 @@ const avialableBrands = [
     'Pizzini',
     
 
-]
+];
 
-export const ContainerFilter = () => {
+interface Props {
+    selectedTypes : string[];
+    setSelectedTypes: (tipes : string[]) => void;
+}
+
+
+
+export const ContainerFilter = ({selectedTypes , setSelectedTypes} : Props) => {
+    const handleTypesChange = (type: string) =>{
+        if(selectedTypes.includes(types)){
+            selectedTypes(selectedTypes.filter(b=>b !==type));
+    }
+    
     return (
     <div className="p-5 border border-cyan-300 rounded-lg h-fit col-span-2 lg:col-span-1"> 
         <h3 className="font-semibold text-xl text-black">

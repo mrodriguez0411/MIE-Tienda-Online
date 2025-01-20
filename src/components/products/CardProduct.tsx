@@ -3,12 +3,13 @@ import { FiPlus } from "react-icons/fi";
 import { useState } from "react";
 import { VariantProduct } from "../../interfaces";
 import { formarPrice } from "../../helpers";
+import { Json } from "../../supabase/supabase";
 
 interface Props {
   img: string; 
   name: string;
   price: number;
-  descriptions: string;
+  descriptions: Json;
   types: { name: string; type: string }[];
   variants: VariantProduct[];
 }
@@ -17,7 +18,7 @@ export const CardProduct = ({
   img,
   name,
   price,
-  description,
+  descriptions,
   types,
   variants,
 }: Props) => {

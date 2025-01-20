@@ -1,4 +1,5 @@
-
+instalar el paquete para que funcione la app en vscode
+npm intall 
 
 
 Install el paquete de supabase
