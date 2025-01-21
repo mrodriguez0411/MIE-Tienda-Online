@@ -15,6 +15,7 @@ interface ProductType {
 	img: string;
 	name: string;
 	price: number;
+	type:string,
 	descriptions: string;
 	types: ProductType[];
 	variants: Variant[];
@@ -23,13 +24,11 @@ interface ProductType {
   export const AllProducts = [
 	{
 	  img: "https://via.placeholder.com/150",
-	  name: "Producto A",
+	  name: "Bic",
 	  price: 29.99,
 	  descriptions: "descripcion-del-producto-a",
-	  types: [
-		{ name: "Tamaño", type: "Pequeño" },
-		{ name: "Tamaño", type: "Grande" },
-	  ],
+	  type: 'Bic',
+
 	  variants: [
 		{ type: "Pequeño", stock: 10 },
 		{ type: "Grande", stock: 5 },
@@ -40,7 +39,7 @@ interface ProductType {
 	  name: "Producto B",
 	  price: 49.99,
 	  descriptions: "descripcion-del-producto-b",
-	  types: [
+	  type: [
 		{ name: "Color", type: "Rojo" },
 		{ name: "Color", type: "Azul" },
 	  ],
@@ -76,13 +75,12 @@ interface ProductType {
   export const recentPoducts = [
 	{
 		img: "../../public/img/products/termo1.jpg",
-		name: "Producto A",
+		name: "Bic",
 		price: 29,
 		descriptions: "descripcion-del-producto-a",
-		types: [
-		  { name: "Tamaño", type: "Pequeño" },
-		  { name: "Tamaño", type: "Grande" },
-		],
+		type: 'Bic',
+		
+		
 		variants: [
 		  { type: "Pequeño", stock: 10 },
 		  { type: "Grande", stock: 5 },

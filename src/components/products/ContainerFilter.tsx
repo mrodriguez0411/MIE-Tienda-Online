@@ -1,4 +1,4 @@
-import { inputRules } from "@tiptap/pm/inputrules"
+//import { inputRules } from "@tiptap/pm/inputrules"
 import { Separador } from "../shared/Separador";
 
 /* EN caso de hacer que busque por marcas disponibles
@@ -15,17 +15,20 @@ const avialableBrands = [
 
 interface Props {
     selectedTypes : string[];
-    setSelectedTypes: (tipes : string[]) => void;
+    setSelectedTypes: (types : string[]) => void;
 }
 
 
 
-export const ContainerFilter = ({selectedTypes , setSelectedTypes} : Props) => {
-    const handleTypesChange = (type: string) =>{
-        if(selectedTypes.includes(types)){
-            selectedTypes(selectedTypes.filter(b=>b !==type));
+export const ContainerFilter = ({selectedTypes , setSelectedTypes} 
+    : Props) => {
+    const handleTypeChange = (type: string) =>{
+        if(selectedTypes.includes(type)){
+            setSelectedTypes(selectedTypes.filter(b=>b !==type));
+    }else{
+        setSelectedTypes([...selectedTypes, type]);
     }
-    
+};
     return (
     <div className="p-5 border border-cyan-300 rounded-lg h-fit col-span-2 lg:col-span-1"> 
         <h3 className="font-semibold text-xl text-black">
@@ -38,11 +41,13 @@ export const ContainerFilter = ({selectedTypes , setSelectedTypes} : Props) => {
                 Marcas
             </h3>
             <div className="flex flex-col gap-2">
-                {avialableBrands.map(brand => (
-                    <label key={brand} className="inline-flex items-center">
-                    <input type= 'checkbox' className="text-black border-black focus:ring-black accent-black" />
+                {avialableBrands.map(type => (
+                    <label key={type} className="inline-flex items-center">
+                    <input type= 'checkbox' className="text-black border-black focus:ring-black accent-black" 
+                    checked={selectedTypes.includes(type)}
+                    onChange={() => handleTypeChange(type)}/>
                     <span className="ml-2 text-black text-sm cursor-pointer">
-                        {brand}
+                        {type}
                     </span>
                     </label>
                 ))}
