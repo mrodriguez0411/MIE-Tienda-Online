@@ -24,5 +24,33 @@ export const Pagination =({totalItems, page, setPage}: Props) => {
     const startItem = (page -1) * itemsPerPage + 1;
     const endItem = Math.min(page * itemsPerPage, totalItems);
 
+    return <div className="flex justify-between items-center">
 
-}
+        <p className="text-xs font-medium">
+            Mostrando {''}<span className="font-bold">
+                {startItem} - {endItem}
+            </span>{''}
+            de <span className="font-bold"> {totalItems} </span>
+            productos 
+        </p>
+        <div className="flex gap-3">
+            <button 
+            className="btn-paginacion"
+            onClick={handlePrevPage} 
+            disabled={page ===1}
+            >
+                Anterior
+            </button>
+            <button 
+            className="btn-paginacion"
+            onClick={handleNextPage} 
+            disabled={isLastPage}
+            >
+                Siguiente
+            </button>
+        </div>
+    </div>
+
+
+
+    }

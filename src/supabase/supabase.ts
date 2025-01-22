@@ -198,6 +198,7 @@ export type Database = {
           id: string
           images: string[]
           name: string
+          destacated : boolean
         }
         Insert: {
           brand: string
@@ -207,6 +208,7 @@ export type Database = {
           id?: string
           images: string[]
           name: string
+          destacated : boolean
         }
         Update: {
           brand?: string
@@ -216,6 +218,7 @@ export type Database = {
           id?: string
           images?: string[]
           name?: string
+          destacated?: boolean
         }
         Relationships: []
       }

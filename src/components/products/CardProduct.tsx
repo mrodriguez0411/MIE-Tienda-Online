@@ -12,6 +12,7 @@ interface Props {
   descriptions: Json;
   types: { name: string; type: string }[];
   variants: VariantProduct[];
+  destacated:boolean;
 }
 
 export const CardProduct = ({

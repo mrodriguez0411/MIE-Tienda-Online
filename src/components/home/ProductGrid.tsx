@@ -23,6 +23,7 @@ export const ProductGrid = ({ title, products }: Props) => {
             descriptions={product.descriptions}
             types={product.types}
             variants={product.variants}
+            destacated={product.destacated}
           />
         ))}
         {products.length > 0 ? (
@@ -36,6 +37,7 @@ export const ProductGrid = ({ title, products }: Props) => {
                 descriptions={product.descriptions}
                 types={product.types}
                 variants={product.variants}
+                destacated={product.destacated}
               />
             ))}
           </div>
