@@ -1,8 +1,9 @@
-import { FaFacebookF } from "react-icons/fa";
+import { FaBoxOpen, FaFacebookF } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 import { CiMail } from "react-icons/ci";
+import { FaCartShopping, FaUsers } from "react-icons/fa6";
 
 
 export const navbarLinks = [
@@ -60,4 +61,26 @@ export const contactLinks = [
     },
     
 
+];
+
+export const dashboardLinks = [
+    {
+        id: 1,
+        tittle: 'Productos',
+        href: '/dashboard/productos',
+        icon: <FaBoxOpen size={30}/>
+    },
+    {
+        id: 2,
+        tittle: 'Ordenes',
+        href: '/dashboard/ordenes',
+        icon: <FaCartShopping size={30}/>
+    },
+    {
+        id: 3,
+        tittle: 'Usuarios',
+        href: '/dashboard/users',
+        icon: <FaUsers size={30}/>
+    }
+    
 ];
