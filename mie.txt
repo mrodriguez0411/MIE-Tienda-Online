@@ -1,13 +1,18 @@
-instalar el paquete para que funcione la app en vscode
-npm intall 
+--instalar el paquete para que funcione la app en vscode
+npm install 
 
 
-Install el paquete de supabase
+--Install el paquete de supabase
 
 npm install @supabase/supabase-js
 
 
-hay que instalar tanStack Query
+--hay que instalar tanStack Query
 
 npm i @tanstack/react-query
+
+--hay que instalar el plging de Tailwind para armar la descripcion de los productos es una typografia
+https://github.com/tailwindlabs/tailwindcss-typography
+
+npm install -D @tailwindcss/typography
 
