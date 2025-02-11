@@ -1,17 +1,21 @@
 import { supabase } from "../supabase/client";
 
-export const getProducts = async () => {
-  const { data: products, error } = await supabase
+export const getProducts = async (page:number) => {
+  const itemPerPage = 10;
+  const from = (page - 1) * itemPerPage;
+  const to = from + itemPerPage - 1;
+
+  const { data: products, error, count } = await supabase
     .from("products")
-    .select("* , variants(*)")
-    .order("created_at", { ascending: false });
+    .select("* , variants(*)", {count: 'exact'})
+    .order("created_at", { ascending: false }).range(from, to);
 
   if (error) {
     console.error(error.message);
     throw new Error(error.message);
   }
 
-  return products;
+  return {products, count};
 };
 
 export const getFilteredProducts = async ({

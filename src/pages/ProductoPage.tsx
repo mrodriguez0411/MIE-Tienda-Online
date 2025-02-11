@@ -6,8 +6,16 @@ import { Link } from "react-router-dom";
 import { BsChatLeftText } from "react-icons/bs";
 import {ProductDescription}  from "../components/product/ProductDescription";
 import { GridImages } from "../components/product/GridImages";
+import { useCounterStore } from "../store/counter.store";
 
 export const ProductoPage = () => {
+  
+  
+  const count = useCounterStore(state => state.count);
+  const increment = useCounterStore (state => state.increment);
+  const decrement = useCounterStore (state => state.decrement);
+  
+  
   return (
     <>
       <div className="h-fit flex flex-col md:flex-row gap-16 mt-8">
@@ -76,11 +84,17 @@ export const ProductoPage = () => {
               <div className="space-y-3">
                 <p className="text-sm font-medium">Cantidad:</p>
                 <div className="felx gap-8 px-5 py-3 border border-slate-200 w-fit rounded-full">
-                  <button>
+                  <button 
+                    onClick={decrement}
+                    disabled={count === 1}
+                  >
                     <LuMinus size={15} />
                   </button>
-                  <span className="text-slate-500 text-sm">1</span>
-                  <button>
+                  <span className="text-slate-500 text-sm">{count}</span>
+                  <button
+                    onClick={increment}
+                    
+                  >
                     <LuPlus size={15} />
                   </button>
                 </div>

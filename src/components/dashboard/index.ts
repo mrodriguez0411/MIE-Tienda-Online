@@ -4,3 +4,6 @@ export * from "./Sidebar";
 
 
 //productos
+
+export * from "./products/TableProducts";
+export * from "./products/FormNewProduct";

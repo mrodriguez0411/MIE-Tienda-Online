@@ -12,7 +12,7 @@ export const Sidebar = () => {
 
   return (
     <div className="w-[120px] bg-cyan-900 text-white flex flex-col gap-10 items-center p-5 fixed h-screen lg:w-[250px]">
-        <Logo/>
+        <Logo isDashboard/>
         <nav className="full space-y-5 flex-1">
            {
             dashboardLinks.map(link => (

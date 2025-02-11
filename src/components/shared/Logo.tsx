@@ -4,11 +4,12 @@ interface Props{
   isDashboard?:boolean; 
 }
 
-export const Logo = () => {
+export const Logo = ({isDashboard}:Props) => {
   return (
     <Link
       to="/"
-      className="flex items-center space-x-2 text-2xl font-bold tracking-tighter transition-all"
+      className={`flex items-center space-x-2 text-2xl font-bold tracking-tighter transition-all
+  ${isDashboard &&  'hover:scale-105'}`}
     >
       <div className="rounded-full overflow-hidden w-20 h-20 flex-shrink-0">
         <img

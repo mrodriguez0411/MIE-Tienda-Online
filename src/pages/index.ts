@@ -8,3 +8,4 @@ export * from "./ProductoPage";
 //Dashboard
 
 export * from "./dashboard/DashboardProductsPage";
+export * from "./dashboard/DashboardNewProductsPage";

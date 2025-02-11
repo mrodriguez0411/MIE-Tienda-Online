@@ -16,3 +16,8 @@ https://github.com/tailwindlabs/tailwindcss-typography
 
 npm install -D @tailwindcss/typography
 
+
+--Instalar ZUSTAND
+es un gestor de estados globales, para controlar el carrito de compras
+
+
