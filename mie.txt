@@ -16,6 +16,18 @@ https://github.com/tailwindlabs/tailwindcss-typography
 
 npm install -D @tailwindcss/typography
 
+--Instalar toast 
+
+  npm install react-hot-toast
+
+
+--Instalar ZOD y React Hook Form, se usa para un esquema de validación en el login del usuario y validar formularios. Instalar estas tres dependencias para las validaciones
+
+npm install zod
+npm install react-hook-form
+npm install @hookform/resolvers
+
+
 
 --Instalar ZUSTAND
 es un gestor de estados globales, para controlar el carrito de compras

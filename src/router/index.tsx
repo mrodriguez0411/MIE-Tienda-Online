@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { RootLayout } from "../layouts/RootLayout";
-import { HomePage, ProductosPage, AboutPage, ProductoPage, DashboardProductsPage, DashboardNewProductsPage } from "../pages";
+import { HomePage, ProductosPage, AboutPage, ProductoPage, DashboardProductsPage, DashboardNewProductsPage, LoginPage, RegisterPage } from "../pages";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 
 export const router = createBrowserRouter([
@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
                 element: <ProductosPage/>
             },
             {
-                path: 'productos/descriptions',
+                path: 'productos/:descriptions',
                 element: <ProductoPage/>
 
             },
@@ -25,6 +25,14 @@ export const router = createBrowserRouter([
                 path: 'nosotros',
                 element: <AboutPage/>
             },
+            {
+                path: 'login',
+                element: <LoginPage/>
+            },
+            {
+                path: 'registro',
+                element: <RegisterPage/>
+            }
         ]
     },
     {

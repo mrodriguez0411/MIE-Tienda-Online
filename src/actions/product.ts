@@ -11,7 +11,7 @@ export const getProducts = async (page:number) => {
     .order("created_at", { ascending: false }).range(from, to);
 
   if (error) {
-    console.error(error.message);
+    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -68,7 +68,7 @@ export const getDestacatedProducts = async () => {
   const { data: products, error } = await supabase
     .from("products")
     .select("*") // Selecciona todas las columnas o las necesarias
-    .eq("destacated", "SI") // Filtra donde la columna 'destacated' sea igual a 'SI'
+    .eq("destacated", true) // Filtra donde la columna 'destacated' sea igual a 'SI'
     .order("created_at", { ascending: false }); // Ordena por fecha de creación de forma descendente
 
   if (error) {

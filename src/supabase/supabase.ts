@@ -82,25 +82,28 @@ export type Database = {
         Row: {
           created_at: string
           email: string
-          full_name: string
+          first_name: string
           id: string
-          phone: string
+          last_name: string
+          phone: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
           email: string
-          full_name: string
+          first_name: string
           id?: string
-          phone: string
+          last_name: string
+          phone?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
           email?: string
-          full_name?: string
+          first_name?: string
           id?: string
-          phone?: string
+          last_name?: string
+          phone?: string | null
           user_id?: string
         }
         Relationships: []
@@ -194,31 +197,34 @@ export type Database = {
           brand: string
           created_at: string
           description: Json
+          destacated: boolean
           features: string[]
           id: string
           images: string[]
           name: string
-          destacated : boolean
+          slug: string
         }
         Insert: {
           brand: string
           created_at?: string
           description: Json
+          destacated: boolean
           features: string[]
           id?: string
           images: string[]
           name: string
-          destacated : boolean
+          slug: string
         }
         Update: {
           brand?: string
           created_at?: string
           description?: Json
+          destacated?: boolean
           features?: string[]
           id?: string
           images?: string[]
           name?: string
-          destacated?: boolean
+          slug?: string
         }
         Relationships: []
       }
