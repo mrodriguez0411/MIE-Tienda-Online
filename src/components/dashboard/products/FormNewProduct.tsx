@@ -8,6 +8,12 @@ import { InputForm } from "./InputForm";
 import { FeaturesInput } from "./FeaturesInput";
 import { generateSlug } from "../../../helpers";
 import { useEffect } from "react";
+import { VariantsInput } from "./VariantsInput";
+import { InputImages } from "./InputImages";
+import { Editor } from "./Editor";
+import { createProduct } from "../../../actions";
+import { useCreateProduct } from "../../../hooks";
+import { Loader } from "../../shared/Loader";
 
 interface Props {
 	titleForm: string;
@@ -27,10 +33,24 @@ export const FormNewProduct = ({ titleForm }: Props) => {
         
     });
     
+    const { mutate:createProduct, isPending} = useCreateProduct();
+
     const navigate = useNavigate();
 
     const onSubmit = handleSubmit(data => {
-		console.log(data);
+
+        const features = data.features.map(feature => (            
+            feature.value),
+        );
+		createProduct({
+                name: data.name,
+                brand: data.brand,
+                description: data.description,
+                features,
+                slug: data.slug,
+                images: data.images,
+                variants: data.variants,
+            })
 	});
 
     //slug
@@ -45,7 +65,8 @@ export const FormNewProduct = ({ titleForm }: Props) => {
             setValue('slug', generatedSlug, { shouldValidate: true });
           }, [watchName, setValue]);
 
- 
+          if (isPending) return <Loader />;
+
     return( 
     <div className="flez flex-col gap-6 relative">
         <div className="flex justify-between items-center">
@@ -61,7 +82,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
             </div>
         </div>
         
-        <form className="grid grid-cols-1 lg:grid-cols-3 gap-8 auto-rows-max flex-1 mt-5"
+        <form className="grid grid-cols-1 lg:grid-cols-3 gap-4 auto-rows-max flex-1 mt-3"
             onSubmit={onSubmit}
         >
             <SectionFormProduct 
@@ -103,20 +124,36 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 
             <SectionFormProduct 
                 titleSection="Variantes del Producto"
-                className="lg-col-span-2 h-fit"
+                className="lg:col-span-2 lg:row-span-2"
             >
                 <VariantsInput
-                
-                
+                    control={control}
+                    errors={errors}
+                    register={register}
                 />
             </SectionFormProduct>
 
+            <SectionFormProduct 
+                titleSection="Imágenes del Producto"
+                className="lg-col-span-1 h-fit"
+            >
+                <InputImages
+                    watch={watch}
+                    setValue={setValue}
+                    errors={errors}
+                />
+            </SectionFormProduct>
 
+            <SectionFormProduct 
+                titleSection="Descripción del Producto"
+                className="col-span-full"
+            >
 
-
-
-
-
+            <Editor
+                setValue={setValue}
+                errors={errors}
+            />
+            </SectionFormProduct>
 
 
             <div className='flex gap-3 absolute top-0 right-0 '>

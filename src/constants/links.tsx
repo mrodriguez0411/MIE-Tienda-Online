@@ -78,6 +78,12 @@ export const dashboardLinks = [
     },
     {
         id: 3,
+        tittle: 'Categorias',
+        href: '/dashboard/categorias',
+        icon: <FaBoxOpen size={30}/>
+    },
+    {
+        id: 4,
         tittle: 'Usuarios',
         href: '/dashboard/users',
         icon: <FaUsers size={30}/>

@@ -197,7 +197,6 @@ export type Database = {
           brand: string
           created_at: string
           description: Json
-          destacated: boolean
           features: string[]
           id: string
           images: string[]
@@ -208,7 +207,6 @@ export type Database = {
           brand: string
           created_at?: string
           description: Json
-          destacated: boolean
           features: string[]
           id?: string
           images: string[]
@@ -219,7 +217,6 @@ export type Database = {
           brand?: string
           created_at?: string
           description?: Json
-          destacated?: boolean
           features?: string[]
           id?: string
           images?: string[]

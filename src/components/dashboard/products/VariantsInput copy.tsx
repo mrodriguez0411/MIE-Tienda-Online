@@ -5,7 +5,7 @@ import {
 	UseFormRegister,
 	useWatch,
 } from 'react-hook-form';
-import { ProductFormValues } from '../../../lib/validators';
+import { ProductFormValues } from '../../../lib/validator';
 import {
 	IoIosAddCircleOutline,
 	IoIosCloseCircleOutline,
@@ -18,7 +18,7 @@ interface Props {
 	register: UseFormRegister<ProductFormValues>;
 }
 
-const headersVariants = ['Stock', 'Precio', 'Categoria', 'Tipo',  ''];
+const headersVariants = ['Stock', 'Precio', 'Tipo', 'Categoria', ''];
 
 export const VariantsInput = ({
 	control,
@@ -36,7 +36,7 @@ export const VariantsInput = ({
 		append({
 			stock: 0,
 			price: 0,
-			categoria: '',
+			category: '',
 			type: '',
 			typeName: '',
 		});
@@ -123,16 +123,16 @@ export const VariantsInput = ({
 
 							<input
 								type='text'
-								placeholder='64 GB'
+								placeholder='Libreria'
 								{...register(`variants.${index}.category`)}
 								className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
 							/>
-							
+
 							<div className='flex relative'>
 								{colorActive[index] && (
 									<div className='absolute bg-stone-100 rounded-md bottom-8 left-[40px] p-1 w-[100px] h-fit space-y-2'>
 										<input
-											type='color'
+											type='text'
 											{...register(`variants.${index}.type`)}
 											className='rounded-md px-3 py-1.5 w-full'
 										/>

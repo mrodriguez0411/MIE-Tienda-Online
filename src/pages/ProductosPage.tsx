@@ -62,6 +62,7 @@ export const ProductosPage = () => {
     </>
   );
 };
-function useFiteredProducts(): { products: any; isLoading: any } {
+/*function useFiteredProducts(): { products: any; isLoading: any } {
   throw new Error("Function not implemented.");
 }
+*/

@@ -11,3 +11,8 @@ export * from "./products/SeccionFormProduct";
 export * from "./products/InputForm";
 export * from "./products/FeaturesInput";
 export * from "./products/VariantsInput";
+export * from "./products/InputImages";
+export * from "./products/Editor";
+
+
+//export * from "./products/ManageTypeCategories";

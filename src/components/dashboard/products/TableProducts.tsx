@@ -3,7 +3,7 @@ import { IoEllipsisVerticalCircleSharp } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { TiEdit } from "react-icons/ti";
 import { Link } from "react-router-dom";
-import { useProducts } from "../../../hooks";
+import { useProducts, useDeleteProduct } from "../../../hooks";
 import { Loader } from "../../shared/Loader"; // Asegúrate de que la ruta sea correcta
 import { Pagination } from "../../shared/Pagination";
 
@@ -33,6 +33,8 @@ export const TableProducts = () => {
 
   //creo el estado para desplegar menú de editar o eliminar producto
   const [openMenu, setOpenMenu] = useState<number | null>(null);
+  
+  const{mutate, isPending } = useDeleteProduct();
 
   const handleVariantChange = (productId: string, variantIndex: number) =>{
     setSelectedVariants({
@@ -55,19 +57,24 @@ export const TableProducts = () => {
     page,
   });
 
-  if(!products || isLoading || !totalProducts) return <Loader/>; 
+  if(!products || isLoading || !totalProducts || isPending) return <Loader/>; 
  
 
   //funcion para borrar el producto
-  const handleDeleteProduct = (id: string) => console.log(id);
+  const handleDeleteProduct = (id: string) => {
+    mutate(id);
+    setOpenMenu(null);
+
+  }
+    
 
   return (
-    <div className="flex flex-col flex-1 border border-cyan-400 rounded-lg bg-white">
+    <div className="flex flex-col flex-1 border border-cyan-200 rounded-lg bg-white">
       <h1 className="font-bold text-xl">Productos</h1>
       {/*Armado de Tabla*/}
       <div className="relative w-full h-full">
         <table className="text-sm w-full caption-bottom overflow-auto">
-          <thead className="border-b border-cyan-900 pb-3">
+          <thead className="border-b border-cyan-100 pb-3">
             <tr className="text-sm font-bold">
               {tableHeaders.map((header, index) => (
                 <th key={index} className="h-12 px-4 text-left">
@@ -107,7 +114,7 @@ export const TableProducts = () => {
 
                       {products.variants.map((variant, variantIndex) => (
                         <option key={variant.id} value={variantIndex}>
-                          {variant.type}
+                          {variant.type_name}
                         </option>
                       ))}
                     </select>

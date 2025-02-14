@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom"
 import { Logo } from "../shared/Logo"
 import {dashboardLinks} from "../../constants/links"
 import { AiOutlineLogout } from "react-icons/ai"
+import { IoLogOutOutline } from "react-icons/io5"
 //import { signOut } from "../../actions"
 
 export const Sidebar = () => {
@@ -31,13 +32,13 @@ export const Sidebar = () => {
             ))
            }
         </nav>
-
-        <button className="bg-red-500 py-10 text-black font-bold font rounded-lg flex items-center justify-center gap-2 text-sm
-        hover:underline" onClick={handleLogout}> 
-            <AiOutlineLogout size={25} className="inline-block"/>
-            <span className="hidden lg:block">Cerrar Sesion </span>
-            
-        </button>
+        <button
+				className='bg-red-500 w-full py-[10px] rounded-md flex items-center justify-center gap-2 font-semibold text-sm hover:underline'
+				onClick={handleLogout}
+			>
+				<span className='hidden lg:block'>Cerrar sesión</span>
+				<IoLogOutOutline size={20} className='inline-block' />
+			</button>
     </div>
   )
 }
