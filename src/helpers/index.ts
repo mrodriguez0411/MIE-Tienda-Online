@@ -1,112 +1,105 @@
 // funcion para preparar los prodcutos
-/*import { Product, Type, VariantProduct } from "../interfaces";
-
-export const formarPrice = (price: number) => {
-    return new Intl.NumberFormat('es-Ar', {
-        style: 'currency',
-        currency: 'ARS',
-        maximumFractionDigits: 2,
-        maximumSignificantDigits: 2,
-    }).format(price);
-};
-
-export const prepareProducts = (products: Product[]) => {
-    return products.map(product => {
-        const types = product.variants.reduce((acc: Type[], variant: VariantProduct) => {
-            const existingType = acc.find(item => item.price === variant.price);
-
-            if(existingType) {
-                existingType.price = Math.min(existingType.price, variant.price);
-            }
-            else { 
-                acc.push({
-                
-                    type: variant.type,
-                    price: variant.price,
-                    name: variant.name,
-                });
-            }
-            return acc;   
-        },[]);
-        const price = Math.min(...types.map((item) => item.price));
-        return {
-            ...product,
-            price,
-            types: types.map(({name, type}) => ({name, type})),
-            variants: product.variants,
-        };
-    });
-}*/
-
 import { Product, Type, VariantProduct } from "../interfaces";
 
-// Formatear precio en pesos argentinos
-export const formarPrice = (price: number) => {
-  if (typeof price !== "number" || isNaN(price)) {
-    console.warn("formarPrice recibió un valor no válido:", price);
-    return "N/A";
-  }
-
-  return new Intl.NumberFormat("es-Ar", {
-    style: "currency",
-    currency: "ARS",
-    maximumFractionDigits: 2,
-    maximumSignificantDigits: 2,
-  }).format(price);
+// Función para formatear el precio a dólares
+export const formatPrice = (price: number) => {
+	return new Intl.NumberFormat('en-AR', {
+		style: 'currency',
+		currency: 'ARS',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}).format(price);
 };
 
-// Preparar productos para su visualización
-export const prepareProducts = (products: Product[]) => {
-  // Validación inicial
-  if (!Array.isArray(products)) {
-    console.warn("prepareProducts recibió un valor no válido:", products);
-    return [];
-  }
+// Función para preparar los productos
+export const prepareProducts = (products: Product[] = []) => {
+	if (!Array.isArray(products)) {
+	  console.error('Expected an array of products, but received:', products);
+	  return [];
+	}
+  
+	return products.map(product => {
+	  const types = product.variants.reduce((acc: Type[], variant: VariantProduct) => {
+		const existingType = acc.find(item => item.type === variant.type);
+  
+		if (existingType) {
+		  existingType.price = Math.min(existingType.price, variant.price);
+		} else {
+		  acc.push({
+			type: variant.type,
+			price: variant.price,
+			name: variant.type_name,
+		  });
+		}
+		return acc;
+	  }, []);
+  
+	  const price = Math.min(...types.map(item => item.price));
+  
+	  return {
+		...product,
+		price,
+		types: types.map(({ name, type }) => ({ name, type })),
+		variants: product.variants,
+	  };
+	});
+  };
 
-  // Procesar cada producto
-  return products.map((product) => {
-    if (!Array.isArray(product.variants)) {
-      console.warn(`El producto con ID ${product.id} no tiene variantes válidas:`, product);
-      return {
-        ...product,
-        price: 0,
-        types: [],
-        variants: [],
-      };
-    }
+// Función para formatear la fecha a formato 3 de enero de 2022
+export const formatDateLong = (date: string): string => {
+	const dateObject = new Date(date);
 
-    // Agrupar tipos por precio más bajo
-    const types = product.variants.reduce((acc: Type[], variant: VariantProduct) => {
-      const existingType = acc.find((item) => item.type === variant.type);
-
-      if (existingType) {
-        existingType.price = Math.min(existingType.price, variant.price);
-      } else {
-        acc.push({
-          type: variant.type,
-          price: variant.price,
-          name: variant.name,
-        });
-      }
-      return acc;
-    }, []);
-
-    // Calcular el precio mínimo
-    const price = types.length > 0 ? Math.min(...types.map((item) => item.price)) : 0;
-
-    return {
-      ...product,
-      price,
-      types: types.map(({ name, type }) => ({ name, type })), // Filtrar solo las propiedades necesarias
-      variants: product.variants,
-    };
-  });
+	return dateObject.toLocaleDateString('es-ES', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	});
 };
 
-//funcion para generar el SLUG del producto
+// Función para formatear la fecha a formato dd/mm/yyyy
+export const formatDate = (date: string): string => {
+	const dateObject = new Date(date);
+	return dateObject.toLocaleDateString('es-ES', {
+		year: 'numeric',
+		month: '2-digit',
+		day: 'numeric',
+	});
+};
+
+// Función para obtener el estado del pedido en español
+export const getStatus = (status: string): string => {
+	switch (status) {
+		case 'Pending':
+			return 'Pendiente';
+		case 'Paid':
+			return 'Pagado';
+		case 'Shipped':
+			return 'Enviado';
+		case 'Delivered':
+			return 'Entregado';
+		default:
+			return status;
+	}
+};
+
+// Función para generar el slug de un producto
 export const generateSlug = (name: string): string => {
 	return name
 		.toLowerCase()
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/(^-|-$)/g, '');
+};
+
+// Función para extraer el path relativo al bucket de una URL
+export const extractFilePath = (url: string) => {
+	const parts = url.split(
+		'/storage/v1/object/public/product-images/'
+	);
+	// EJEMPLO PARTS: ['/storage/v1/ object/public/product-images/', '02930920302302030293023-iphone-12-pro-max.jpg']
+
+	if (parts.length !== 2) {
+		throw new Error(`URL de imagen no válida: ${url}`);
+	}
+
+	return parts[1];
 };

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { set, useForm } from "react-hook-form"
 import { ProductFormValues, productSchema } from "../../../lib/validator"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TiArrowBack } from "react-icons/ti";
 import { SectionFormProduct } from "./SeccionFormProduct";
 import { InputForm } from "./InputForm";
@@ -11,8 +11,8 @@ import { useEffect } from "react";
 import { VariantsInput } from "./VariantsInput";
 import { InputImages } from "./InputImages";
 import { Editor } from "./Editor";
-import { createProduct } from "../../../actions";
-import { useCreateProduct } from "../../../hooks";
+//import { createProduct } from "../../../actions";
+import { useCreateProduct, useProducts, useUpdateProduct } from "../../../hooks";
 import { Loader } from "../../shared/Loader";
 
 interface Props {
@@ -33,16 +33,43 @@ export const FormNewProduct = ({ titleForm }: Props) => {
         
     });
     
+    const { slug } = useParams<{slug: string}>();
+
+    const{ product, isLoading } = useProducts(slug || '');
     const { mutate:createProduct, isPending} = useCreateProduct();
+    const {mutate: updateProduct, isPending: isUpdatePending} = useUpdateProduct(product?.id || '');
+
 
     const navigate = useNavigate();
+
+    
+    
+    useEffect(() => {
+        if(product && !isLoading) {
+            setValue('name', product.name);
+            setValue('brand', product.brand); 
+            setValue('slug', product.slug);
+            setValue('description', product.description);
+            setValue('features', product.features.map((f: string ) => ({ value: f })));
+            setValue('images', product.images);
+            setValue('variants', product.variants.map(v => ({
+                    id: v.id, 
+                    stock: v.stock,
+                    price: v.price,
+                    category: v.category,
+                    typeName: v.typeName,
+               })));
+        }
+
+    }, [product, isLoading, setValue]);
 
     const onSubmit = handleSubmit(data => {
 
         const features = data.features.map(feature => (            
             feature.value),
         );
-		createProduct({
+		if(slug){
+            updateProduct({
                 name: data.name,
                 brand: data.brand,
                 description: data.description,
@@ -50,7 +77,20 @@ export const FormNewProduct = ({ titleForm }: Props) => {
                 slug: data.slug,
                 images: data.images,
                 variants: data.variants,
-            })
+            });
+            
+        }else{
+        
+        createProduct({
+                name: data.name,
+                brand: data.brand,
+                description: data.description,
+                features,
+                slug: data.slug,
+                images: data.images,
+                variants: data.variants,
+            });
+        }
 	});
 
     //slug
@@ -152,6 +192,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
             <Editor
                 setValue={setValue}
                 errors={errors}
+                initialContent={product?.description}
             />
             </SectionFormProduct>
 

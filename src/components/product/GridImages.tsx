@@ -1,33 +1,46 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 interface Props {
-    images: string[],
-
+	images: string[];
 }
 
-export const GridImages = ({images}: Props) =>{
+export const GridImages = ({ images }: Props) => {
+	const [activeImage, setActiveImage] = useState(images[0]);
 
-    const [activeImage, setActiveImage] =useState(images[0]);
+	const handleImageClick = (image: string) => {
+		setActiveImage(image);
+	};
 
-    const handleImageClick = (image: string) =>{
-        setActiveImage(image);
-    }
+	return (
+		<div className='flex-1 flex flex-col gap-3 relative'>
+			<div className='bg-[#f2f2f2] h-[500px] p-4'>
+				<img
+					src={activeImage}
+					alt='Imagen de Producto'
+					className='h-full w-full object-contain'
+				/>
+			</div>
 
-    return <div className="flex-1 flex flex-col gap-3 relative">
-        <div className="bg-slate-100 h-[500px p-4">
-            <img src={activeImage} alt="Imagen de Producto" className="h-full w-full object-contain"/>
-        </div>
-        {/*Imagenes en miniatura*/}
-        <div className="flex mt-4 gap-2">
-            {images.map((image,index) =>
-                <button key={index} onClick={()=>handleImageClick(image)}
-                className={`w-16 h-16 p-1 border ${activeImage === image ? 'border-cyan-500' : 'border-transparent'}
-                rounded-lg hover:border-black focus:outline-none`}
-                >
-                    <img src={image} alt={`Thumnail ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
-                </button>
-            
-            )}
-        </div>
-    </div>
-}
+			{/* Miniaturas */}
+			<div className='flex mt-4 gap-2'>
+				{images.map((image, index) => (
+					<button
+						key={image}
+						onClick={() => handleImageClick(image)}
+						className={`w-16 h-16 p-1 border ${
+							activeImage === image
+								? 'border-black'
+								: 'border-transparent'
+						} rounded-lg hover:border-black focus:outline-none`}
+					>
+						<img
+							src={image}
+							alt={`Thumbnail ${index + 1}`}
+							className='w-full h-ful object-cover rounded-lg'
+						/>
+					</button>
+				))}
+			</div>
+		</div>
+	);
+};

@@ -151,7 +151,7 @@ export const TableProducts = () => {
                         role="menu"
                       >
                         <Link
-                          to={`/dashboard/productos/edit/${products.id}`}
+                          to={`/dashboard/productos/editar/${products.slug}`}
                           className="flex items-center gap-1 w-full text-left px-4 py-2 text-xs font-medium text-cyan-700 hover:bg-cyan-100"
                         >
                           Editar
@@ -159,7 +159,7 @@ export const TableProducts = () => {
                         </Link>
                         <button
                           className="block w-full text-left px-4 py-2 text-xs font-medium text-red-700 hover:bg-red-100"
-                          onClick={() => handleDeleteProduct(products.id)}
+                          onClick={() => handleDeleteProduct(products.slug)}
                         >
                           Eliminar
                           <MdDeleteForever size={15} className="inline-block" />

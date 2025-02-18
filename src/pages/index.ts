@@ -10,4 +10,5 @@ export * from "./RegisterPage";
 
 export * from "./dashboard/DashboardProductsPage";
 export * from "./dashboard/DashboardNewProductsPage";
+export * from "./dashboard/DashboardProductSlugPage";
 //export * from "./dashboard/DashboardNewCategory";

@@ -4,7 +4,8 @@ import { ProductGrid } from "../components/home/ProductGrid";
 import { ProductGridsSkeletons } from "../components/skeletons/ProductGridSkeletons";
 import { prepareProducts } from "../helpers";
 //import { useProducts } from "../hooks";
-import { useProductsHome } from "../hooks/products/useProductHome";
+import { useProductsHome } from "../hooks";
+//import { productSchema } from "../lib/validator";
 
 export const HomePage = () => {
   const { recentPoducts, popularProducts, isLoading } = useProductsHome();

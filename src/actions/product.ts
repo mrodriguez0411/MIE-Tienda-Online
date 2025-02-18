@@ -1,3 +1,5 @@
+//import { getBucketUrl } from "../helpers";
+import { extractFilePath } from "../helpers";
 import { ProductInput } from "../interfaces";
 import { supabase } from "../supabase/client";
 
@@ -268,9 +270,11 @@ export const updateProduct = async (
 		.update({ images: uploadedImages })
 		.eq('id', productId);
 	if (updateImagesError) throw new Error(updateImagesError.message);
+
 	// 5. Actualizar las variantes del producto
 	const existingVariants = productInput.variants.filter(v => v.id);
 	const newVariants = productInput.variants.filter(v => !v.id);
+	
 	// 5.1 Modificar las variantes existentes
 	if (existingVariants.length > 0) {
 		const { error: updateVariantsError } = await supabase

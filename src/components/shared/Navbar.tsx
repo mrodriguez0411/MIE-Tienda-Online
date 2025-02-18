@@ -1,8 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { navbarLinks } from "../../constants/links";
-import { HiOutlineSearch } from "react-icons/hi";
-import { Link } from "react-router-dom";
-import { HiOutlineShoppingBag } from "react-icons/hi";
+import { HiOutlineSearch, HiOutlineShoppingBag } from "react-icons/hi";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { Logo } from "./Logo";
 

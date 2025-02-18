@@ -8,8 +8,8 @@ interface Props {
 
 export const ProductGrid = ({ title, products }: Props) => {
   return (
-    //<div className="my-32">
-    <div className="mt-16 mb-32">
+    //<div className="mt-16 mb-32"></div>
+    <div className="my-32">
       <h2 className="text-3xl font-semibold text-center md:text-4xl lg:text-5xl">
         {title}
       </h2>
@@ -19,11 +19,12 @@ export const ProductGrid = ({ title, products }: Props) => {
             key={product.id}
             name={product.name}
             price={product.price}
+            slug={product.slug}
             img={product.img[0]}
             descriptions={product.descriptions}
             types={product.types}
             variants={product.variants}
-            destacated={product.destacated}
+            //destacated={product.destacated}
           />
         ))}
         {products.length > 0 ? (
@@ -32,12 +33,13 @@ export const ProductGrid = ({ title, products }: Props) => {
               <CardProduct
                 key={product.id}
                 name={product.name}
+                slug={product.slug}
                 price={product.price}
                 img={product.img[0]}
                 descriptions={product.descriptions}
                 types={product.types}
                 variants={product.variants}
-                destacated={product.destacated}
+                //destacated={product.destacated}
               />
             ))}
           </div>

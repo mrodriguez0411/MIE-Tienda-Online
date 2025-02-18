@@ -1,10 +1,9 @@
 import { LuMinus, LuPlus } from "react-icons/lu";
 import { Separador } from "../components/shared/Separador";
-import { formarPrice } from "../helpers";
+import { formatPrice } from "../helpers";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { BsChatLeftText } from "react-icons/bs";
-import {ProductDescription}  from "../components/product/ProductDescription";
 import { GridImages } from "../components/product/GridImages";
 import { useCounterStore } from "../store/counter.store";
 
@@ -20,12 +19,12 @@ export const ProductoPage = () => {
     <>
       <div className="h-fit flex flex-col md:flex-row gap-16 mt-8">
         {/*galeria de imagenes del producto*/}
-        <GridImages images={[0]}/>
+        <GridImages images={[]}/>
         <div className="felx-1 space-y-5">
-          <h1 className="text-3xl font-bold tracking-tight">prueba</h1>
+          <h1 className="text-3xl font-bold tracking-tight"></h1>
           <div className="flex gap-5 items-center">
             <span className="tracking-wide text-lg font-semibold">
-              {formarPrice(1200)}
+              {formatPrice(1200)}
             </span>
             <div className="relative">
               <span>AGOTADO</span>
@@ -133,7 +132,7 @@ export const ProductoPage = () => {
         </div>
       </div>
 
-      <ProductDescription />
+      {/*<ProductDescription />*/}
     </>
   );
 };
