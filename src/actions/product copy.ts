@@ -1,127 +1,118 @@
-import { supabase } from "../supabase/client"
+//import { getBucketUrl } from "../helpers";
+import { extractFilePath } from "../helpers";
+import { ProductInput } from "../interfaces";
+import { supabase } from "../supabase/client";
 
+/*export const getProducts = async (page:number) => {
+  const itemPerPage = 10;
+  const from = (page - 1) * itemPerPage;
+  const to = from + itemPerPage - 1;
 
-export const getProducts = async() =>{
-	const {data: products, error} = await supabase
-	.from('products')
-	.select('*, variants(*)')
-	.order('created_at', {ascending: false});
-	if (error){
-		throw new Error(error.message);
+  const { data: products, error, count } = await supabase
+    .from("products")
+    .select("* , variants(*)", {count: 'exact'})
+    .order("created_at", { ascending: false }).range(from, to);
+
+  if (error) {
+    console.log(error.message);
+    throw new Error(error.message);
+  }
+
+  return {products, count};
+};*/
+
+export const getProducts = async (page: number, types: string[]) => {
+	const { data, error } = await supabase
+	  .from('products')
+	  .select('*')
+	  .range((page - 1) * 10, page * 10 - 1); // Ajusta el rango según tu paginación
+  
+	if (error) {
+	  throw new Error(error.message);
 	}
-	return products;
-}
+  
+	return data;
+  };
 
 export const getFilteredProducts = async ({
-	page = 1,
-	brands = [],
-  }: {
-	page: number;
-	brands: string[];
-  }) => {
-	const itemPerPage = 10;
-	const from = (page - 1) * itemPerPage;
-	const to = from + itemPerPage - 1;
-  
-	let query = supabase
-	  .from("products")
-	  .select("* , variants(*)", { count: "exact" })
-	  .order("created_at", { ascending: false })
-	  .range(from, to);
-  
-	if (brands.length > 0) {
-	  query = query.in('brand', brands);
-	}
-  
-	const { data, error, count } = await query;
-  
-	if (error) {
-	  console.error(error.message);
-	  throw new Error(error.message);
-	}
-  
-	return { data, count };
-  };
+  page = 1,
+  types = [],
+}: {
+  page: number;
+  types: string[];
+}) => {
+  const itemPerPage = 10;
+  const from = (page - 1) * itemPerPage;
+  const to = from + itemPerPage - 1;
 
-  export const getRecentProducts = async () => {
-	const { data: products, error } = await supabase
-	  .from("products")
-	  .select("*,variants(*)")
-	  .order("created_at", { ascending: false })
-	  .limit(4);
-  
-	if (error) {
-	  console.error(error.message);
-	  throw new Error(error.message);
-	}
-  
-	return products;
-  };
+  let query = supabase
+    .from("products")
+    .select("* , variants(*)", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
-  export const getRandomProducts = async () => {
-	const { data: products, error } = await supabase
-	  .from("products")
-	  .select("*,variants(*)")
-	  .limit(20);
-  
-	if (error) {
-	  console.error(error.message);
-	  throw new Error(error.message);
-	}
-   //selecciona 4 productos al azar
-   const randomProduct = products.sort(() => 0.5 - Math.random()).slice(0,4);
-
-   return randomProduct;
-  };
-  
-  
-  export const getDestacatedProducts = async () => {
-	const { data: products, error } = await supabase
-	  .from("products")
-	  .select("*") // Selecciona todas las columnas o las necesarias
-	  .eq("destacated", true) // Filtra donde la columna 'destacated' sea igual a 'SI'
-	  .order("created_at", { ascending: false }); // Ordena por fecha de creación de forma descendente
-  
-	if (error) {
-	  console.log(error.message);
-	  throw new Error(error.message);
-	}
-  
-	return products;
-  };
-  
-  export const getAllProducts = async () => {
-	const { data: products, error } = await supabase
-	  .from("products")
-	  .select("*")
-	  .order("type", { ascending: false });
-  
-	if (error) {
-	  console.log(error.message);
-	  throw new Error(error.message);
-	}
-  
-	return products;
-  };
-
-  export const getProductBySlug = async (slug: string) => {
-	const { data, error } = await supabase
-	  .from("products")
-	  .select("*, variants(*)")
-	  .eq("slug", slug)
-	  .single();
-	  if (error) {
-		console.log(error.message);
-		throw new Error(error.message);
-	  }
-	
-	  return data;
-
+  if (types.length > 0) {
+    query = query.in("type", types);
   }
-  /*aDMINISTRADOR*/
-  export const createProduct = async (productInput: ProductInput) => {
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    console.error(error.message);
+    throw new Error(error.message);
+  }
+
+  return { data, count };
+};
+
+export const getRecentProducts = async () => {
+  const { data: products, error } = await supabase
+    .from("products")
+    .select("*,variants(*)")
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error(error.message);
+    throw new Error(error.message);
+  }
+
+  return products;
+};
+
+export const getDestacatedProducts = async () => {
+  const { data: products, error } = await supabase
+    .from("products")
+    .select("*") // Selecciona todas las columnas o las necesarias
+    .eq("destacated", true) // Filtra donde la columna 'destacated' sea igual a 'SI'
+    .order("created_at", { ascending: false }); // Ordena por fecha de creación de forma descendente
+
+  if (error) {
+    console.error(error.message);
+    throw new Error(error.message);
+  }
+
+  return products;
+};
+
+export const getAllProducts = async () => {
+  const { data: products, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("type", { ascending: false });
+
+  if (error) {
+    console.error(error.message);
+    throw new Error(error.message);
+  }
+
+  return products;
+};
+
+/*aDMINISTRADOR*/
+export const createProduct = async (productInput: ProductInput) => {
 	try {
-  
+
 		
 		// 1. Crear el producto para obtener el ID
 		const { data: product, error: productError } = await supabase
@@ -133,7 +124,7 @@ export const getFilteredProducts = async ({
 				features: productInput.features,
 				description: productInput.description,
 				images: [],
-		  
+        
 			})
 			.select()
 			.single();
@@ -180,8 +171,8 @@ export const getFilteredProducts = async ({
 		console.log(error);
 		throw new Error('Error inesperado, Vuelva a intentarlo');
 	}
-  };
-  export const deleteProduct = async (productId: string) => {
+};
+export const deleteProduct = async (productId: string) => {
 	// 1. Eliminar las variantes del producto
 	const { error: variantsError } = await supabase
 		.from('variants')
@@ -215,12 +206,12 @@ export const getFilteredProducts = async ({
 		if (storageError) throw new Error(storageError.message);
 	}
 	return true;
-  };
-  //editar el Producto
-  export const updateProduct = async (
+};
+//editar el Producto
+export const updateProduct = async (
 	productId: string,
 	productInput: ProductInput
-  ) => {
+) => {
 	// 1. Obtener las imágenes actuales del producto
 	const { data: currentProduct, error: currentProductError } =
 		await supabase
@@ -268,19 +259,19 @@ export const getFilteredProducts = async ({
 	}
 	// 3.4 Subir las nuevas imágenes y construir el array de imágenes actualizado
 	const uploadedImages = await Promise.all(
-		validImages.map(async images => {
-			if (images instanceof File) {
+		validImages.map(async image => {
+			if (image instanceof File) {
 				// Si la imagen no es una URL (es un archivo), entonces subela al bucket
 				const { data, error } = await supabase.storage
 					.from('product-images')
-					.upload(`${folderName}/${productId}-${images.name}`, images);
+					.upload(`${folderName}/${productId}-${image.name}`, image);
 				if (error) throw new Error(error.message);
 				const imageUrl = supabase.storage
 					.from('product-images')
 					.getPublicUrl(data.path).data.publicUrl;
 				return imageUrl;
-			} else if (typeof images === 'string') {
-				return images;
+			} else if (typeof image === 'string') {
+				return image;
 			} else {
 				throw new Error('Tipo de imagen no soportado');
 			}
@@ -292,7 +283,7 @@ export const getFilteredProducts = async ({
 		.update({ images: uploadedImages })
 		.eq('id', productId);
 	if (updateImagesError) throw new Error(updateImagesError.message);
-  
+
 	// 5. Actualizar las variantes del producto
 	const existingVariants = productInput.variants.filter(v => v.id);
 	const newVariants = productInput.variants.filter(v => !v.id);
@@ -356,4 +347,4 @@ export const getFilteredProducts = async ({
 	if (deleteVariantsError)
 		throw new Error(deleteVariantsError.message);
 	return updatedProduct;
-  };
+};

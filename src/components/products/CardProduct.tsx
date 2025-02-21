@@ -3,14 +3,12 @@ import { FiPlus } from "react-icons/fi";
 import { useState } from "react";
 import { VariantProduct } from "../../interfaces";
 import { formatPrice } from "../../helpers";
-import { Json } from "../../supabase/supabase";
 
 interface Props {
   img: string;
   name: string;
   price: number;
   slug: string;
-  descriptions: Json;
   types: { name: string; type: string }[];
   variants: VariantProduct[];
   //destacated:boolean;
@@ -21,7 +19,6 @@ export const CardProduct = ({
   name,
   price,
   slug,
-  descriptions,
   types,
   variants,
 }: Props) => {
@@ -53,12 +50,17 @@ export const CardProduct = ({
         <p className="text-[15px] font-medium">{name}</p>
         <p className="text-[15px] font-medium">{formatPrice(price)}</p>
         <div className="flex gap-3">
-          {types.map((type, index) => (
+          {types.map(type => (
             <span
               key={type.type}
               className={
                 `grid place-items-center w-5 h-5 rounded-full cursor-pointer
-              `}
+                ${
+                  activeType.type === type.type
+                    ? 'border border-black'
+                    : ''
+                }`}
+                onClick={() => setActiveType(type)}
             >
               
               <span 
@@ -67,7 +69,7 @@ export const CardProduct = ({
                 backgroundColor: type.type,
                }}/>
             </span>
-          ))}
+         ))}
         </div>
       </div>
       <div className="absolute top-2 left-2">

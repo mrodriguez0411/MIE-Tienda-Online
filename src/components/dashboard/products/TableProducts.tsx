@@ -4,7 +4,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { TiEdit } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import { useProducts, useDeleteProduct } from "../../../hooks";
-import { Loader } from "../../shared/Loader"; // Asegúrate de que la ruta sea correcta
+import { Loader } from "../../shared/Loader"; 
 import { Pagination } from "../../shared/Pagination";
 
 // Definición de la función formatPrice

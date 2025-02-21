@@ -14,14 +14,15 @@ export const ProductGrid = ({ title, products }: Props) => {
         {title}
       </h2>
       <div className="grid grid-cols-1 gap-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-        {products.map((product) => (
+        {products.map(product => (
           <CardProduct
             key={product.id}
             name={product.name}
             price={product.price}
             slug={product.slug}
-            img={product.img[0]}
-            descriptions={product.descriptions}
+            img={product.images && product.images.length > 0 ? product.images[0] : 'default-image.jpg'}
+            //img={product.images[0]}
+            //description={product.description}
             types={product.types}
             variants={product.variants}
             //destacated={product.destacated}
@@ -35,8 +36,9 @@ export const ProductGrid = ({ title, products }: Props) => {
                 name={product.name}
                 slug={product.slug}
                 price={product.price}
-                img={product.img[0]}
-                descriptions={product.descriptions}
+                img={product.images && product.images.length > 0 ? product.images[0] : 'default-image.jpg'}
+                //images={product.images[0]}
+                //description={product.description}
                 types={product.types}
                 variants={product.variants}
                 //destacated={product.destacated}

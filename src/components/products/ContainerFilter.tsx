@@ -14,19 +14,19 @@ const avialableBrands = [
 ];
 
 interface Props {
-    selectedTypes : string[];
-    setSelectedTypes: (types : string[]) => void;
+    selectedBrands : string[];
+    setSelectedBrands: (brands : string[]) => void;
 }
 
 
 
-export const ContainerFilter = ({selectedTypes , setSelectedTypes} 
+export const ContainerFilter = ({selectedBrands , setSelectedBrands} 
     : Props) => {
-    const handleTypeChange = (type: string) =>{
-        if(selectedTypes.includes(type)){
-            setSelectedTypes(selectedTypes.filter(b=>b !==type));
+    const handleBrandChange = (brand: string) =>{
+        if(selectedBrands.includes(brand)){
+            setSelectedBrands(selectedBrands.filter(b=>b !==brand));
     }else{
-        setSelectedTypes([...selectedTypes, type]);
+        setSelectedBrands([...selectedBrands, brand]);
     }
 };
     return (
@@ -41,13 +41,13 @@ export const ContainerFilter = ({selectedTypes , setSelectedTypes}
                 Marcas
             </h3>
             <div className="flex flex-col gap-2">
-                {avialableBrands.map(type => (
-                    <label key={type} className="inline-flex items-center">
+                {avialableBrands.map(brand => (
+                    <label key={brand} className="inline-flex items-center">
                     <input type= 'checkbox' className="text-black border-black focus:ring-black accent-black" 
-                    checked={selectedTypes.includes(type)}
-                    onChange={() => handleTypeChange(type)}/>
+                    checked={selectedBrands.includes(brand)}
+                    onChange={() => handleBrandChange(brand)}/>
                     <span className="ml-2 text-black text-sm cursor-pointer">
-                        {type}
+                        {brand}
                     </span>
                     </label>
                 ))}

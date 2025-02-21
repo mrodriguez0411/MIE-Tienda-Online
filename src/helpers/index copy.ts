@@ -12,36 +12,39 @@ export const formatPrice = (price: number) => {
 };
 
 // Función para preparar los productos
-export const PreparedProducts = (products: Product[]) => {
+export const prepareProducts = (products: Product[] = []) => {
 	if (!Array.isArray(products)) {
-		console.error('Expected an array of products, but received:', products);
-		return [];
-	  }
+	  console.error('Expected an array of products, but received:', products);
+	  return [];
+	}
+  
 	return products.map(product => {
-		const types = product.variants.reduce((acc: Type[], variant: VariantProduct) => {
-			const existingType = acc.find(item => item.type === variant.type);
-
-			if (existingType) {
-				existingType.price = Math.min(existingType.price, variant.price);
-			} else {
-				acc.push({
-					type: variant.type,
-					price: variant.price,
-					name: variant.type_name,
-				});
-			}
-			return acc;
-		}, []);
-		const price = Math.min(...types.map(item => item.price));
-		return {
-			...product,
-			price,
-			types: types.map(({ name, type }) => ({ name, type })),
-			variants: product.variants,
-		  };
+	  const types = product.variants.reduce((acc: Type[], variant: VariantProduct) => {
+		const existingType = acc.find(item => item.type === variant.type);
+  
+		if (existingType) {
+		  existingType.price = Math.min(existingType.price, variant.price);
+		} else {
+		  acc.push({
+			type: variant.type,
+			price: variant.price,
+			name: variant.type_name,
+		  });
+		}
+		return acc;
+	  }, []);
+  
+	  const price = Math.min(...types.map(item => item.price));
+  
+	  return {
+		...product,
+		price,
+		types: types.map(({ name, type }) => ({ name, type })),
+		variants: product.variants,
+	  };
 	});
-};
-	
+  };
+
 // Función para formatear la fecha a formato 3 de enero de 2022
 export const formatDateLong = (date: string): string => {
 	const dateObject = new Date(date);

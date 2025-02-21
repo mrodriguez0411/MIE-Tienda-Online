@@ -1,13 +1,11 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');*/
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-.btn-paginacion{
-    @apply border border-cyan-500 rounded-md font-semibold text-xs py-1 px-3 hover:bg-cyan-700 hover:text-white 
-            transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:border-cyan-900 disabled:text-slate-800 disabled:hover:bg-white disabled:hover:text-slate-700;
+.btn-paginacion {
+  @apply border border-cyan-500 rounded-md font-semibold text-xs py-1 px-3 hover:bg-cyan-700 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:border-cyan-900 disabled:text-slate-800 disabled:hover:bg-white disabled:hover:text-slate-700;
 }
 
 input::-webkit-outer-spin-button,
@@ -15,6 +13,6 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }

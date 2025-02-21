@@ -3,17 +3,17 @@ import { getFilteredProducts } from "../../actions";
 
 export const useFilterProducts = ({
     page,
-    types,
+    brands,
 } : {
     page: number ,
-    types: string[],
+    brands: string[],
 }
 )=> {
 
     const {data, isLoading} = useQuery({
 
-        queryKey: ['fiterProducts' , page , types],
-        queryFn:  () => getFilteredProducts({page,types}),
+        queryKey: ['fiterProducts' , page , brands],
+        queryFn:  () => getFilteredProducts({page,brands}),
         retry: false,
         staleTime: 1000 * 60 * 5,
       
@@ -21,7 +21,7 @@ export const useFilterProducts = ({
   
         return {data: data?.data, 
                 isLoading,
-                totalProduct: data?.count,
+                totalProduct: data?.count ?? 0,
             };
 
 }

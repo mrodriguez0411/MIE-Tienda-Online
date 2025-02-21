@@ -3,8 +3,11 @@ import { navbarLinks } from "../../constants/links";
 import { HiOutlineSearch, HiOutlineShoppingBag } from "react-icons/hi";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { Logo } from "./Logo";
+import { useGlobalStore } from "../../store/global.store";
 
 export const Navbar = () => {
+  
+  const openSheet = useGlobalStore(state => state.openSheet);
   return (
     <header className="bg-white text-black py-4 flex items-center justify-between px-5 border-b border-slate-200 lg:px-12">
       <Logo />
@@ -22,8 +25,8 @@ export const Navbar = () => {
           </NavLink>
         ))}
       </nav>
-      <div className="flex gap-5 items-center">
-        <button>
+      <div className="flex gap-5 items-center" >
+        <button onClick={() => openSheet('search')}>
           <HiOutlineSearch size={25} />
         </button>
 
@@ -36,7 +39,7 @@ export const Navbar = () => {
             R
           </Link>
         </div>
-        <button className="relative">
+        <button className="relative" onClick={() => openSheet('cart')}>
           <span className="absolue -bottom-2 -right-2 w-5 h-5 grid place-items-center bg-black text-white text-xs rounded-full">
             0
           </span>

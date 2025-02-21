@@ -25,7 +25,7 @@ export const GridImages = ({ images }: Props) => {
 			<div className='flex mt-4 gap-2'>
 				{images.map((image, index) => (
 					<button
-						key={image}
+						key={index}
 						onClick={() => handleImageClick(image)}
 						className={`w-16 h-16 p-1 border ${
 							activeImage === image

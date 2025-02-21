@@ -1,6 +1,6 @@
-
-import { JSONContent } from "@tiptap/react";
 import { Json } from "../supabase/supabase";
+
+
 
 export interface Type{
     name: string;
@@ -8,6 +8,17 @@ export interface Type{
     price: number;
 }
 
+export interface Product{
+    id : string;
+    name: string;
+    brand: string;
+    slug: string;
+    features: string[];
+    description: Json;
+    images: string[];
+    created_at: string;
+    variants: VariantProduct[];
+}
 export interface VariantProduct{
     id : string;
     stock: number;
@@ -16,17 +27,7 @@ export interface VariantProduct{
     type: string;
     type_name: string;
 }
-export interface Product{
-    id : string;
-    name: string;
-    brand: string;
-    slug: string;
-    features: string[];
-    descriptions: Json;
-    images: string[];
-    created_art: string;
-    variants: VariantProduct[];
-}
+
 
 export interface PreparedProducts{
     id : string;
@@ -34,9 +35,9 @@ export interface PreparedProducts{
     brand: string;
     slug: string;
     features: string[];
-    descriptions: Json;
+    description: Json;
     images: string[];
-    created_art: string;
+    created_at: string;
     price: number;
     types: {
         name: string;
@@ -50,7 +51,7 @@ export interface ProductInput {
 	brand: string;
 	slug: string;
 	features: string[];
-	description: JSONContent;
+	description: Json;
 	images: File[];
 	variants: VariantInput[];
 }

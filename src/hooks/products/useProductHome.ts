@@ -1,5 +1,6 @@
 import { useQueries } from "@tanstack/react-query";
-import { getAllProducts, getDestacatedProducts, getRecentProducts } from "../../actions";
+import { getAllProducts, getRandomProducts, getRecentProducts } from "../../actions";
+
 //import { AllProducts, recentPoducts, popularProducts } from "../../data/initialData";
 
 export const useProductsHome = () =>{
@@ -11,7 +12,7 @@ export const useProductsHome = () =>{
             },
             {    
                 queryKey:['popularProducts'],
-                queryFn: getDestacatedProducts,
+                queryFn: getRandomProducts,
             
             },
             {    

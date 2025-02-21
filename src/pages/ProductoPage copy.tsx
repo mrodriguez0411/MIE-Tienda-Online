@@ -14,7 +14,6 @@ import { Loader } from '../components/shared/Loader';
 import { useCounterStore } from '../store/counter.store';
 //import { useCartStore } from '../store/cart.store';
 import toast from 'react-hot-toast';
-import { number } from 'zod';
 
 interface Acc {
 	[key: string]: {
@@ -36,7 +35,7 @@ export const ProductoPage = () => {
 		null
 	);
 
-	const [selectedStock, setSelectedStock] = useState<
+	const [selectedCategory, setSelectedCategory] = useState<
 		string | null
 	>(null);
 
@@ -56,16 +55,16 @@ export const ProductoPage = () => {
 		return (
 			product?.variants.reduce(
 				(acc: Acc, variant: VariantProduct) => {
-					const { type, type_name, stock } = variant;
+					const { type, type_name, category } = variant;
 					if (!acc[type]) {
 						acc[type] = {
 							name: type_name,
-							stocks: [],
+							categorys: [],
 						};
 					}
 
-					if (!acc[type].stocks.includes(stock)) {
-						acc[type].stocks.push(stock);
+					if (!acc[type].categorys.includes(category)) {
+						acc[type].categorys.push(category);
 					}
 
 					return acc;
@@ -85,23 +84,23 @@ export const ProductoPage = () => {
 
 	// Actualizar el almacenamiento seleccionado cuando cambia el color
 	useEffect(() => {
-		if (selectedType && types[selectedType] && !selectedStock) {
-			setSelectedStock(types[selectedType].stocks[0]);
+		if (selectedType && types[selectedType] && !selectedCategory) {
+			setSelectedCategory(types[selectedType].categorys[0]);
 		}
-	}, [selectedType, types, selectedStock]);
+	}, [selectedType, types, selectedCategory]);
 
 	// Obtener la variante seleccionada
 	useEffect(() => {
-		if (selectedType && selectedStock) {
+		if (selectedType && selectedCategory) {
 			const variant = product?.variants.find(
 				variant =>
 					variant.type === selectedType &&
-					variant.stock === selectedStock
+					variant.category === selectedCategory
 			);
 
 			setSelectedVariant(variant as VariantProduct);
 		}
-	}, [selectedType, selectedStock, product?.variants]);
+	}, [selectedType, selectedCategory, product?.variants]);
 
 	// Obtener el stock
 	const isOutOfStock = selectedVariant?.stock === 0;
@@ -149,7 +148,7 @@ export const ProductoPage = () => {
 
 		// Reiniciar color, almacenamiento y variante seleccionada
 		setSelectedType(null);
-		setSelectedStock(null);
+		setSelectedCategory(null);
 		setSelectedVariant(null);
 	}, [slug]);
 
@@ -227,11 +226,9 @@ export const ProductoPage = () => {
 					{/* OPCIONES DE ALMACENAMIENTO */}
 					<div className='flex flex-col gap-3'>
 						<p className='text-xs font-medium'>
-							Stock disponible:
-							
+							Stock disponible
 						</p>
 						
-						{selectedVariant?.stock || product.variants[0].stock}
 						{/*{selectedType && (
 							<div className='flex gap-3'>
 								<select
@@ -279,7 +276,7 @@ export const ProductoPage = () => {
 							{/* BOTONES ACCIÓN */}
 							<div className='flex flex-col gap-3'>
 								<button
-									className='bg-[#f3f3f3] uppercase font-semibold tracking-widest text-xs py-4 rounded-full transition-all duration-300 hover:bg-[#8af3f3]'
+									className='bg-[#f3f3f3] uppercase font-semibold tracking-widest text-xs py-4 rounded-full transition-all duration-300 hover:bg-[#e2e2e2]'
 									
 								>
 									Agregar al carro

@@ -27,17 +27,18 @@ export const Pagination =({totalItems, page, setPage}: Props) => {
     return <div className="flex justify-between items-center">
 
         <p className="text-xs font-medium">
-            Mostrando {''}<span className="font-bold">
+            Mostrando <span className="font-bold">
                 {startItem} - {endItem}
             </span>{''}
-            de <span className="font-bold"> {totalItems} </span>
+            de
+            <span className="font-bold"> {totalItems} </span>
             productos 
         </p>
         <div className="flex gap-3">
             <button 
             className="btn-paginacion"
             onClick={handlePrevPage} 
-            disabled={page ===1}
+            disabled={page === 1}
             >
                 Anterior
             </button>

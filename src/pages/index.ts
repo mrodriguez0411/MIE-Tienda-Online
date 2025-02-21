@@ -1,9 +1,11 @@
 export * from "./HomePage";
 export * from "./AboutPage";    
-export * from "./ProductosPage";
-export * from "./ProductoPage";
+export * from "./ProductosPage"
 export * from "./LoginPage";
 export * from "./RegisterPage";
+export * from "./ProductoPage";
+
+
 
 
 //Dashboard
