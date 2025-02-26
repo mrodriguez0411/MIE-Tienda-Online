@@ -45,7 +45,7 @@ export const ProductosPage = () => {
 									types={product.types}
 									img={product.images[0]}
 									slug={product.slug}
-									descriptions={product.description}
+									description={product.description[0]}
 									variants={product.variants}
 								/>
 							))}

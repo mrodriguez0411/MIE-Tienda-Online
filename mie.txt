@@ -20,6 +20,10 @@ npm install -D @tailwindcss/typography
 
   npm install react-hot-toast
 
+--Instala React Totast que es oara los botones de notificación
+
+npm install react-hot-toast
+
 
 --Instalar ZOD y React Hook Form, se usa para un esquema de validación en el login del usuario y validar formularios. Instalar estas tres dependencias para las validaciones
 

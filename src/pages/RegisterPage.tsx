@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { z } from "zod";
-import { useRegister } from "../hooks/auth/useRegister";
+import { useRegister, useUser } from "../hooks";
 import { LuLoader } from "react-icons/lu";
+import { Loader } from "../components/shared/Loader";
 
 //validación del form con zod
 
@@ -40,11 +41,16 @@ export const RegisterPage = () => {
     resolver: zodResolver(userRegisterSchema),
   });
   const{mutate, isPending} = useRegister();
+  
   const onRegister = handleSubmit((data) => {
     const{email, password, firstName, lastName, phone} = data;
 
     mutate({email, password, firstName, lastName, phone})
   });
+
+  const {session, isLoading} = useUser();
+  if(isLoading) return <Loader/>
+  if(session) return <Navigate to='/'/>
 
   return (
     <div className="h-full flex flex-col items-center mt-12 gap-5">
@@ -104,7 +110,7 @@ export const RegisterPage = () => {
           />
           {errors.password && <p className="text-red-600">{errors.password.message}</p>}
 
-          <button className="bg-cyan-700 text-white uppercase font-semibold tracking-tighter text-xs py-4 rounded-full mt-5 w-full">
+          <button className="bg-cyan-700 text-white uppercase font-semibold tracking-tighter text-xs py-4 rounded-full mt-5 w-full hover:bg-cyan-600">
             Registrarse
           </button>
         </form>

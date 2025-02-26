@@ -13,7 +13,7 @@ export const userRegisterSchema = z.object({
 export const addressSchema = z.object({
 	addressLine1: z
 		.string()
-		.min(1, 'La dirección es requerida')
+		.min(1, 'Debe cargar al menos una dirección')
 		.max(100, 'La dirección no debe exceder los 100 carácteres'),
 	addressLine2: z
 		.string()
@@ -21,18 +21,20 @@ export const addressSchema = z.object({
 		.optional(),
 	city: z
 		.string()
-		.min(1, 'La ciudad es requerida')
+		.min(1, 'Debe ingresar la ciudad')
 		.max(50, 'La ciudad no debe exceder los 50 carácteres'),
 	state: z
 		.string()
-		.min(1, 'El estado es requerido')
+		.min(1, 'Debe ingresar la  Provincia')
 		.max(50, 'El estado no debe exceder los 50 carácteres'),
 	postalCode: z
 		.string()
 		.max(10, 'El código postal no debe exceder los 10 carácteres')
 		.optional(),
-	country: z.string().min(1, 'El país es requerido'),
+	country: z.string().min(1, 'Debe ingresar el Pais'),
 });
+
+
 
 export type UserRegisterFormValues = z.infer<
 	typeof userRegisterSchema

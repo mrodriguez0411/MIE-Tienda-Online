@@ -5,11 +5,13 @@ import { Ofertas} from "../components/home/Ofertas";
 import { Banner } from "../components/home/Banner";
 import { Sheet } from "../components/shared/Sheet";
 import { useGlobalStore } from "../store/global.store";
+import { NavbarMobile } from "../components/shared/NavbarMobile";
 
 export const RootLayout = () => {
   const { pathname } = useLocation();
   
-  const isSheetOpen = useGlobalStore((state) => state.isSheetOpen);
+  const isSheetOpen = useGlobalStore(state => state.isSheetOpen);
+  const activeNavMobile = useGlobalStore(state => state.activeNavMobile);
   return (
     <div className='h-screen flex flex-col font-roboto '>
       <Navbar />
@@ -27,6 +29,8 @@ export const RootLayout = () => {
       )}
 
       {isSheetOpen && <Sheet />}
+      {activeNavMobile && <NavbarMobile />}
+
       <Footer />
 
     </div>

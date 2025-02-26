@@ -12,8 +12,9 @@ import { VariantProduct } from '../interfaces';
 import { Tag } from '../components/shared/Tag';
 import { Loader } from '../components/shared/Loader';
 import { useCounterStore } from '../store/counter.store';
-//import { useCartStore } from '../store/cart.store';
+import { useCartStore } from '../store/cart.store';
 import toast from 'react-hot-toast';
+import { number } from 'zod';
 
 interface Acc {
 	[key: string]: {
@@ -35,7 +36,7 @@ export const ProductoPage = () => {
 		null
 	);
 
-	const [selectedCategory, setSelectedCategory] = useState<
+	const [selectedStock, setSelectedStock] = useState<
 		string | null
 	>(null);
 
@@ -46,7 +47,7 @@ export const ProductoPage = () => {
 	const increment = useCounterStore(state => state.increment);
 	const decrement = useCounterStore(state => state.decrement);
 
-	//const addItem = useCartStore(state => state.addItem);
+	const addItem = useCartStore(state => state.addItem);
 
 	const navigate = useNavigate();
 
@@ -55,16 +56,16 @@ export const ProductoPage = () => {
 		return (
 			product?.variants.reduce(
 				(acc: Acc, variant: VariantProduct) => {
-					const { type, type_name, category } = variant;
+					const { type, type_name, stock } = variant;
 					if (!acc[type]) {
 						acc[type] = {
 							name: type_name,
-							categorys: [],
+							stocks: [],
 						};
 					}
 
-					if (!acc[type].categorys.includes(category)) {
-						acc[type].categorys.push(category);
+					if (!acc[type].stocks.includes(stock)) {
+						acc[type].stocks.push(stock);
 					}
 
 					return acc;
@@ -84,37 +85,37 @@ export const ProductoPage = () => {
 
 	// Actualizar el almacenamiento seleccionado cuando cambia el color
 	useEffect(() => {
-		if (selectedType && types[selectedType] && !selectedCategory) {
-			setSelectedCategory(types[selectedType].categorys[0]);
+		if (selectedType && types[selectedType] && !selectedStock) {
+			setSelectedStock(types[selectedType].stocks[0]);
 		}
-	}, [selectedType, types, selectedCategory]);
+	}, [selectedType, types, selectedStock]);
 
 	// Obtener la variante seleccionada
 	useEffect(() => {
-		if (selectedType && selectedCategory) {
+		if (selectedType && selectedStock) {
 			const variant = product?.variants.find(
 				variant =>
 					variant.type === selectedType &&
-					variant.category === selectedCategory
+					variant.stock === selectedStock
 			);
 
 			setSelectedVariant(variant as VariantProduct);
 		}
-	}, [selectedType, selectedCategory, product?.variants]);
+	}, [selectedType, selectedStock, product?.variants]);
 
 	// Obtener el stock
 	const isOutOfStock = selectedVariant?.stock === 0;
 
 	// Función para añadir al carrito
-	/*const addToCart = () => {
+	const addToCart = () => {
 		if (selectedVariant) {
 			addItem({
 				variantId: selectedVariant.id,
 				productId: product?.id || '',
 				name: product?.name || '',
 				image: product?.images[0] || '',
-				color: selectedVariant.color_name,
-				storage: selectedVariant.storage,
+				type: selectedVariant.type_name,
+				category: selectedVariant.category,
 				price: selectedVariant.price,
 				quantity: count,
 			});
@@ -122,25 +123,25 @@ export const ProductoPage = () => {
 				position: 'bottom-right',
 			});
 		}
-	};*/
+	};
 
 	// Función para comprar ahora
-	/*const buyNow = () => {
+	const buyNow = () => {
 		if (selectedVariant) {
 			addItem({
 				variantId: selectedVariant.id,
 				productId: product?.id || '',
 				name: product?.name || '',
 				image: product?.images[0] || '',
-				color: selectedVariant.color_name,
-				storage: selectedVariant.storage,
+				type: selectedVariant.type_name,
+				category: selectedVariant.category,
 				price: selectedVariant.price,
 				quantity: count,
 			});
 
 			navigate('/checkout');
 		}
-	};*/
+	};
 
 	// Resetear el slug actual cuando cambia en la URL
 	useEffect(() => {
@@ -148,7 +149,7 @@ export const ProductoPage = () => {
 
 		// Reiniciar color, almacenamiento y variante seleccionada
 		setSelectedType(null);
-		setSelectedCategory(null);
+		setSelectedStock(null);
 		setSelectedVariant(null);
 	}, [slug]);
 
@@ -204,31 +205,32 @@ export const ProductoPage = () => {
 							{selectedType && types[selectedType].name}
 						</p>
 						<div className='flex gap-3'>
-							{availableTypes.map(type => (
+							{availableTypes.map(type_name => (
 								<button
-									key={type}
+									key={type_name}
 									className={`w-8 h-8 rounded-full flex justify-center items-center ${
-										selectedType === type
+										selectedType === type_name
 											? 'border border-slate-800'
 											: ''
 									}`}
-									onClick={() => setSelectedType(type)}
+									onClick={() => setSelectedType(type_name)}
 								>
 									<span
 										className='w-[26px] h-[26px] rounded-full'
-										style={{ backgroundColor: type }}
+										style={{ backgroundColor: type_name }}
 									/>
 								</button>
 							))}
 						</div>
 					</div>
 
-					{/* OPCIONES DE ALMACENAMIENTO */}
 					<div className='flex flex-col gap-3'>
 						<p className='text-xs font-medium'>
-							Stock disponible
+							Stock disponible:
+							
 						</p>
 						
+						{selectedVariant?.stock || product.variants[0].stock}
 						{/*{selectedType && (
 							<div className='flex gap-3'>
 								<select
@@ -276,10 +278,10 @@ export const ProductoPage = () => {
 							{/* BOTONES ACCIÓN */}
 							<div className='flex flex-col gap-3'>
 								<button
-									className='bg-[#f3f3f3] uppercase font-semibold tracking-widest text-xs py-4 rounded-full transition-all duration-300 hover:bg-[#e2e2e2]'
+									className='bg-[#f3f3f3] uppercase font-semibold tracking-widest text-xs py-4 rounded-full transition-all duration-300 hover:bg-[#8af3f3]'
 									
 								>
-									Agregar al carro
+									Agregar al carrito
 								</button>
 								<button
 									className='bg-black text-white uppercase font-semibold tracking-widest text-xs py-4 rounded-full'

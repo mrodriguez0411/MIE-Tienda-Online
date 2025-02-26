@@ -27,7 +27,7 @@ export const PreparedProducts = (products: Product[]) => {
 				acc.push({
 					type: variant.type,
 					price: variant.price,
-					name: variant.type_name,
+					//name: variant.type_name,
 				});
 			}
 			return acc;
@@ -82,9 +82,10 @@ export const getStatus = (status: string): string => {
 // Función para generar el slug de un producto
 export const generateSlug = (name: string): string => {
 	return name
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/(^-|-$)/g, '');
+	.trim()
+	.toLowerCase()
+	.replace(/[^a-z0-9]+/g, '-')
+	.replace(/(^-|-$)/g, '');
 };
 
 // Función para extraer el path relativo al bucket de una URL

@@ -118,6 +118,18 @@ export const getFilteredProducts = async ({
 	  return data;
 
   }
+
+  export const searchProducts = async (searchTerm: string) => {
+	const { data, error } = await supabase
+	  .from("products")
+	  .select("*, variants(*)")
+	  .ilike('name', `%${searchTerm}%`); //busca producto con el nombre que contenga el termino de busqueda
+	  if (error) {
+		console.log(error.message);
+		throw new Error(error.message);
+	  }
+	  return data;
+  };
   /*aDMINISTRADOR*/
   export const createProduct = async (productInput: ProductInput) => {
 	try {
