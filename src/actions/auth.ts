@@ -101,3 +101,34 @@ export const getSession = async ()=>{
     return data;
 
 }
+//para las iniciales del nombre en el navbar
+export const getUserData = async(userId: string) =>{
+    const {data, error} = await supabase
+    .from('customers')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+    if (error){
+        console.log(error);
+        throw new Error('Error al obtener los datos del usuario');
+    }
+
+    return data;
+}
+
+//funcion para conseguir el rol del uasuario que se loguea
+export const getUserRole = async(userId: string) =>{
+    const {data, error} = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userId)
+    .single();
+
+    if (error){
+        console.log(error);
+        throw new Error('Error al obtener el role del usuario logueado');
+    }
+
+    return data.role;
+};

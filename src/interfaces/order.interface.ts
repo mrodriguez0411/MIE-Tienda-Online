@@ -28,7 +28,8 @@ export interface OrderWithCustomer {
 	total_amount: number;
 	created_at: string;
 	customers: {
-		full_name: string;
+		first_name: string;
+		last_name: string;
 		email: string;
 	} | null;
 }

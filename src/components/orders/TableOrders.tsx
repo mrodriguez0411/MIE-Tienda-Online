@@ -18,7 +18,7 @@ export const TableOrders = ({ orders }: Props) => {
 	return (
 		<div className='relative w-full h-full'>
 			<table className='text-sm w-full caption-bottom overflow-auto'>
-				<thead className='border-b border-cyan-300 pb-3'>
+				<thead className='border-b border-gray-200 pb-3'>
 					<tr className='text-sm font-bold'>
 						{tableHeaders.map((header, index) => (
 							<th key={index} className='h-12 px-4 text-left'>
@@ -32,7 +32,7 @@ export const TableOrders = ({ orders }: Props) => {
 					{orders.map(order => (
 						<tr
 							key={order.id}
-							className='cursor-pointer hover:bg-cyan-100 transition-colors duration-200'
+							className='cursor-pointer hover:bg-gray-100 transition-colors duration-200'
 							onClick={() => navigate(`/account/pedidos/${order.id}`)}
 						>
 							<td className='p-4 font-medium tracking-tighter'>

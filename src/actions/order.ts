@@ -235,11 +235,12 @@ export const getOrderById = async (orderId: number) => {
 /* ********************************** */
 /*            ADMINISTRADOR           */
 /* ********************************** */
+
 export const getAllOrders = async () => {
 	const { data, error } = await supabase
 		.from('orders')
 		.select(
-			'id, total_amount, status, created_at, customers(first_name, email)'
+			'id, total_amount, status, created_at, customers(first_name, last_name, email)'
 		)
 		.order('created_at', { ascending: false });
 
@@ -273,7 +274,7 @@ export const getOrderByIdAdmin = async (id: number) => {
 	const { data: order, error } = await supabase
 		.from('orders')
 		.select(
-			'*, addresses(*), customers(first_name, last_name, email), order_items(quantity, price, variants(color_name, category, products(name, images)))'
+			'*, addresses(*), customers(first_name, last_name, email), order_items(quantity, price, variants(type_name, category, products(name, images)))'
 		)
 		.eq('id', id)
 		.single();

@@ -1,9 +1,9 @@
 import { NavLink } from "react-router-dom"
 import { Logo } from "../shared/Logo"
 import {dashboardLinks} from "../../constants/links"
-import { AiOutlineLogout } from "react-icons/ai"
+//import { AiOutlineLogout } from "react-icons/ai"
 import { IoLogOutOutline } from "react-icons/io5"
-//import { signOut } from "../../actions"
+import { signOut } from "../../actions"
 
 export const Sidebar = () => {
 
