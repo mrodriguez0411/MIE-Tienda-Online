@@ -47,8 +47,7 @@ export const createOrder = async (order: OrderInput) => {
 
 	// 3. Guardar la dirección del envío
 	const { data: addressData, error: addressError } = await supabase
-		.from('addresses')
-		.insert({
+		.from('addresses').insert({
 			address_line1: order.address.addressLine1,
 			address_line2: order.address.addressLine2,
 			city: order.address.city,
