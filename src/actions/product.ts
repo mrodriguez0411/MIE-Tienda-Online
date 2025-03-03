@@ -3,7 +3,7 @@ import { ProductInput } from "../interfaces";
 import { supabase } from "../supabase/client"
 
 
-export const getProducts = async() =>{
+export const getProducts = async(page: number) =>{
 	const {data: products, error} = await supabase
 	.from('products')
 	.select('*, variants(*)')

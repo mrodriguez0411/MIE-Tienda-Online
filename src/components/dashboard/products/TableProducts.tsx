@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { useProducts, useDeleteProduct } from "../../../hooks";
 import { Loader } from "../../shared/Loader"; 
 import { Pagination } from "../../shared/Pagination";
+import { Product, VariantProduct } from "../../../interfaces";
+
 
 // Definición de la función formatPrice
 const formatPrice = (price: number) => {
@@ -53,11 +55,10 @@ export const TableProducts = () => {
   };
   //traemos el hook para cargar los productos
   const [page, setPage] = useState(1);
-  const { products, isLoading, totalProducts} = useProducts({page});
+  const { products, isLoading,  totalProducts} = useProducts({page});
 
   if(!products || isLoading || !totalProducts || isPending) return <Loader/>; 
  
-
   //funcion para borrar el producto
   const handleDeleteProduct = (id: string) => {
     mutate(id);
@@ -82,17 +83,17 @@ export const TableProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((products, index) => {
+            {products.map((product: Product, index:number) => {
 
-              const selectedVariantIndex = selectedVariants[products.id] ?? 0;
-              const selectedVariant = products.variants[selectedVariantIndex];
+              const selectedVariantIndex = selectedVariants[product.id] ?? 0;
+              const selectedVariant = product.variants[selectedVariantIndex];
 
               return (
                 <tr key={index}>
                   <td className="p-4 align-middle sm:table-cell">
                     <img
                       src={
-                        products.images[0] ||
+                        product.images[0] ||
                         "../../../../public/img/products/notimage.jpeg"
                       }
                       alt="Imagen de Producto"
@@ -102,15 +103,15 @@ export const TableProducts = () => {
                     />
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
-                    {products.name}
+                    {product.name}
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
                     <select className="border border-gray-200 rounded-md p-1 w-full"
-                        onChange={e => handleVariantChange(products.id, Number(e.target.value))}
+                        onChange={e => handleVariantChange(product.id, Number(e.target.value))}
                         value={selectedVariantIndex}
                     >
 
-                      {products.variants.map((variant, variantIndex) => (
+                      {products.variants.map((variant: VariantProduct, variantIndex:number) => (
                         <option key={variant.id} value={variantIndex}>
                           {variant.type_name}
                         </option>
@@ -127,7 +128,7 @@ export const TableProducts = () => {
                     {selectedVariant.category}
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
-                    {new Date(products.created_at).toLocaleDateString("es-ES", {
+                    {new Date(product.created_at).toLocaleDateString("es-ES", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -149,7 +150,7 @@ export const TableProducts = () => {
                         role="menu"
                       >
                         <Link
-                          to={`/dashboard/productos/editar/${products.slug}`}
+                          to={`/dashboard/productos/editar/${product.slug}`}
                           className="flex items-center gap-1 w-full text-left px-4 py-2 text-xs font-medium text-cyan-700 hover:bg-cyan-100"
                         >
                           Editar
@@ -157,7 +158,7 @@ export const TableProducts = () => {
                         </Link>
                         <button
                           className="block w-full text-left px-4 py-2 text-xs font-medium text-red-700 hover:bg-red-100"
-                          onClick={() => handleDeleteProduct(products.slug)}
+                          onClick={() => handleDeleteProduct(product.slug)}
                         >
                           Eliminar
                           <MdDeleteForever size={15} className="inline-block" />
