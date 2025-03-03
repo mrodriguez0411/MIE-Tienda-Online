@@ -3,7 +3,7 @@ import { getAllProducts, getRandomProducts, getRecentProducts } from "../../acti
 
 //import { AllProducts, recentPoducts, popularProducts } from "../../data/initialData";
 
-export const useProductsHome = () =>{
+export const useProductHome = () =>{
     const results = useQueries({
         queries: [
             {
@@ -11,7 +11,7 @@ export const useProductsHome = () =>{
                 queryFn: getRecentProducts,
             },
             {    
-                queryKey:['popularProducts'],
+                queryKey:['randomProduct'],
                 queryFn: getRandomProducts,
             
             },
@@ -23,16 +23,16 @@ export const useProductsHome = () =>{
         ]
     });
 
-    const [recentProductsResult , popularProducts, AllProductsResult] = results;
+    const [recentProductsResult , randomProduct, AllProductsResult] = results;
 
     //combino los resultados
 
-    const isLoading = recentProductsResult.isLoading || popularProducts.isLoading || AllProductsResult.isLoading;
-    const isError = recentProductsResult.isError || popularProducts.isError || AllProductsResult.isError;
+    const isLoading = recentProductsResult.isLoading || randomProduct.isLoading || AllProductsResult.isLoading;
+    const isError = recentProductsResult.isError || randomProduct.isError || AllProductsResult.isError;
 
     return {
         recentProducts: recentProductsResult.data || [], 
-        destacatedProducts: popularProducts.data || [],
+        destacatedProducts: randomProduct.data || [],
         AllProducts: AllProductsResult.data || [],
         isLoading,
         isError,

@@ -5,7 +5,7 @@ import {
 	UseFormRegister,
 	useWatch,
 } from 'react-hook-form';
-import { ProductFormValues } from '../../../lib/validators';
+import { ProductFormValues } from '../../../lib/validator';
 import {
 	IoIosAddCircleOutline,
 	IoIosCloseCircleOutline,
@@ -18,7 +18,8 @@ interface Props {
 	register: UseFormRegister<ProductFormValues>;
 }
 
-const headersVariants = ['Stock', 'Precio', 'Categoria', 'Tipo',  ''];
+
+const headersVariants = ['Stock', 'Precio', 'Capacidad', 'Color', ''];
 
 export const VariantsInput = ({
 	control,
@@ -36,7 +37,7 @@ export const VariantsInput = ({
 		append({
 			stock: 0,
 			price: 0,
-			categoria: '',
+			category: '',
 			type: '',
 			typeName: '',
 		});
@@ -127,7 +128,7 @@ export const VariantsInput = ({
 								{...register(`variants.${index}.category`)}
 								className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
 							/>
-							
+
 							<div className='flex relative'>
 								{colorActive[index] && (
 									<div className='absolute bg-stone-100 rounded-md bottom-8 left-[40px] p-1 w-[100px] h-fit space-y-2'>
@@ -139,7 +140,7 @@ export const VariantsInput = ({
 
 										<input
 											type='text'
-											placeholder='Libreria'
+											placeholder='Azul Marino'
 											{...register(`variants.${index}.typeName`)}
 											className='rounded-md px-3 py-1.5 w-full text-xs focus:outline-none font-semibold placeholder:font-normal'
 										/>
@@ -174,11 +175,12 @@ export const VariantsInput = ({
 							</div>
 						</div>
 
+						{/*
 						{errors.variants && errors.variants[index] && (
 							<p className='text-red-500 text-xs mt-1'>
 								{getFirstError(errors.variants[index])}
 							</p>
-						)}
+						)}*/}
 					</div>
 				))}
 			</div>
@@ -200,3 +202,4 @@ export const VariantsInput = ({
 		</div>
 	);
 };
+export default VariantsInput;

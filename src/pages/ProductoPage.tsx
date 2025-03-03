@@ -14,12 +14,14 @@ import { Loader } from "../components/shared/Loader";
 import { useCounterStore } from "../store/counter.store";
 import { useCartStore } from "../store/cart.store";
 import toast from "react-hot-toast";
-import { number } from "zod";
+//mport { number } from "zod";
+//import { number } from "zod";
 
 interface Acc {
   [key: string]: {
     name: string;
     categorys: string[];
+    stocks: number[];
   };
 }
 
@@ -54,6 +56,7 @@ export const ProductoPage = () => {
         if (!acc[type]) {
           acc[type] = {
             name: type_name,
+            categorys: [],
             stocks: [],
           };
         }
