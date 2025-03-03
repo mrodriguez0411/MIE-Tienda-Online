@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { useProducts, useDeleteProduct } from "../../../hooks";
 import { Loader } from "../../shared/Loader"; 
 import { Pagination } from "../../shared/Pagination";
-import { Product, VariantProduct } from "../../../interfaces";
 
 
 // Definición de la función formatPrice
@@ -111,11 +110,7 @@ export const TableProducts = () => {
                         value={selectedVariantIndex}
                     >
 
-                      {/*{products.variants.map((variant , variantIndex) => (
-                        <option key={variant.id} value={variantIndex}>
-                          {variant.type_name}
-                        </option>
-                      ))}*/}
+                      
                     </select>
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
