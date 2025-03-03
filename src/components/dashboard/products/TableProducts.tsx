@@ -53,9 +53,7 @@ export const TableProducts = () => {
   };
   //traemos el hook para cargar los productos
   const [page, setPage] = useState(1);
-  const { products, isLoading, totalProducts } = useProducts({
-    page,
-  });
+  const { products, isLoading, totalProducts} = useProducts({page});
 
   if(!products || isLoading || !totalProducts || isPending) return <Loader/>; 
  

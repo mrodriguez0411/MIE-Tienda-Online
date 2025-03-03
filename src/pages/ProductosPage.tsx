@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { CardProduct } from '../components/products/CardProduct';
-//import { ContainerFilter } from '../components/products/ContainerFilter';
 import { PreparedProducts } from '../helpers';
 import { useFilterProducts} from '../hooks';
 import { Pagination } from '../components/shared/Pagination';

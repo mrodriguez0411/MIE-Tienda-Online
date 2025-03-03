@@ -1,5 +1,5 @@
 import { Control, FieldErrors, useFieldArray } from 'react-hook-form';
-import { ProductFormValues } from '../../../lib/validators';
+import { ProductFormValues } from '../../../lib/validator';
 import { useState } from 'react';
 
 interface Props {

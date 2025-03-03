@@ -153,7 +153,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 						type='text'
 						label='Slug'
 						name='slug'
-						placeholder='iphone-13-pro-max'
+						placeholder=''
 						register={register}
 						errors={errors}
 					/>
@@ -162,7 +162,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 						type='text'
 						label='Marca'
 						name='brand'
-						placeholder='Apple'
+						placeholder=''
 						register={register}
 						errors={errors}
 						required
