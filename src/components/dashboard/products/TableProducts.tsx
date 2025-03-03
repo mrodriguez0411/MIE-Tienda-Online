@@ -83,7 +83,7 @@ export const TableProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product: Product, index:number) => {
+            {products.map((product, index) => {
 
               const selectedVariantIndex = selectedVariants[product.id] ?? 0;
               const selectedVariant = product.variants[selectedVariantIndex];
@@ -111,11 +111,11 @@ export const TableProducts = () => {
                         value={selectedVariantIndex}
                     >
 
-                      {products.variants.map((variant: VariantProduct, variantIndex:number) => (
+                      {/*{products.variants.map((variant , variantIndex) => (
                         <option key={variant.id} value={variantIndex}>
                           {variant.type_name}
                         </option>
-                      ))}
+                      ))}*/}
                     </select>
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
