@@ -14,8 +14,6 @@ import { Loader } from "../components/shared/Loader";
 import { useCounterStore } from "../store/counter.store";
 import { useCartStore } from "../store/cart.store";
 import toast from "react-hot-toast";
-//mport { number } from "zod";
-//import { number } from "zod";
 
 interface Acc {
   [key: string]: {
@@ -30,11 +28,11 @@ export const ProductoPage = () => {
 
   const [currentSlug, setCurrentSlug] = useState(slug);
 
-  const { product, isLoading, isError } = useProduct(currentSlug || "");
+  const { product, isLoading, isError } = useProduct(currentSlug || '');
 
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
-  const [selectedStock, setSelectedStock] = useState<string | null>(null);
+  const [selectedStock, setSelectedStock] = useState<number | null>(null);
 
   const [selectedVariant, setSelectedVariant] = useState<VariantProduct | null>(
     null
@@ -214,21 +212,6 @@ export const ProductoPage = () => {
             <p className="text-xs font-medium">Stock disponible:</p>
 
             {selectedVariant?.stock || product.variants[0].stock}
-            {/*{selectedType && (
-							<div className='flex gap-3'>
-								<select
-									className='border border-gray-300 rounded-lg px-3 py-1'
-									value={selectedCategory || ''}
-									onChange={e => setSelectedCategory(e.target.value)}
-								>
-									{types[selectedType].categorys.map(category => (
-										<option value={category} key={category}>
-											{category}
-										</option>
-									))}
-								</select>
-							</div>
-						)}*/}
           </div>
 
           {/* COMPRAR */}
