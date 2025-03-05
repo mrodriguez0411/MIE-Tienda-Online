@@ -21,7 +21,7 @@ interface Props {
 export const InputImages = ({
 	setValue,
 	errors,
-	watch,
+	
 }: Props) => {
 	const [images, setImages] = useState<ImagePreview[]>([]);
 

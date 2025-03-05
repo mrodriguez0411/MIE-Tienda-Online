@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { supabase } from '../../../supabase/client';
 
+interface ManageTypeCategoriesProps {
+	onSave: (data: { types: string[], categories: string[] }) => void;
+  }
+
 
 const ManageTypeCategories = ({ onSave }) => {
 	const [type, setType] = useState('');
