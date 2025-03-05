@@ -27,7 +27,7 @@ export const PreparedProducts = (products: Product[]) => {
 				acc.push({
 					type: variant.type,
 					price: variant.price,
-					//name: variant.type_name,
+					name: variant.type_name,
 				});
 			}
 			return acc;

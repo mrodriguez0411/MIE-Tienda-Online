@@ -68,7 +68,7 @@ export const VariantsInput = ({
 		),
 	});
 
-	const getFirstError = (
+	/*const getFirstError = (
 		variantErros: FieldErrors<ProductFormValues['variants'][number]>
 	) => {
 		if (variantErros) {
@@ -79,7 +79,7 @@ export const VariantsInput = ({
 				return variantErros[keys[0]]?.message;
 			}
 		}
-	};
+	};*/
 
 	useEffect(() => {
 		setColorActive(prev =>
@@ -175,12 +175,12 @@ export const VariantsInput = ({
 							</div>
 						</div>
 
-						{/*
+						{/**
 						{errors.variants && errors.variants[index] && (
 							<p className='text-red-500 text-xs mt-1'>
 								{getFirstError(errors.variants[index])}
 							</p>
-						)}*/}
+						)}*/ }
 					</div>
 				))}
 			</div>
