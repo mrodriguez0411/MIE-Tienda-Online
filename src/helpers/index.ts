@@ -17,29 +17,36 @@ export const PreparedProducts = (products: Product[]) => {
         return [];
     }
 
-    return products.map(product => {
-        const types = product.variants.reduce((acc: Type[], variant: VariantProduct) => {
-            const existingType = acc.find(item => item.variant_name === variant.variant_name);
+    // Filtramos productos únicos por ID
+    const uniqueProducts = new Map();
 
-            if (existingType) {
-                existingType.price = Math.min(existingType.price, variant.price);
-            } else {
-                acc.push({
-                    variant_name: variant.variant_name,
-                    price: variant.price,
-                });
-            }
-            return acc;
-        }, []);
+    products.forEach(product => {
+        if (!uniqueProducts.has(product.id)) {
+            const variantsGrouped = product.variants?.reduce((acc: Type[], variant: VariantProduct) => {
+                const existingVariant = acc.find(item => item.variant_name === variant.variant_name);
+                if (existingVariant) {
+                    existingVariant.price = Math.min(existingVariant.price, variant.price);
+                    existingVariant.stock += variant.stock; // Sumar stock de variantes con el mismo nombre
+                } else {
+                    acc.push({
+                        variant_name: variant.variant_name,
+                        price: variant.price,
+                        stock: variant.stock, // Asegurar que se guarda el stock
+                    });
+                }
+                return acc;
+            }, []) || []; // Asegurar que no haya problemas si `product.variants` es undefined
 
-        const price = Math.min(...types.map(item => item.price));
-        return {
-            ...product,
-            price,
-            variants: types.map(({ price, variant_name }) => ({ price, variant_name })),
-            types: product.variants,
-        };
+            uniqueProducts.set(product.id, {
+                ...product,
+                price: Math.min(...variantsGrouped.map(item => item.price)),
+                stock: variantsGrouped.reduce((total, item) => total + item.stock, 0), // Calcular stock total
+                variants: variantsGrouped,
+            });
+        }
     });
+
+    return Array.from(uniqueProducts.values()); // Ahora devuelve el array de productos procesados
 };
 
 // Función para formatear la fecha a formato 3 de enero de 2022

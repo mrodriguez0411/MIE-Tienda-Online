@@ -5,6 +5,7 @@ import { Json } from "../supabase/supabase";
 export interface Type{
     variant_name: string;
     price: number;
+    stock: number;
 }
 
 export interface Product{
