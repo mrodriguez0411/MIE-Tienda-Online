@@ -44,7 +44,6 @@ export const ProductosPage = () => {
 									variant_name={product.variant_name}
 									img={product.images[0]}
 									slug={product.slug}
-									//description={product.description ? product.description[0] : ''}//description={product.description}
 									variants={product.variants}
 								/>
 							))}
@@ -63,6 +62,4 @@ export const ProductosPage = () => {
 	);
 };
 
-/*function useFilterProducts(arg0: { page: any; brands: any; }): { data?: never[] | undefined; isLoading: any; totalProducts: any; } {
-	throw new Error('Function not implemented.');
-}*/
+

@@ -19,6 +19,7 @@ export interface Product{
     created_at: string;
     variants: VariantProduct[];
     price?: number;
+    variant_name:string;
 }
 export interface VariantProduct{
     id : string;
