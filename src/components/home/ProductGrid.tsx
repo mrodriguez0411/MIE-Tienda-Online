@@ -45,7 +45,6 @@ interface Props {
   title: string;
   products: Product[]; // Usar Product en lugar de PreparedProducts
 }
-
 export const ProductGrid = ({ title, products }: Props) => {
   return (
     <div className="my-32">
@@ -59,7 +58,7 @@ export const ProductGrid = ({ title, products }: Props) => {
               key={product.id}
               name={product.name}
               slug={product.slug}
-              price={product.price}
+              price={product.price ?? 0}
               img={
                 product.images && product.images.length > 0
                   ? product.images[0]

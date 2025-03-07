@@ -18,6 +18,7 @@ export interface Product{
     images: string[];
     created_at: string;
     variants: VariantProduct[];
+    price?: number;
 }
 export interface VariantProduct{
     id : string;
