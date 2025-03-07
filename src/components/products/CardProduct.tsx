@@ -72,7 +72,7 @@ export const CardProduct = ({ img, name, price, slug, variants }: Props) => {
 				<div className='flex gap-3'>
 					{variants.map(variant => (
 						<span
-							key={variant.variant_name}
+							key={variant.id}
 							className={`grid place-items-center px-3 py-1 cursor-pointer border rounded-full font-semibold ${
 								activeVariant?.variant_name === variant.variant_name ? 'border-black bg-cyan-200' : ''
 							}`}
