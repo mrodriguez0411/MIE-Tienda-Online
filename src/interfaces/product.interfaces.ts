@@ -3,8 +3,7 @@ import { Json } from "../supabase/supabase";
 
 
 export interface Type{
-    name: string;
-    type: string;
+    variant_name: string;
     price: number;
 }
 
@@ -24,8 +23,7 @@ export interface VariantProduct{
     stock: number;
     price: number;
     category: string;
-    type: string;
-    type_name: string;
+    variant_name: string;
 }
 
 
@@ -39,10 +37,7 @@ export interface PreparedProducts{
     images: string[];
     created_at: string;
     price: number;
-    types: {
-        name: string;
-        type: string;
-    }[];
+    variant_name:string;
     variants: VariantProduct[];
 }
 
@@ -59,7 +54,6 @@ export interface VariantInput {
 	id?: string;
 	stock: number;
 	price: number;
-	type: string;
 	category: string;
-	typeName: string;
+	variantName: string;
 }

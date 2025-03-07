@@ -192,7 +192,7 @@ export const getOrderById = async (orderId: number) => {
 	const { data: order, error } = await supabase
 		.from('orders')
 		.select(
-			'*, addresses(*), customers(first_name, last_name, email), order_items(quantity, price, variants(type_name, category, products(name, images)))'
+			'*, addresses(*), customers(first_name, last_name, email), order_items(quantity, price, variants(variant_name, category, products(name, images)))'
 		)
 		.eq('customer_id', customerId)
 		.eq('id', orderId)
@@ -223,7 +223,7 @@ export const getOrderById = async (orderId: number) => {
 		orderItems: order.order_items.map(item => ({
 			quantity: item.quantity,
 			price: item.price,
-			type_name: item.variants?.type_name,
+			variant_name: item.variants?.variant_name,
 			category: item.variants?.category,
 			productName: item.variants?.products?.name,
 			productImage: item.variants?.products?.images[0],
@@ -273,7 +273,7 @@ export const getOrderByIdAdmin = async (id: number) => {
 	const { data: order, error } = await supabase
 		.from('orders')
 		.select(
-			'*, addresses(*), customers(first_name, last_name, email), order_items(quantity, price, variants(type_name, category, products(name, images)))'
+			'*, addresses(*), customers(first_name, last_name, email), order_items(quantity, price, variants(variant_name, category, products(name, images)))'
 		)
 		.eq('id', id)
 		.single();
@@ -303,7 +303,7 @@ export const getOrderByIdAdmin = async (id: number) => {
 		orderItems: order.order_items.map(item => ({
 			quantity: item.quantity,
 			price: item.price,
-			type_name: item.variants?.type_name,
+			variant_name: item.variants?.variant_name,
 			category: item.variants?.category,
 			productName: item.variants?.products?.name,
 			productImage: item.variants?.products?.images[0],

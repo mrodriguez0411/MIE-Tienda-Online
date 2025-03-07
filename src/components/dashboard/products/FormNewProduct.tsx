@@ -65,8 +65,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 					stock: v.stock,
 					price: v.price,
 					category: v.category,
-					type: v.type,
-					typeName: v.type_name,
+					variantName: v.variant_name,
 				}))
 			);
 		}

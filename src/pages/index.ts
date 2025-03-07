@@ -3,7 +3,7 @@ export * from "./AboutPage";
 export * from "./ProductosPage"
 export * from "./LoginPage";
 export * from "./RegisterPage";
-export * from "./ProductoPage";
+export * from "./ProductoPage-old";
 export * from "./OrdersUserPage";
 export * from "./CheckoutPage";
 export * from "./ThankyouPage";

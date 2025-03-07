@@ -59,7 +59,7 @@ export const DashboardOrderPage = () => {
 									<div className='space-y-2'>
 										<h3>{item.productName}</h3>
 										<p className='text-xs'>
-											{item.type_name} / {item.category}
+											{item.variant_name} / {item.category}
 										</p>
 										<p className='text-sm'>
 											{formatPrice(item.price)}

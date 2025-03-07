@@ -25,7 +25,7 @@ export const ItemsCheckout = () => {
                 </div>
                 <div className="flex gap-3">
                   <p className="text-[13px] text-gray-600">
-                    {item.category}/ CAJA: {item.type}
+                    {item.category}/ CAJA: {item.variant_name}
                   </p>
                 </div>
               </div>

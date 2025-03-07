@@ -41,7 +41,7 @@ export const ProductosPage = () => {
 									key={product.id}
 									name={product.name}
 									price={product.price}
-									types={product.types}
+									variant_name={product.variant_name}
 									img={product.images[0]}
 									slug={product.slug}
 									//description={product.description ? product.description[0] : ''}//description={product.description}

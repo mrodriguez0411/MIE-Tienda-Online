@@ -111,7 +111,7 @@ export const getFilteredProducts = async ({
 	const { data: products, error } = await supabase
 	  .from("products")
 	  .select("*")
-	  .order("type", { ascending: false });
+	  .order("created_at", { ascending: false });
   
 	if (error) {
 	  console.log(error.message);
@@ -197,8 +197,7 @@ export const getFilteredProducts = async ({
 			stock: variant.stock,
 			price: variant.price,
 			category: variant.category,
-			type: variant.type,
-			type_name: variant.typeName,
+			variant_name: variant.variantName,
 		}));
 		const { error: variantsError } = await supabase
 			.from('variants')
@@ -339,8 +338,7 @@ export const getFilteredProducts = async ({
 					stock: variant.stock,
 					price: variant.price,
 					category: variant.category,
-					type: variant.type,
-					type_name: variant.typeName,
+					variant_name: variant.variantName,
 				})),
 				{
 					onConflict: 'id',
@@ -360,8 +358,7 @@ export const getFilteredProducts = async ({
 					stock: variant.stock,
 					price: variant.price,
 					category: variant.category,
-					type: variant.type,
-					type_name: variant.typeName,
+					variant_name: variant.variantName,
 				}))
 			)
 			.select();

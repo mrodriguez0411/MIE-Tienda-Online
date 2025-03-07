@@ -103,7 +103,7 @@ export const ThankyouPage = () => {
 
 										<div className='flex gap-3'>
 											<p className='text-[13px] text-gray-600'>
-												{item.category} / {item.type_name}
+												{item.category} / {item.variant_name}
 											</p>
 										</div>
 									</div>

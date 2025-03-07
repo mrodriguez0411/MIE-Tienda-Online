@@ -14,12 +14,11 @@ import { Loader } from "../components/shared/Loader";
 import { useCounterStore } from "../store/counter.store";
 import { useCartStore } from "../store/cart.store";
 import toast from "react-hot-toast";
-//import { VariantsInput } from "../components/dashboard";
 
 interface Acc {
   [key: string]: {
     name: string;
-    categorys: string[];
+    stocks: number[];
   };
 }
 
@@ -46,7 +45,7 @@ export const ProductoPage = () => {
 
   const navigate = useNavigate();
 
-  // Agrupamos las variantes por color
+  // Agrupamos las variantes por tipo
   const types = useMemo(() => {
     return (
       product?.variants.reduce((acc: Acc, variant: VariantProduct) => {
@@ -54,7 +53,7 @@ export const ProductoPage = () => {
         if (!acc[variant_name]) {
           acc[variant_name] = {
             name: variant_name,
-            categorys: [],
+            stocks: [],
           };
         }
 
@@ -67,7 +66,7 @@ export const ProductoPage = () => {
     );
   }, [product?.variants]);
 
-  // Obtener el primer color predeterminado si no se ha seleccionado ninguno
+  // Obtener el primer tipo predeterminado si no se ha seleccionado ninguno
   const availableTypes = Object.keys(types);
   useEffect(() => {
     if (!selectedType && availableTypes.length > 0) {
@@ -75,7 +74,7 @@ export const ProductoPage = () => {
     }
   }, [availableTypes, selectedType, product]);
 
-  // Actualizar el almacenamiento seleccionado cuando cambia el color
+  // Actualizar el stock seleccionado cuando cambia el tipo
   useEffect(() => {
     if (selectedType && types[selectedType] && !selectedStock) {
       setSelectedStock(types[selectedType].stocks[0]);
@@ -138,7 +137,7 @@ export const ProductoPage = () => {
   useEffect(() => {
     setCurrentSlug(slug);
 
-    // Reiniciar color, almacenamiento y variante seleccionada
+    // Reiniciar tipo, stock y variante seleccionada
     setSelectedType(null);
     setSelectedStock(null);
     setSelectedVariant(null);
@@ -188,30 +187,23 @@ export const ProductoPage = () => {
           </ul>
 
           <div className="flex flex-col gap-3">
-            <p>Caja {selectedType && types[selectedType].name}</p>
             <div className="flex gap-3">
               {availableTypes.map((variant_name) => (
                 <button
                   key={variant_name}
                   className={`w-8 h-8 rounded-md flex justify-center items-center ${
-                    selectedType && types[selectedType].name === variant_name ? "border border-slate-800" : ""
+                    selectedType === variant_name ? "border border-slate-800 bg-cyan-600" : ""
                   }`}
                   onClick={() => setSelectedType(variant_name)}
                 >
-                  {/*<span
-                    className="w-[26px] h-[26px] rounded-full"
-                    style={{ backgroundColor: variant_name }}
-                  />*/}
-                  <span> {selectedType && types[selectedType].name} </span>
+                  <span>{types[variant_name].name}</span>
                 </button>
-      
               ))}
             </div>
           </div>
 
           <div className="flex flex-col gap-3">
             <p className="text-xs font-medium">Stock disponible:</p>
-
             {selectedVariant?.stock || product.variants[0].stock}
           </div>
 
@@ -243,7 +235,7 @@ export const ProductoPage = () => {
               {/* BOTONES ACCIÓN */}
               <div className="flex flex-col gap-3">
                 <button className="bg-[#f3f3f3] uppercase font-semibold tracking-widest text-xs py-4 rounded-full transition-all duration-300 hover:bg-[#8af3f3]" onClick={addToCart}>
-                  Agregar al carrito
+                  Agregar al carritos
                 </button>
                 <button className="bg-black text-white uppercase font-semibold tracking-widest text-xs py-4 rounded-full" onClick={buyNow}>
                   Comprar ahora

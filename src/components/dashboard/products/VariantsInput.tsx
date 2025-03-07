@@ -38,8 +38,7 @@ export const VariantsInput = ({
 			stock: 0,
 			price: 0,
 			category: '',
-			type: '',
-			typeName: '',
+			variantName: '',
 		});
 	};
 
@@ -54,17 +53,11 @@ export const VariantsInput = ({
 	};
 
 	// Usar useWatch una sola vez para observar todos los valores del color y del colorName
-	const colorValues = useWatch({
-		control,
-		name: fields.map(
-			(_, index) => `variants.${index}.type` as const
-		),
-	});
 
 	const colorNameValues = useWatch({
 		control,
 		name: fields.map(
-			(_, index) => `variants.${index}.typeName` as const
+			(_, index) => `variants.${index}.variantName` as const
 		),
 	});
 
@@ -132,16 +125,11 @@ export const VariantsInput = ({
 							<div className='flex relative'>
 								{colorActive[index] && (
 									<div className='absolute bg-stone-100 rounded-md bottom-8 left-[40px] p-1 w-[100px] h-fit space-y-2'>
-										<input
-											type='color'
-											{...register(`variants.${index}.type`)}
-											className='rounded-md px-3 py-1.5 w-full'
-										/>
 
 										<input
 											type='text'
 											placeholder='Azul Marino'
-											{...register(`variants.${index}.typeName`)}
+											{...register(`variants.${index}.variantName`)}
 											className='rounded-md px-3 py-1.5 w-full text-xs focus:outline-none font-semibold placeholder:font-normal'
 										/>
 									</div>
@@ -151,11 +139,11 @@ export const VariantsInput = ({
 									type='button'
 									onClick={() => toggleColorActive(index)}
 								>
-									{colorValues[index] && colorNameValues[index] ? (
+									{colorNameValues[index] ? (
 										<span
 											className={`inline-block w-4 h-4 rounded-full bg-block`}
 											style={{
-												backgroundColor: colorValues[index],
+												backgroundColor: colorNameValues[index],
 											}}
 										/>
 									) : (

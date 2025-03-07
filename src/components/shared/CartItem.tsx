@@ -6,7 +6,7 @@ export interface ICartItem {
 	variantId: string;
 	productId: string;
 	name: string;
-	type: string;
+	variant_name: string;
 	category: string;
 	price: number;
 	quantity: number;
@@ -51,7 +51,7 @@ export const CartItem = ({ item }: Props) => {
 
 				<div className='flex gap-3'>
 					<p className='text-[13px] text-gray-600'>
-						{item.category} / Caja {item.type}
+						{item.category} / Caja {item.variant_name}
 					</p>
 				</div>
 

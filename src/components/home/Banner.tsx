@@ -14,7 +14,7 @@ export const Banner = () => {
             </h1>
             <p className="text-lg mb-8 lg:text-2xl">Encuentra los mejores productos a los mejores precios.
             </p>
-            <Link to='/productos' className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out">
+            <Link to='/productos' className="bg-cyan-900 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out">
             Ver Productos
             </Link>
         </div>
