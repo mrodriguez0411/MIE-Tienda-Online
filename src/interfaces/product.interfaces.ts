@@ -17,7 +17,6 @@ export interface Product{
     description: Json;
     images: string[];
     created_at: string;
-    price: number;
     variants: VariantProduct[];
 }
 export interface VariantProduct{

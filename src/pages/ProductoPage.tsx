@@ -14,12 +14,14 @@ import { Loader } from "../components/shared/Loader";
 import { useCounterStore } from "../store/counter.store";
 import { useCartStore } from "../store/cart.store";
 import toast from "react-hot-toast";
+//import { GiPriceTag } from "react-icons/gi";
 //import { VariantsInput } from "../components/dashboard";
 
 interface Acc {
   [key: string]: {
     name: string;
-    stocks: number[]; // Se agregó "stocks"
+    stocks: number[];
+    price:number;
   };
 }
 
@@ -42,13 +44,15 @@ export const ProductoPage = () => {
 
   // Agrupamos las variantes por tipo
   const types = useMemo(() => {
+    
     return (
       product?.variants.reduce((acc: Acc, variant: VariantProduct) => {
-        const { variant_name, stock } = variant;
+        const { variant_name, stock, price } = variant;
         if (!acc[variant_name]) {
           acc[variant_name] = {
             name: variant_name,
-            stocks: [], // Se añadió esta propiedad
+            stocks: [],
+            price: price,
           };
         }
 
@@ -88,6 +92,7 @@ export const ProductoPage = () => {
 
   // Obtener si está agotado
   const isOutOfStock = selectedVariant?.stock === 0;
+  const selectedPrice = selectedVariant?.price || (product?.variants?.length ? product.variants[0].price : 0);
 
   // Función para añadir al carrito
   const addToCart = () => {
@@ -152,7 +157,8 @@ export const ProductoPage = () => {
 
           <div className="flex gap-5 items-center">
             <span className="tracking-wide text-lg font-semibold">
-              {formatPrice(selectedVariant?.price || product.variants[0].price)}
+              {/*{formatPrice(selectedVariant?.price || product.variants[0].price)}*/}
+              {formatPrice(selectedPrice)}
             </span>
 
             {isOutOfStock && <Tag contentTag="agotado" />}
