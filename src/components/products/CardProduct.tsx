@@ -13,7 +13,7 @@ interface Props {
   price: number;
   slug: string;
   variants: VariantProduct[];
-  variant_name: string;
+  variant_name?: string;
 }
 
 export const CardProduct = ({ img, name, price, slug, variants, variant_name }: Props) => {
