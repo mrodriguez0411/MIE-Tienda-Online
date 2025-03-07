@@ -13,12 +13,13 @@ interface Props {
   price: number;
   slug: string;
   variants: VariantProduct[];
-  variant_name?: string;
+  variant_name: string;
 }
 
 export const CardProduct = ({ img, name, price, slug, variants, variant_name }: Props) => {
   // Manejo de casos en los que no hay variantes
-  const initialVariant = variants.length > 0 ? variants[0] : null;
+  
+  const initialVariant = variant_name.length > 0 ? variants[0] : null;
 
   
 
