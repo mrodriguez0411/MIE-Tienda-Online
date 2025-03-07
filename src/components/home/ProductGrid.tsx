@@ -65,7 +65,6 @@ export const ProductGrid = ({ title, products }: Props) => {
                   : "default-image.jpg"
               }
               variants={product.variants}
-              variant_name={product.variants.length > 0 ? product.variants[0].variant_name : "Default"}
             />
           ))
         ) : (
