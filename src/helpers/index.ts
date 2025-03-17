@@ -11,6 +11,7 @@ export const formatPrice = (price: number) => {
 };
 
 // Función para preparar los productos
+
 export const PreparedProducts = (products: Product[]) => {
     if (!Array.isArray(products)) {
         console.error('Expected an array of products, but received:', products);
@@ -48,6 +49,8 @@ export const PreparedProducts = (products: Product[]) => {
 
     return Array.from(uniqueProducts.values()); // Ahora devuelve el array de productos procesados
 };
+
+
 
 // Función para formatear la fecha a formato 3 de enero de 2022
 export const formatDateLong = (date: string): string => {

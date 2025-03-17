@@ -1,6 +1,7 @@
 import { IoBagAdd } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase/client";
+import toast from "react-hot-toast";
 
 export const DashboardCategorys = () => {
   const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
@@ -41,8 +42,9 @@ export const DashboardCategorys = () => {
 
     if (data && data.length > 0) {
       const categoryId = data[0].id;
-      console.log("Categoría insertada:", data[0]);
-
+      toast.success('Se ha añadido una nueva categoria', {
+        position: 'bottom-right',
+    });
       // Insertar en variants con el category_id
       const { error: variantError } = await supabase.from("variants").insert([
         {

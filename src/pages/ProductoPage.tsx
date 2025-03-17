@@ -177,8 +177,10 @@ export const ProductoPage = () => {
 
           {/* Selector de variantes */}
           <div className="flex flex-col gap-3">
-            <p>Caja {selectedType && types[selectedType].name}</p>
+            <p>Caja/Blister {selectedType && types[selectedType].name}</p>
+            VARIANTE
             <div className="flex gap-3">
+              
               {availableTypes.map((variant_name) => (
                 <button
                   key={variant_name}

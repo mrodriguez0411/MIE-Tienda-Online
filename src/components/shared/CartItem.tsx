@@ -21,15 +21,16 @@ export const CartItem = ({ item }: Props) => {
     const removeItem = useCartStore(state => state.removeItem);
     const updateQuantity = useCartStore(state => state.updateQuantity);
 
-    const increment = () => {
-        updateQuantity(item.variantId, item.productId, item.quantity + 1);
-    };
-
-    const decrement = () => {
-        if (item.quantity > 1) {
-            updateQuantity(item.variantId, item.productId, item.quantity - 1);
-        }
-    };
+	const increment = () => {
+		updateQuantity(item.variantId, item.quantity + 1);
+	};
+	
+	const decrement = () => {
+		if (item.quantity > 1) {
+			updateQuantity(item.variantId, item.quantity - 1);
+		}
+	};
+	
 
     return (
         <li className='flex justify-between items-center gap-5'>

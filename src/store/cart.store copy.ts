@@ -9,7 +9,7 @@ export interface CartState {
 
     addItem: (item: ICartItem) => void;
     removeItem: (variantId: string) => void;
-    updateQuantity: (variantId: string, quantity: number) => void;
+    updateQuantity: (variantId: string, productId: string, quantity: number) => void;
     cleanCart: () => void;
 }
 
@@ -19,35 +19,35 @@ const storeApi: StateCreator<CartState> = set => ({
     totalAmount: 0,
 
     addItem: (item) => {
-        set(state => {
-            const existingItem = state.items.find(
-                i => i.variantId === item.variantId
+    set(state => {
+        const existingItemIndex = state.items.findIndex(
+            i => i.variantId === item.variantId
+        );
+
+        let updatedItems;
+
+        if (existingItemIndex >= 0) {
+            // Si la variante ya está en el carrito, sumamos la cantidad
+            updatedItems = state.items.map((i, index) =>
+                index === existingItemIndex
+                    ? { ...i, quantity: i.quantity + item.quantity }
+                    : i
             );
+        } else {
+            // Si la variante no está, la añadimos como un nuevo producto en el carrito
+            updatedItems = [...state.items, item];
+        }
 
-            let updatedItems;
+        const newTotalItems = updatedItems.reduce((acc, i) => acc + i.quantity, 0);
+        const newTotalAmount = updatedItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
 
-            if (existingItem) {
-                // Si la variante ya está en el carrito, sumamos la cantidad
-                updatedItems = state.items.map(i =>
-                    i.variantId === item.variantId
-                        ? { ...i, quantity: i.quantity + item.quantity }
-                        : i
-                );
-            } else {
-                // Si la variante no está, la añadimos como un nuevo producto en el carrito
-                updatedItems = [...state.items, item];
-            }
-
-            const newTotalItems = updatedItems.reduce((acc, i) => acc + i.quantity, 0);
-            const newTotalAmount = updatedItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
-
-            return {
-                items: updatedItems,
-                totalAmount: newTotalAmount,
-                totalItemsInCart: newTotalItems,
-            };
-        });
-    },
+        return {
+            items: updatedItems,
+            totalAmount: newTotalAmount,
+            totalItemsInCart: newTotalItems,
+        };
+    });
+},
 
     removeItem: variantId => {
         set(state => {
@@ -73,10 +73,10 @@ const storeApi: StateCreator<CartState> = set => ({
         });
     },
 
-    updateQuantity: (variantId, quantity) => {
+    updateQuantity: (variantId, productId, quantity) => {
         set(state => {
             const updatedItems = state.items.map(i =>
-                i.variantId === variantId ? { ...i, quantity } : i
+                i.variantId === variantId && i.productId === productId ? { ...i, quantity } : i
             );
 
             const newTotalItems = updatedItems.reduce(
