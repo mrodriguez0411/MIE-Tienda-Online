@@ -14,6 +14,7 @@ export const CheckoutPage = () => {
 
 	const navigate = useNavigate();
 
+
 	useEffect(() => {
 		supabase.auth.onAuthStateChange(async (event, session) => {
 			if (event === 'SIGNED_OUT' || !session) {

@@ -20,3 +20,4 @@ export * from "./dashboard/DashboardProductSlugPage";
 //export * from "./dashboard/DashboardNewCategory";
 export * from "./dashboard/DashboardOrdersPage";
 export * from "./dashboard/DashboardOrderPage";
+export * from "./dashboard/DashboardCategorys";

@@ -1,193 +1,176 @@
+import { useEffect, useState } from 'react';
 import {
-	Control,
-	useFieldArray,
-	FieldErrors,
-	UseFormRegister,
-	useWatch,
+    Control,
+    useFieldArray,
+    FieldErrors,
+    UseFormRegister,
+    useWatch,
 } from 'react-hook-form';
 import { ProductFormValues } from '../../../lib/validator';
 import {
-	IoIosAddCircleOutline,
-	IoIosCloseCircleOutline,
+    IoIosAddCircleOutline,
+    IoIosCloseCircleOutline,
 } from 'react-icons/io';
-import { useEffect, useState } from 'react';
+import { supabase } from '../../../supabase/client';
 
 interface Props {
-	control: Control<ProductFormValues>;
-	errors: FieldErrors<ProductFormValues>;
-	register: UseFormRegister<ProductFormValues>;
+    control: Control<ProductFormValues>;
+    errors: FieldErrors<ProductFormValues>;
+    register: UseFormRegister<ProductFormValues>;
 }
 
-
-const headersVariants = ['Stock', 'Precio', 'Capacidad', 'Color', ''];
+const headersVariants = ['Stock', 'Precio', 'Categoría', 'Caja/Envase', ''];
 
 export const VariantsInput = ({
-	control,
-	errors,
-	register,
+    control,
+    errors,
+    register,
 }: Props) => {
-	const { fields, remove, append } = useFieldArray({
-		control,
-		name: 'variants',
-	});
+    const { fields, remove, append } = useFieldArray({
+        control,
+        name: 'variants',
+    });
 
-	const [colorActive, setColorActive] = useState<boolean[]>([]);
+    const [colorActive, setColorActive] = useState<boolean[]>([]);
+    const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
 
-	const addVariant = () => {
-		append({
-			stock: 0,
-			price: 0,
-			category: '',
-			variantName: '',
-		});
-	};
+    const addVariant = () => {
+        append({
+            stock: 0,
+            price: 0,
+            category: '',
+            variantName: '',
+        });
+    };
 
-	const removeVariant = (index: number) => {
-		remove(index);
-	};
+    const removeVariant = (index: number) => {
+        remove(index);
+    };
 
-	const toggleColorActive = (index: number) => {
-		setColorActive(prev =>
-			prev.map((item, i) => (i === index ? !item : item))
-		);
-	};
+    const toggleColorActive = (index: number) => {
+        setColorActive(prev =>
+            prev.map((item, i) => (i === index ? !item : item))
+        );
+    };
 
-	// Usar useWatch una sola vez para observar todos los valores del color y del colorName
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const { data, error } = await supabase
+                .from('categories')
+                .select('id, name');
+            if (error) {
+                console.error('Error fetching categories:', error);
+            } else {
+                setCategories(data);
+            }
+        };
 
-	const colorNameValues = useWatch({
-		control,
-		name: fields.map(
-			(_, index) => `variants.${index}.variantName` as const
-		),
-	});
+        fetchCategories();
+    }, []);
 
-	/*const getFirstError = (
-		variantErros: FieldErrors<ProductFormValues['variants'][number]>
-	) => {
-		if (variantErros) {
-			const keys = Object.keys(
-				variantErros
-			) as (keyof typeof variantErros)[];
-			if (keys.length > 0) {
-				return variantErros[keys[0]]?.message;
-			}
-		}
-	};*/
+    useEffect(() => {
+        setColorActive(prev =>
+            fields.map((_, index) => prev[index] || false)
+        );
+    }, [fields]);
 
-	useEffect(() => {
-		setColorActive(prev =>
-			fields.map((_, index) => prev[index] || false)
-		);
-	}, [fields]);
+    const colorNameValues = useWatch({
+        control,
+        name: fields.map(
+            (_, index) => `variants.${index}.variantName` as const
+        ),
+    });
 
-	return (
-		<div className='flex flex-col gap-3'>
-			<div className='space-y-4 border-b border-slate-200 pb-6'>
-				<div className='grid grid-cols-5 gap-4 justify-start'>
-					{headersVariants.map((header, index) => (
-						<p
-							key={index}
-							className='text-xs font-semibold text-slate-800'
-						>
-							{header}
-						</p>
-					))}
-				</div>
-				{fields.map((field, index) => (
-					<div key={field.id}>
-						<div className='grid grid-cols-5 gap-4 items-center'>
-							<input
-								type='number'
-								placeholder='Stock'
-								{...register(`variants.${index}.stock`, {
-									valueAsNumber: true,
-								})}
-								className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
-							/>
+    return (
+        <div className='flex flex-col gap-3'>
+            <div className='space-y-4 border-b border-slate-200 pb-6'>
+                <div className='grid grid-cols-5 gap-4 justify-start'>
+                    {headersVariants.map((header, index) => (
+                        <p
+                            key={index}
+                            className='text-xs font-semibold text-slate-800'
+                        >
+                            {header}
+                        </p>
+                    ))}
+                </div>
+                {fields.map((field, index) => (
+                    <div key={field.id}>
+                        <div className='grid grid-cols-5 gap-4 items-center'>
+                            <input
+                                type='number'
+                                placeholder='Stock'
+                                {...register(`variants.${index}.stock`, {
+                                    valueAsNumber: true,
+                                })}
+                                className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
+                            />
 
-							<input
-								type='number'
-								step='0.01'
-								placeholder='Precio'
-								{...register(`variants.${index}.price`, {
-									valueAsNumber: true,
-								})}
-								className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
-							/>
+                            <input
+                                type='number'
+                                step='0.01'
+                                placeholder='Precio'
+                                {...register(`variants.${index}.price`, {
+                                    valueAsNumber: true,
+                                })}
+                                className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
+                            />
 
-							<input
-								type='text'
-								placeholder='64 GB'
-								{...register(`variants.${index}.category`)}
-								className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
-							/>
+                            <select
+                                {...register(`variants.${index}.category`)}
+                                className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
+                            >
+                                <option value=''>Selecciona una categoría</option>
+                                {categories.map(category => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
 
-							<div className='flex relative'>
-								{colorActive[index] && (
-									<div className='absolute bg-stone-100 rounded-md bottom-8 left-[40px] p-1 w-[100px] h-fit space-y-2'>
+                            <input
+                                type='text'
+                                placeholder='Caja/Envase'
+                                {...register(`variants.${index}.variantName`)}
+                                className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
+                            />
 
-										<input
-											type='text'
-											placeholder='Azul Marino'
-											{...register(`variants.${index}.variantName`)}
-											className='rounded-md px-3 py-1.5 w-full text-xs focus:outline-none font-semibold placeholder:font-normal'
-										/>
-									</div>
-								)}
-								<button
-									className='border w-full h-8 cursor-pointer rounded text-xs font-medium flex items-center justify-center'
-									type='button'
-									onClick={() => toggleColorActive(index)}
-								>
-									{colorNameValues[index] ? (
-										<span
-											className={`inline-block w-4 h-4 rounded-full bg-block`}
-											style={{
-												backgroundColor: colorNameValues[index],
-											}}
-										/>
-									) : (
-										'Añadir'
-									)}
-								</button>
-							</div>
+                            <div className='flex justify-end'>
+                                <button
+                                    type='button'
+                                    onClick={() => removeVariant(index)}
+                                    className='p-1'
+                                >
+                                    <IoIosCloseCircleOutline size={20} />
+                                </button>
+                            </div>
+                        </div>
 
-							<div className='flex justify-end'>
-								<button
-									type='button'
-									onClick={() => removeVariant(index)}
-									className='p-1'
-								>
-									<IoIosCloseCircleOutline size={20} />
-								</button>
-							</div>
-						</div>
+                        {errors.variants && errors.variants[index] && (
+                            <p className='text-red-500 text-xs mt-1'>
+                                {/* Aquí puedes mostrar el primer error */}
+                            </p>
+                        )}
+                    </div>
+                ))}
+            </div>
 
-						{/**
-						{errors.variants && errors.variants[index] && (
-							<p className='text-red-500 text-xs mt-1'>
-								{getFirstError(errors.variants[index])}
-							</p>
-						)}*/ }
-					</div>
-				))}
-			</div>
+            <button
+                type='button'
+                onClick={addVariant}
+                className='px-4 py-2 text-slate-800 rounded-md text-sm font-semibold tracking-tight flex items-center gap-1 self-center hover:bg-slate-100'
+            >
+                <IoIosAddCircleOutline size={16} />
+                Añadir Variante
+            </button>
 
-			<button
-				type='button'
-				onClick={addVariant}
-				className='px-4 py-2 text-slate-800 rounded-md text-sm font-semibold tracking-tight flex items-center gap-1 self-center hover:bg-slate-100'
-			>
-				<IoIosAddCircleOutline size={16} />
-				Añadir Variante
-			</button>
-
-			{fields.length === 0 && errors.variants && (
-				<p className='text-red-500 text-xs mt-1'>
-					Debes añadir al menos una variante
-				</p>
-			)}
-		</div>
-	);
+            {fields.length === 0 && errors.variants && (
+                <p className='text-red-500 text-xs mt-1'>
+                    Debes añadir al menos una variante
+                </p>
+            )}
+        </div>
+    );
 };
+
 export default VariantsInput;

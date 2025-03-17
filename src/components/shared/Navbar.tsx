@@ -64,7 +64,7 @@ export const Navbar = () => {
           )
         }
         <button className="relative" onClick={() => openSheet('cart')}>
-          <span className="absolue -bottom-2 -right-2 w-5 h-5 grid place-items-center bg-cyan-700 text-white text-xs rounded-full">
+          <span className="absolute -bottom-2 -right-2 w-5 h-5 grid place-items-center bg-cyan-700 text-white text-xs rounded-full">
             {totalItemsInCart}
           </span>
           <HiOutlineShoppingBag size={25} />

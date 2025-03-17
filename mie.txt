@@ -37,3 +37,9 @@ npm install @hookform/resolvers
 es un gestor de estados globales, para controlar el carrito de compras
 
 
+--Mercado pago
+
+npm install @mercadopago/sdk-react
+
+ para hacer peticione http 
+ npm install @mercadopago/sdk-react axios

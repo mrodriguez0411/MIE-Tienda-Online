@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoEllipsisVerticalCircleSharp } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { TiEdit } from "react-icons/ti";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useProducts, useDeleteProduct } from "../../../hooks";
 import { Loader } from "../../shared/Loader"; 
 import { Pagination } from "../../shared/Pagination";
-
+import { supabase } from "../../../supabase/client";
 
 // Definición de la función formatPrice
 const formatPrice = (price: number) => {
@@ -14,8 +14,9 @@ const formatPrice = (price: number) => {
       style: "currency",
       currency: "ARS",
     }).format(price);
-  };
-//Armado de los emcabezados de la tabla
+};
+
+// Armado de los encabezados de la tabla
 const tableHeaders = [
   "",
   "Nombre",
@@ -26,50 +27,67 @@ const tableHeaders = [
   "Fecha de alta",
   "Acciones",
 ];
+
 export const TableProducts = () => {
-
-    const [selectedVariants, setSelectedVariants] = useState<{
-        [key:string]: number;
-    }>({});
-
-  //creo el estado para desplegar menú de editar o eliminar producto
+  const [selectedVariants, setSelectedVariants] = useState<{ [key: string]: number }>({});
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
-  
-  const{mutate, isPending } = useDeleteProduct();
+  const { mutate, isPending } = useDeleteProduct();
 
-  const handleVariantChange = (productId: string, variantIndex: number) =>{
+  // Obtener las categorías desde la base de datos
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name");
+
+      if (error) {
+        console.error("Error al obtener categorías:", error);
+      } else {
+        setCategories(data);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleVariantChange = (productId: string, variantIndex: number) => {
     setSelectedVariants({
-        ...setSelectedVariants,
-        [productId]: variantIndex,
-    })
+      ...selectedVariants,
+      [productId]: variantIndex,
+    });
   };
 
-  const handleMenuOpen = (index : number) => {
-    if (openMenu === index ){
-        setOpenMenu(null)
-    }else{
-        setOpenMenu(index);
-
+  const handleMenuOpen = (index: number) => {
+    if (openMenu === index) {
+      setOpenMenu(null);
+    } else {
+      setOpenMenu(index);
     }
   };
-  //traemos el hook para cargar los productos
-  const [page, setPage] = useState(1);
-  const { products, isLoading,  totalProducts} = useProducts({page});
 
-  if(!products || isLoading || !totalProducts || isPending) return <Loader/>; 
- 
-  //funcion para borrar el producto
+  // Traemos el hook para cargar los productos
+  const [page, setPage] = useState(1);
+  const { products, isLoading, totalProducts } = useProducts({ page });
+
+  if (!products || isLoading || !totalProducts || isPending) return <Loader />;
+
+  // Función para borrar el producto
   const handleDeleteProduct = (id: string) => {
     mutate(id);
     setOpenMenu(null);
+  };
 
-  }
-    
+  // Función para obtener el nombre de la categoría por su ID
+  const getCategoryName = (categoryId: number) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : "Desconocida";
+  };
 
   return (
     <div className="flex flex-col flex-1 border border-cyan-200 rounded-lg bg-white">
       <h1 className="font-bold text-xl">Productos</h1>
-      {/*Armado de Tabla*/}
+      {/* Armado de Tabla */}
       <div className="relative w-full h-full">
         <table className="text-sm w-full caption-bottom overflow-auto">
           <thead className="border-b border-cyan-100 pb-3">
@@ -83,7 +101,6 @@ export const TableProducts = () => {
           </thead>
           <tbody>
             {products.map((product, index) => {
-
               const selectedVariantIndex = selectedVariants[product.id] ?? 0;
               const selectedVariant = product.variants[selectedVariantIndex];
 
@@ -105,12 +122,16 @@ export const TableProducts = () => {
                     {product.name}
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
-                    <select className="border border-gray-200 rounded-md p-1 w-full"
-                        onChange={e => handleVariantChange(product.id, Number(e.target.value))}
-                        value={selectedVariantIndex}
+                    <select
+                      className="border border-gray-200 rounded-md p-1 w-full"
+                      onChange={e => handleVariantChange(product.id, Number(e.target.value))}
+                      value={selectedVariantIndex}
                     >
-
-                      
+                      {product.variants.map((variant, variantIndex) => (
+                        <option key={variantIndex} value={variantIndex}>
+                          {variant.variant_name}
+                        </option>
+                      ))}
                     </select>
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
@@ -120,7 +141,7 @@ export const TableProducts = () => {
                     {selectedVariant.stock}
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
-                    {selectedVariant.category}
+                    {getCategoryName(selectedVariant.category_id)}
                   </td>
                   <td className="p-4 font-medium tracking-tighter">
                     {new Date(product.created_at).toLocaleDateString("es-ES", {

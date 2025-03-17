@@ -9,6 +9,7 @@ import { ItemsCheckout } from './ItemsCheckout';
 import { useCreateOrder } from '../../hooks';
 import { useCartStore } from '../../store/cart.store';
 import { ImSpinner2 } from 'react-icons/im';
+//import { supabase } from '../../supabase/client';
 
 export const FormCheckout = () => {
 	const {
@@ -27,6 +28,7 @@ export const FormCheckout = () => {
 
 	const onSubmit = handleSubmit(data => {
 		const orderInput = {
+			
 			address: data,
 			cartItems: cartItems.map(item => ({
 				variantId: item.variantId,

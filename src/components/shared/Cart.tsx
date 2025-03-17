@@ -31,7 +31,7 @@ export const Cart = () => {
           <div className="p-7 overflow-auto flex-1">
             <ul className="space-y-9">
               {cartItems.map((item) => (
-                <CartItem item={item} key={item.variantId} />
+                <CartItem item={item} key={`${item.productId}-${item.variantId}`} />
               ))}
             </ul>
           </div>
