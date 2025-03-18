@@ -4,7 +4,6 @@ import {
     useFieldArray,
     FieldErrors,
     UseFormRegister,
-    useWatch,
 } from 'react-hook-form';
 import { ProductFormValues } from '../../../lib/validator';
 import {
@@ -31,7 +30,6 @@ export const VariantsInput = ({
         name: 'variants',
     });
 
-    const [colorActive, setColorActive] = useState<boolean[]>([]);
     const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
 
     const addVariant = () => {
@@ -45,12 +43,6 @@ export const VariantsInput = ({
 
     const removeVariant = (index: number) => {
         remove(index);
-    };
-
-    const toggleColorActive = (index: number) => {
-        setColorActive(prev =>
-            prev.map((item, i) => (i === index ? !item : item))
-        );
     };
 
     useEffect(() => {
@@ -67,19 +59,6 @@ export const VariantsInput = ({
 
         fetchCategories();
     }, []);
-
-    useEffect(() => {
-        setColorActive(prev =>
-            fields.map((_, index) => prev[index] || false)
-        );
-    }, [fields]);
-
-    const colorNameValues = useWatch({
-        control,
-        name: fields.map(
-            (_, index) => `variants.${index}.variantName` as const
-        ),
-    });
 
     return (
         <div className='flex flex-col gap-3'>
@@ -146,7 +125,7 @@ export const VariantsInput = ({
                             </div>
                         </div>
 
-                        {errors.variants && errors.variants[index] && (
+                        {errors.variants?.[index] && (
                             <p className='text-red-500 text-xs mt-1'>
                                 {/* Aquí puedes mostrar el primer error */}
                             </p>

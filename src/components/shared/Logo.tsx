@@ -15,7 +15,7 @@ export const Logo = ({isDashboard}:Props) => {
         <img
           src="../../public/img/logo.jpg"
           alt="Imagen de fondo"
-          className="w-full h-full object-cover hidden lg:block"
+          className="w-full h-full object-cover  lg:block"
         />
       </div>
       <div className='flex flex-col'>
@@ -24,11 +24,7 @@ export const Logo = ({isDashboard}:Props) => {
           MIE-Tienda Online
           <span className="text-cyan-600 "> Polirubro</span>
         </p>
-        {/* Texto para pantallas pequeñas */}
-        <p className="flex text-4xl lg:hidden ">
-          <span className="-skew-x-6 ">M</span>
-          <span className="text-cyan-600 skew-x-6">IE</span>
-        </p>
+        
       </div>
     </Link>
   );
