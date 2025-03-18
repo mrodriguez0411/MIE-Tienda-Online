@@ -8,7 +8,6 @@ import { Loader } from "../../shared/Loader";
 import { Pagination } from "../../shared/Pagination";
 import { supabase } from "../../../supabase/client";
 
-// Formatear precio en formato ARS
 const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-AR", {
       style: "currency",
@@ -32,8 +31,8 @@ export const TableProducts = () => {
   const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const { mutate, isPending } = useDeleteProduct();
+  
 
-  // Cargar categorías desde Supabase
   useEffect(() => {
     const fetchCategories = async () => {
       const { data, error } = await supabase
@@ -43,51 +42,40 @@ export const TableProducts = () => {
       if (error) {
         console.error("Error al obtener categorías:", error);
       } else {
-        // ✅ Convertir id a número por seguridad
-        const formattedCategories = data.map((item) => ({
-          id: Number(item.id),
-          name: item.name,
-        }));
-        setCategories(formattedCategories);
+        setCategories(data);
       }
     };
 
     fetchCategories();
   }, []);
 
-  // Manejar cambio de variante seleccionada
   const handleVariantChange = (productId: number, variantIndex: number) => {
-    setSelectedVariants((prev) => ({
-      ...prev,
+    setSelectedVariants({
+      ...selectedVariants,
       [productId]: variantIndex,
-    }));
+    });
   };
 
-  // Abrir/Cerrar menú de acciones
   const handleMenuOpen = (index: number) => {
     setOpenMenu(openMenu === index ? null : index);
   };
 
-  // Estado de paginación
   const [page, setPage] = useState(1);
   const { products, isLoading, totalProducts } = useProducts({ page });
 
-  // Si está cargando o pendiente, mostrar el Loader
   if (!products || isLoading || !totalProducts || isPending) return <Loader />;
 
-  // Eliminar producto
   const handleDeleteProduct = (id: number) => {
     mutate(id.toString());
     setOpenMenu(null);
   };
 
-  // Obtener el nombre de la categoría
-  const getCategoryName = (categoryId: number | string | null) => {
-    if (!categoryId) return "Desconocida";
-    const category = categories.find((cat) => cat.id === Number(categoryId));
+  const getCategoryName = (categoryId: number) => {
+    const category = categories.find(cat => Number(cat.id) === categoryId);
     return category ? category.name : "Desconocida";
   };
-
+  
+  
   return (
     <div className="flex flex-col flex-1 border border-cyan-800 rounded-lg bg-white">
       <h1 className="font-bold text-xl mt-1 ml-3 ">PRODUCTOS</h1>
@@ -101,6 +89,7 @@ export const TableProducts = () => {
             </tr>
           </thead>
           <tbody>
+          
             {products.map((product, index) => {
               const selectedVariantIndex = selectedVariants[product.id] ?? 0;
               const selectedVariant = product.variants[selectedVariantIndex];
@@ -117,8 +106,6 @@ export const TableProducts = () => {
                     />
                   </td>
                   <td className="p-4 font-medium tracking-tighter">{product.name}</td>
-
-                  {/* Selector de variantes */}
                   <td className="p-4 font-medium tracking-tighter">
                     <select
                       className="border border-gray-200 rounded-md p-1 w-full"
@@ -132,22 +119,16 @@ export const TableProducts = () => {
                       ))}
                     </select>
                   </td>
-
                   <td className="p-4 font-medium tracking-tighter">{formatPrice(selectedVariant.price)}</td>
                   <td className="p-4 font-medium tracking-tighter">{selectedVariant.stock}</td>
                   <td className="p-4 font-medium tracking-tighter">{getCategoryName(selectedVariant.category_id)}</td>
-
                   <td className="p-4 font-medium tracking-tighter">
-                    {product.created_at
-                      ? new Date(product.created_at).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })
-                      : "Fecha no disponible"}
+                    {new Date(product.created_at).toLocaleDateString("es-ES", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
                   </td>
-
-                  {/* Menú de acciones */}
                   <td className="relative">
                     <button className="text-slate-800" onClick={() => handleMenuOpen(index)}>
                       <IoEllipsisVerticalCircleSharp size={25} className="text-cyan-800 ml-5" />
