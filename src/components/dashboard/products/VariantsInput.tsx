@@ -1,4 +1,19 @@
-import { useEffect, useState } from 'react';
+
+    /*useEffect(() => {
+        const fetchCategories = async () => {
+            const { data, error } = await supabase
+                .from('categories')
+                .select('id, name');
+            if (error) {
+                console.error('Error fetching categories:', error);
+            } else {
+                setCategories(data);
+            }
+        };
+
+        fetchCategories();
+    }, []);*/
+   import { useEffect, useState } from 'react';
 import {
     Control,
     useFieldArray,
@@ -53,12 +68,13 @@ export const VariantsInput = ({
             if (error) {
                 console.error('Error fetching categories:', error);
             } else {
-                setCategories(data);
+                setCategories(data.map(category => ({ id: category.id.toString(), name: category.name })));
             }
         };
-
+    
         fetchCategories();
     }, []);
+    
 
     return (
         <div className='flex flex-col gap-3'>

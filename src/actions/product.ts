@@ -14,7 +14,7 @@ export const getProducts = async (page: number) => {
 		count,
 	} = await supabase
 		.from('products')
-		.select('*, variants(*)', { count: 'exact' })
+		.select('*, variants(*), categories(*)',  { count: 'exact' })
 		.order('created_at', { ascending: false })
 		.range(from, to);
 

@@ -31,6 +31,7 @@ export const TableProducts = () => {
   const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const { mutate, isPending } = useDeleteProduct();
+  
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -70,10 +71,11 @@ export const TableProducts = () => {
   };
 
   const getCategoryName = (categoryId: number) => {
-    const category = categories.find(cat => cat.id === categoryId);
+    const category = categories.find(cat => Number(cat.id) === categoryId);
     return category ? category.name : "Desconocida";
   };
-
+  
+  
   return (
     <div className="flex flex-col flex-1 border border-cyan-800 rounded-lg bg-white">
       <h1 className="font-bold text-xl mt-1 ml-3 ">PRODUCTOS</h1>
@@ -87,6 +89,7 @@ export const TableProducts = () => {
             </tr>
           </thead>
           <tbody>
+          
             {products.map((product, index) => {
               const selectedVariantIndex = selectedVariants[product.id] ?? 0;
               const selectedVariant = product.variants[selectedVariantIndex];
