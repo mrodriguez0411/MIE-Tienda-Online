@@ -27,7 +27,7 @@ const tableHeaders = [
 ];
 
 export const TableProducts = () => {
-  const [selectedVariants, setSelectedVariants] = useState<{ [key: string]: number }>({});
+  const [selectedVariants, setSelectedVariants] = useState<{ [key: number]: number }>({});
   const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const { mutate, isPending } = useDeleteProduct();
@@ -48,7 +48,7 @@ export const TableProducts = () => {
     fetchCategories();
   }, []);
 
-  const handleVariantChange = (productId: string, variantIndex: number) => {
+  const handleVariantChange = (productId: number, variantIndex: number) => {
     setSelectedVariants({
       ...selectedVariants,
       [productId]: variantIndex,
@@ -64,8 +64,8 @@ export const TableProducts = () => {
 
   if (!products || isLoading || !totalProducts || isPending) return <Loader />;
 
-  const handleDeleteProduct = (id: string) => {
-    mutate(id);
+  const handleDeleteProduct = (id: number) => {
+    mutate(id.toString());
     setOpenMenu(null);
   };
 
