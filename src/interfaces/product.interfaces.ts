@@ -6,6 +6,9 @@ export interface Type{
     variant_name: string;
     price: number;
     stock: number;
+    category: string;
+    category_id: number;
+    created_at: string;
 }
 
 export interface Product{
@@ -26,6 +29,8 @@ export interface VariantProduct{
     price: number;
     category: string;
     variant_name: string;
+    category_id: number;
+    created_at: string;
 }
 
 
@@ -58,4 +63,5 @@ export interface VariantInput {
 	price: number;
 	category: string;
 	variantName: string;
+    categoryId: number;
 }

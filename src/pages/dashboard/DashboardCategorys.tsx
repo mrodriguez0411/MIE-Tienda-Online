@@ -2,55 +2,63 @@ import { IoBagAdd } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase/client";
 import toast from "react-hot-toast";
-
 export const DashboardCategorys = () => {
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [newCategory, setNewCategory] = useState("");
-  const [editingCategory, setEditingCategory] = useState<{ id: number; name: string } | null>(null);
-
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>(
+    []
+  );
+  const [editingCategory, setEditingCategory] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
   // 🔹 Cargar categorías directamente desde la tabla categories
   useEffect(() => {
     const fetchCategories = async () => {
       const { data, error } = await supabase
         .from("categories")
-        .select("id, name");
-
+        .select("*");
+  
       if (error) {
         console.error("Error al obtener categorías:", error);
       } else {
-        setCategories(data);
+        const formattedData = data.map((category: { id: string; name: string }) => ({
+          id: Number(category.id),
+          name: category.name,
+        }));
+        setCategories(formattedData);
       }
     };
-
+  
     fetchCategories();
   }, []);
-
+  
   // 🔹 Agregar categoría en categories y vincular en variants
   const handleAddCategory = async () => {
     if (!newCategory.trim()) return alert("La categoría no puede estar vacía.");
-
+  
     // Insertar en categories
     const { data, error } = await supabase
       .from("categories")
       .insert([{ name: newCategory }])
       .select();
+  
 
     if (error) {
       console.error("Error al agregar categoría en categories:", error);
       return;
     }
-
+    
     if (data && data.length > 0) {
       const categoryId = data[0].id;
-      toast.success('Se ha añadido una nueva categoria', {
-        position: 'bottom-right',
-    });
+      toast.success("Se ha añadido una nueva categoria", {
+        position: "bottom-right",
+      });
       // Insertar en variants con el category_id
       const { error: variantError } = await supabase.from("variants").insert([
         {
           category_id: categoryId,
           price: 0, // Valor predeterminado
-          // product_id: "valid_product_id", // Ajusta con un valor válido o elimina si no es necesario
+          product_id: "valid_product_id", // Ajusta con un valor válido o elimina si no es necesario
           stock: 0, // Valor predeterminado
           variant_name: newCategory, // Puedes usar el nombre de la categoría
         },
