@@ -261,7 +261,7 @@ export type Database = {
       variants: {
         Row: {
           category: string
-          category_id: string | null
+          category_id: string
           id: string
           price: number
           product_id: string
@@ -270,7 +270,7 @@ export type Database = {
         }
         Insert: {
           category?: string
-          category_id?: string | null
+          category_id: string
           id?: string
           price: number
           product_id: string
@@ -279,7 +279,7 @@ export type Database = {
         }
         Update: {
           category?: string
-          category_id?: string | null
+          category_id?: string
           id?: string
           price?: number
           product_id?: string

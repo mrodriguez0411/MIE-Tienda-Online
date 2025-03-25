@@ -36,10 +36,19 @@ app.post("/create_preference", async(req, res) =>{
                         if (!item.variantId || typeof item.variantId !== 'string') {
                             throw new Error("variantId inválido");
                         }
+                        if (!item.id || typeof item.id !== 'string') {
+                            throw new Error("id inválido");
+                        }
+                        if (typeof item.price !== 'number' || typeof item.stock !== 'number') {
+                            throw new Error("price o stock inválido");
+                        }
                         return {
                             variantId: item.variantId,
+                            id: item.id,
                             quantity: item.quantity,
                             price: item.price,
+                            stock: item.stock,
+                            categoryId: item.categoryId,
                         };
                     }),
                     totalAmount,
@@ -58,7 +67,7 @@ app.post("/create_preference", async(req, res) =>{
             id:result.id,
         });
     } catch (error){
-        if (error.message === "variantId inválido") {
+        if (error.message.includes("inválido")) {
             return res.status(400).json({ error: error.message });
         }
         toast.error('Producto agotado', {

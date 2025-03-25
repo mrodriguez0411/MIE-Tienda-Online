@@ -7,8 +7,8 @@ export interface Type{
     price: number;
     stock: number;
     category: string;
-    category_id: number;
     created_at: string;
+    id: string;
 }
 
 export interface Product{
@@ -22,6 +22,9 @@ export interface Product{
     created_at: string;
     variants: VariantProduct[];
     price?: number;
+    variant_name?: string;
+    category: string;
+    category_id: string;
 }
 export interface VariantProduct{
     id : string;
@@ -29,8 +32,8 @@ export interface VariantProduct{
     price: number;
     category: string;
     variant_name: string;
-    category_id: number;
-    created_at: string;
+    category_id: string;
+    product_id: string;
 }
 
 
@@ -56,12 +59,15 @@ export interface ProductInput {
 	description: Json;
 	images: File[];
 	variants: VariantInput[];
+    category: string;
+    category_id: string;
 }
 export interface VariantInput {
-	id?: string;
-	stock: number;
-	price: number;
-	category: string;
-	variantName: string;
-    categoryId: number;
+	id? : string;
+    stock: number;
+    price: number;
+    category: string;
+    variant_name: string;
+    category_id?: string;
+    product_id?: string;
 }

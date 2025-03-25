@@ -9,7 +9,6 @@ import { ItemsCheckout } from './ItemsCheckout';
 import { useCreateOrder } from '../../hooks';
 import { useCartStore } from '../../store/cart.store';
 import { ImSpinner2 } from 'react-icons/im';
-//import { supabase } from '../../supabase/client';
 
 export const FormCheckout = () => {
 	const {
@@ -28,7 +27,6 @@ export const FormCheckout = () => {
 
 	const onSubmit = handleSubmit(data => {
 		const orderInput = {
-			
 			address: data,
 			cartItems: cartItems.map(item => ({
 				variantId: item.variantId,
@@ -62,7 +60,7 @@ export const FormCheckout = () => {
 			<form className='flex flex-col gap-6' onSubmit={onSubmit}>
 				<div className='flex flex-col gap-3'>
 					<h3 className='text-lg font-semibold tracking-normal'>
-						Datos de Entrega
+						Entrega
 					</h3>
 
 					<InputAddress
@@ -104,7 +102,7 @@ export const FormCheckout = () => {
 						className='border border-slate-200 rounded-md p-3'
 						{...register('country')}
 					>
-						<option value='Argentina'>Argentina</option>
+						<option value='Ecuador'>Ecuador</option>
 					</select>
 				</div>
 

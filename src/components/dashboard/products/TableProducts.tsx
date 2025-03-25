@@ -8,7 +8,6 @@ import { Loader } from "../../shared/Loader";
 import { Pagination } from "../../shared/Pagination";
 import { supabase } from "../../../supabase/client";
 
-// Formatear precio en formato ARS
 const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-AR", {
       style: "currency",
@@ -22,75 +21,59 @@ const tableHeaders = [
   "Tipo",
   "Precio",
   "Stock",
-  "Categoria",
+  "Categoría",
   "Fecha de alta",
   "Acciones",
 ];
 
 export const TableProducts = () => {
-  const [selectedVariants, setSelectedVariants] = useState<{ [key: number]: number }>({});
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
-  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const [selectedVariants, setSelectedVariants] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [openMenu, setOpenMenu] = useState(null);
   const { mutate, isPending } = useDeleteProduct();
 
-  // Cargar categorías desde Supabase
   useEffect(() => {
     const fetchCategories = async () => {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("id, name");
-
+      const { data, error } = await supabase.from("categories").select("id, name");
       if (error) {
         console.error("Error al obtener categorías:", error);
       } else {
-        // ✅ Convertir id a número por seguridad
-        const formattedCategories = data.map((item) => ({
-          id: Number(item.id),
-          name: item.name,
-        }));
-        setCategories(formattedCategories);
+        setCategories(data.map((item) => ({ id: Number(item.id), name: item.name })));
       }
     };
-
     fetchCategories();
   }, []);
 
-  // Manejar cambio de variante seleccionada
-  const handleVariantChange = (productId: number, variantIndex: number) => {
+  const handleVariantChange = (productId, variantIndex) => {
     setSelectedVariants((prev) => ({
       ...prev,
       [productId]: variantIndex,
     }));
   };
 
-  // Abrir/Cerrar menú de acciones
-  const handleMenuOpen = (index: number) => {
+  const handleMenuOpen = (index) => {
     setOpenMenu(openMenu === index ? null : index);
   };
 
-  // Estado de paginación
   const [page, setPage] = useState(1);
   const { products, isLoading, totalProducts } = useProducts({ page });
 
-  // Si está cargando o pendiente, mostrar el Loader
   if (!products || isLoading || !totalProducts || isPending) return <Loader />;
 
-  // Eliminar producto
-  const handleDeleteProduct = (id: number) => {
+  const handleDeleteProduct = (id) => {
     mutate(id.toString());
     setOpenMenu(null);
   };
 
-  // Obtener el nombre de la categoría
-  const getCategoryName = (categoryId: number | string | null) => {
-    if (!categoryId) return "Desconocida";
-    const category = categories.find((cat) => cat.id === Number(categoryId));
+  const getCategoryName = (category_id) => {
+    if (!category_id) return "Desconocida";
+    const category = categories.find((cat) => Number(cat.id) === Number(category_id));
     return category ? category.name : "Desconocida";
   };
 
   return (
     <div className="flex flex-col flex-1 border border-cyan-800 rounded-lg bg-white">
-      <h1 className="font-bold text-xl mt-1 ml-3 ">PRODUCTOS</h1>
+      <h1 className="font-bold text-xl mt-1 ml-3">PRODUCTOS</h1>
       <div className="relative w-full h-full">
         <table className="text-sm w-full caption-bottom overflow-auto">
           <thead className="border-b border-cyan-400 pb-3">
@@ -117,8 +100,6 @@ export const TableProducts = () => {
                     />
                   </td>
                   <td className="p-4 font-medium tracking-tighter">{product.name}</td>
-
-                  {/* Selector de variantes */}
                   <td className="p-4 font-medium tracking-tighter">
                     <select
                       className="border border-gray-200 rounded-md p-1 w-full"
@@ -132,11 +113,13 @@ export const TableProducts = () => {
                       ))}
                     </select>
                   </td>
-
-                  <td className="p-4 font-medium tracking-tighter">{formatPrice(selectedVariant.price)}</td>
-                  <td className="p-4 font-medium tracking-tighter">{selectedVariant.stock}</td>
-                  <td className="p-4 font-medium tracking-tighter">{getCategoryName(selectedVariant.category_id)}</td>
-
+                  {selectedVariant && (
+                    <>
+                      <td className="p-4 font-medium tracking-tighter">{formatPrice(selectedVariant.price)}</td>
+                      <td className="p-4 font-medium tracking-tighter">{selectedVariant.stock}</td>
+                      <td className="p-4 font-medium tracking-tighter">{getCategoryName(selectedVariant.category_id)}</td>
+                    </>
+                  )}
                   <td className="p-4 font-medium tracking-tighter">
                     {product.created_at
                       ? new Date(product.created_at).toLocaleDateString("es-ES", {
@@ -146,8 +129,6 @@ export const TableProducts = () => {
                         })
                       : "Fecha no disponible"}
                   </td>
-
-                  {/* Menú de acciones */}
                   <td className="relative">
                     <button className="text-slate-800" onClick={() => handleMenuOpen(index)}>
                       <IoEllipsisVerticalCircleSharp size={25} className="text-cyan-800 ml-5" />
@@ -173,3 +154,4 @@ export const TableProducts = () => {
     </div>
   );
 };
+

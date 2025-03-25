@@ -40,10 +40,10 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 
 	const { slug } = useParams<{ slug: string }>();
 
-	const { product, isLoading } = useProduct(slug || '');
+	const { product, isLoading } = useProduct(slug ?? '');
 	const { mutate: createProduct, isPending } = useCreateProduct();
 	const { mutate: updateProduct, isPending: isUpdatePending } =
-		useUpdateProduct(product?.id || '');
+		useUpdateProduct(product?.id ?? '');
 
 	const navigate = useNavigate();
 
@@ -61,42 +61,41 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 			setValue(
 				'variants',
 				product.variants.map(v => ({
-					id: v.id,
+					id: v.id ?? '',
 					stock: v.stock,
 					price: v.price,
 					category: v.category,
-					variantName: v.variant_name,
+					variant_name: v.variant_name,
+					category_id: v.category_id ??'',
 				}))
 			);
 		}
 	}, [product, isLoading, setValue]);
 
 	const onSubmit = handleSubmit(data => {
+		console.log("Datos enviados:", data);
+	
 		const features = data.features.map(feature => feature.value);
-
+		
+		const payload = {
+			name: data.name,
+			brand: data.brand,
+			slug: data.slug,
+			variants: data.variants.map(variant => ({
+				...variant,
+				category_id: variant.category_id || null // Asegurar que se envía
+			})),
+			images: data.images,
+			description: data.description,
+			features,
+		};
+	
 		if (slug) {
-			updateProduct({
-				name: data.name,
-				brand: data.brand,
-				slug: data.slug,
-				variants: data.variants,
-				images: data.images,
-				description: data.description,
-				features,
-			});
+			updateProduct(payload);
 		} else {
-			createProduct({
-				name: data.name,
-				brand: data.brand,
-				slug: data.slug,
-				variants: data.variants,
-				images: data.images,
-				description: data.description,
-				features,
-			});
+			createProduct(payload);
 		}
 	});
-
 	const watchName = watch('name');
 
 	useEffect(() => {

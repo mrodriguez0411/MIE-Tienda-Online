@@ -1,19 +1,4 @@
-
-    /*useEffect(() => {
-        const fetchCategories = async () => {
-            const { data, error } = await supabase
-                .from('categories')
-                .select('id, name');
-            if (error) {
-                console.error('Error fetching categories:', error);
-            } else {
-                setCategories(data);
-            }
-        };
-
-        fetchCategories();
-    }, []);*/
-   import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Control,
     useFieldArray,
@@ -52,7 +37,8 @@ export const VariantsInput = ({
             stock: 0,
             price: 0,
             category: '',
-            variantName: '',
+            variant_name: '',
+            category_id: '',
         });
     };
 
@@ -71,10 +57,23 @@ export const VariantsInput = ({
                 setCategories(data.map(category => ({ id: category.id.toString(), name: category.name })));
             }
         };
-    
+
         fetchCategories();
     }, []);
-    
+    /*useEffect(() => {
+        const fetchCategories = async () => {
+            const { data, error } = await supabase
+                .from('categories')
+                .select('id, name');
+            if (error) {
+                console.error('Error fetching categories:', error);
+            } else {
+                setCategories(data);
+            }
+        };
+
+        fetchCategories();
+    }, []);*/
 
     return (
         <div className='flex flex-col gap-3'>
@@ -112,7 +111,7 @@ export const VariantsInput = ({
                             />
 
                             <select
-                                {...register(`variants.${index}.category`)}
+                                {...register(`variants.${index}.category_id`)} 
                                 className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
                             >
                                 <option value=''>Selecciona una categoría</option>
@@ -126,7 +125,7 @@ export const VariantsInput = ({
                             <input
                                 type='text'
                                 placeholder='Caja/Envase'
-                                {...register(`variants.${index}.variantName`)}
+                                {...register(`variants.${index}.variant_name`)}
                                 className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
                             />
 

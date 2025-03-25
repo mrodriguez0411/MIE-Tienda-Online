@@ -14,7 +14,7 @@ export const getProducts = async (page: number) => {
 		count,
 	} = await supabase
 		.from('products')
-		.select('*, variants(*), categories(*)',  { count: 'exact' })
+		.select('*, variants(*)',  { count: 'exact' })
 		.order('created_at', { ascending: false })
 		.range(from, to);
 
@@ -196,8 +196,10 @@ export const getFilteredProducts = async ({
             product_id: product.id,
             stock: variant.stock,
             price: variant.price,
-            category_id: variant.category, // Asegúrate de usar category_id
-            variant_name: variant.variantName,
+            category_id: variant.category_id ?? '', // Asegúrate de usar category_id
+            variant_name: variant.variant_name,
+            category:variant.category,
+
         }));
         const { error: variantsError } = await supabase
             .from('variants')
@@ -346,8 +348,9 @@ export const getFilteredProducts = async ({
                     product_id: productId,
                     stock: variant.stock,
                     price: variant.price,
-                    category_id: variant.category, // Asegúrate de usar category_id
-                    variant_name: variant.variantName,
+                    variant_name: variant.variant_name,
+                    category_id: variant.category_id ?? '',
+                    category:variant.category,
                 })),
                 {
                     onConflict: 'id',
@@ -367,8 +370,9 @@ export const getFilteredProducts = async ({
                     product_id: productId,
                     stock: variant.stock,
                     price: variant.price,
-                    category_id: variant.category, // Asegúrate de usar category_id
-                    variant_name: variant.variantName,
+                    category_id: variant.category_id ?? '', 
+                    variant_name: variant.variant_name,
+                    category:variant.category,
                 }))
             )
             .select();

@@ -78,9 +78,10 @@ export const productSchema = z.object({
 				stock: z.number(),
 				price: z.number().min(0.01, 'El precio debe ser mayor a 0'),
 				category: z.string().min(1, 'Debe Asignar una Categoria'),
-				variantName: z
+				variant_name: z
 					.string()
 					.min(1, 'Debe rellenar este campo'),
+				category_id: z.string().optional(),
 			})
 		)
 		.min(1, 'Debe haber al menos una variante'),

@@ -4,11 +4,11 @@ import { supabase } from "../../supabase/client";
 import toast from "react-hot-toast";
 export const DashboardCategorys = () => {
   const [newCategory, setNewCategory] = useState("");
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>(
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
     []
   );
   const [editingCategory, setEditingCategory] = useState<{
-    id: number;
+    id: string;
     name: string;
   } | null>(null);
   // 🔹 Cargar categorías directamente desde la tabla categories
@@ -22,7 +22,7 @@ export const DashboardCategorys = () => {
         console.error("Error al obtener categorías:", error);
       } else {
         const formattedData = data.map((category: { id: string; name: string }) => ({
-          id: Number(category.id),
+          id: category.id,
           name: category.name,
         }));
         setCategories(formattedData);
@@ -66,7 +66,7 @@ export const DashboardCategorys = () => {
       if (variantError) {
         console.error("Error al asociar categoría en variants:", variantError);
       } else {
-        setCategories([...categories, { id: categoryId, name: newCategory }]);
+        setCategories([...categories, {id:categoryId,  name: newCategory }]);
         setNewCategory("");
       }
     }
@@ -94,7 +94,7 @@ export const DashboardCategorys = () => {
   };
 
   // 🔹 Eliminar categoría (de categories y variants)
-  const handleDeleteCategory = async (categoryId: number) => {
+  const handleDeleteCategory = async (categoryId: string) => {
     // Eliminar de variants primero
     const { error: variantError } = await supabase
       .from("variants")

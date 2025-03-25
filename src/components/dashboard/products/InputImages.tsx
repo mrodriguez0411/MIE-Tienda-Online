@@ -1,7 +1,7 @@
 import {
 	FieldErrors,
 	UseFormSetValue,
-	UseFormWatch,
+	
 } from 'react-hook-form';
 import { ProductFormValues } from '../../../lib/validator';
 import { useState } from 'react';
@@ -14,7 +14,7 @@ interface ImagePreview {
 
 interface Props {
 	setValue: UseFormSetValue<ProductFormValues>;
-	watch: UseFormWatch<ProductFormValues>;
+	//watch: UseFormWatch<ProductFormValues>;
 	errors: FieldErrors<ProductFormValues>;
 }
 

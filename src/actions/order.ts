@@ -192,7 +192,7 @@ export const getOrderById = async (orderId: number) => {
 	const { data: order, error } = await supabase
 		.from('orders')
 		.select(
-			'*, addresses(*), customers(first_name, last_name, email), order_items(quantity, price, variants(variant_name, category, products(name, images)))'
+			'*, addresses(*), customers(first_name, last_name, email), order_items(quantity, price, variants(variant_name, category, category_id, products(name, images)))'
 		)
 		.eq('customer_id', customerId)
 		.eq('id', orderId)

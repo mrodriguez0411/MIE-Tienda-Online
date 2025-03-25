@@ -25,8 +25,10 @@ export const CardProduct = ({ img, name, price, slug, variants }: Props) => {
 
 	const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
+		
 
 		if (activeVariant && activeVariant.stock > 0) {
+			
 			addItem({
 				variantId: activeVariant.id,
 				productId: slug,
@@ -37,6 +39,7 @@ export const CardProduct = ({ img, name, price, slug, variants }: Props) => {
 				price: activeVariant.price,
 				quantity: 1,
 			});
+			
 			toast.success('Producto añadido al carrito', {
 				position: 'bottom-right',
 			});
@@ -74,7 +77,7 @@ export const CardProduct = ({ img, name, price, slug, variants }: Props) => {
 						<span
 							key={variant.variant_name}
 							className={`grid place-items-center px-3 py-1 cursor-pointer border rounded-full font-semibold ${
-								activeVariant?.variant_name === variant.variant_name ? 'border-black bg-cyan-200' : ''
+								activeVariant?.variant_name === variant.variant_name ? 'border-black bg-cyan-700 text-white' : ''
 							}`}
 							onClick={() => setActiveVariant(variant)}
 						>
