@@ -148,7 +148,9 @@ export const TableProducts = () => {
                     <>
                       <td className="p-4 font-medium tracking-tighter">{formatPrice(selectedVariant.price)}</td>
                       <td className="p-4 font-medium tracking-tighter">{selectedVariant.stock}</td>
-                      <td className="p-4 font-medium tracking-tighter">{getCategoryName(selectedVariant.category)}</td>
+                      <td className="p-4 font-medium tracking-tighter">
+                        {selectedVariant.category || "Desconocida"} {/* ✅ Usa el campo category */}
+                      </td>
                     </>
                   )}
                   <td className="p-4 font-medium tracking-tighter">

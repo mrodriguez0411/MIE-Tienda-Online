@@ -128,7 +128,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 
 			<form
 				className='grid grid-cols-1 lg:grid-cols-3 gap-8 auto-rows-max flex-1'
-				onSubmit={onSubmit}
+				onSubmit={onSubmit} id="product-form"
 			>
 				<SectionFormProduct
 					titleSection='Detalles del Producto'
@@ -175,6 +175,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 						control={control}
 						errors={errors}
 						register={register}
+						setValue={setValue} // ✅ Asegúrate de pasar setValue correctamente
 					/>
 				</SectionFormProduct>
 
@@ -201,6 +202,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 					<button
 						className='bg-red-500 rounded-lg text-white py-2 p-2'
 						type='button'
+						form='product-form'
 						onClick={() => navigate(-1)}
 					>
 						Cancelar
