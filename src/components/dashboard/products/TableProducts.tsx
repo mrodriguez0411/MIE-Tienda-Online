@@ -50,21 +50,8 @@ const tableHeaders = [
 
 export const TableProducts = () => {
   const [selectedVariants, setSelectedVariants] = useState<Record<string, number>>({});
-  const [categories, setCategories] = useState<Category[]>([]);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const { mutate, isPending } = useDeleteProduct();
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const { data, error } = await supabase.from("categories").select("id, name");
-      if (error) {
-        console.error("Error al obtener categorías:", error);
-      } else if (data) {
-        setCategories(data.map((item: { id: string; name: string }) => ({ id: item.id, name: item.name })));
-      }
-    };
-    fetchCategories();
-  }, []);
 
   const handleVariantChange = (productId: string, variantIndex: number) => {
     setSelectedVariants((prev) => ({
@@ -94,12 +81,6 @@ export const TableProducts = () => {
   const handleDeleteProduct = (id: string) => {
     mutate(id);
     setOpenMenu(null);
-  };
-
-  const getCategoryName = (categoryId: string) => {
-    if (!categoryId) return "Desconocida";
-    const category = categories.find((cat) => cat.id === categoryId);
-    return category ? category.name : "Desconocida";
   };
 
   return (
