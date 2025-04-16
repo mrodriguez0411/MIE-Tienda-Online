@@ -9,11 +9,33 @@ import { Pagination } from "../../shared/Pagination";
 import { supabase } from "../../../supabase/client";
 
 const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("es-AR", {
-      style: "currency",
-      currency: "ARS",
-    }).format(price);
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+  }).format(price);
 };
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface Variant {
+  id: string;
+  variantName: string; // Corregido (antes: variant_name)
+  price: number;
+  stock: number;
+  category: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  created_at: string;
+  images: string[];
+  variants: Variant[];
+}
 
 const tableHeaders = [
   "",
@@ -27,9 +49,9 @@ const tableHeaders = [
 ];
 
 export const TableProducts = () => {
-  const [selectedVariants, setSelectedVariants] = useState({});
-  const [categories, setCategories] = useState([]);
-  const [openMenu, setOpenMenu] = useState(null);
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, number>>({});
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [openMenu, setOpenMenu] = useState<number | null>(null);
   const { mutate, isPending } = useDeleteProduct();
 
   useEffect(() => {
@@ -37,37 +59,46 @@ export const TableProducts = () => {
       const { data, error } = await supabase.from("categories").select("id, name");
       if (error) {
         console.error("Error al obtener categorías:", error);
-      } else {
-        setCategories(data.map((item) => ({ id: Number(item.id), name: item.name })));
+      } else if (data) {
+        setCategories(data.map((item: { id: string; name: string }) => ({ id: item.id, name: item.name })));
       }
     };
     fetchCategories();
   }, []);
 
-  const handleVariantChange = (productId, variantIndex) => {
+  const handleVariantChange = (productId: string, variantIndex: number) => {
     setSelectedVariants((prev) => ({
       ...prev,
       [productId]: variantIndex,
     }));
   };
 
-  const handleMenuOpen = (index) => {
+  const handleMenuOpen = (index: number) => {
     setOpenMenu(openMenu === index ? null : index);
   };
 
   const [page, setPage] = useState(1);
   const { products, isLoading, totalProducts } = useProducts({ page });
 
-  if (!products || isLoading || !totalProducts || isPending) return <Loader />;
+  // Transformar los datos para que coincidan con el tipo Variant
+  const transformedProducts = products?.map((product) => ({
+    ...product,
+    variants: product.variants.map((variant) => ({
+      ...variant,
+      variantName: variant.variant_name, // Mapear variant_name a variantName
+    })),
+  }));
 
-  const handleDeleteProduct = (id) => {
-    mutate(id.toString());
+  if (!transformedProducts || isLoading || !totalProducts || isPending) return <Loader />;
+
+  const handleDeleteProduct = (id: string) => {
+    mutate(id);
     setOpenMenu(null);
   };
 
-  const getCategoryName = (category_id) => {
-    if (!category_id) return "Desconocida";
-    const category = categories.find((cat) => Number(cat.id) === Number(category_id));
+  const getCategoryName = (categoryId: string) => {
+    if (!categoryId) return "Desconocida";
+    const category = categories.find((cat) => cat.id === categoryId);
     return category ? category.name : "Desconocida";
   };
 
@@ -84,7 +115,7 @@ export const TableProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index) => {
+            {transformedProducts.map((product: Product, index: number) => {
               const selectedVariantIndex = selectedVariants[product.id] ?? 0;
               const selectedVariant = product.variants[selectedVariantIndex];
 
@@ -92,8 +123,8 @@ export const TableProducts = () => {
                 <tr key={product.id}>
                   <td className="p-4 align-middle sm:table-cell">
                     <img
-                      src={product.images[0] || "/img/products/notimage.jpeg"}
-                      alt="Imagen de Producto"
+                      src={product.images?.[0] || "/img/products/notimage.jpeg"}
+                      alt={`Imagen de ${product.name}`}
                       loading="lazy"
                       decoding="async"
                       className="w-16 h-16 aspect-square rounded-md object-contain"
@@ -103,12 +134,12 @@ export const TableProducts = () => {
                   <td className="p-4 font-medium tracking-tighter">
                     <select
                       className="border border-gray-200 rounded-md p-1 w-full"
-                      onChange={e => handleVariantChange(product.id, Number(e.target.value))}
+                      onChange={(e) => handleVariantChange(product.id, Number(e.target.value))}
                       value={selectedVariantIndex}
                     >
                       {product.variants.map((variant, variantIndex) => (
                         <option key={variant.id} value={variantIndex}>
-                          {variant.variant_name}
+                          {variant.variantName}
                         </option>
                       ))}
                     </select>
@@ -117,7 +148,7 @@ export const TableProducts = () => {
                     <>
                       <td className="p-4 font-medium tracking-tighter">{formatPrice(selectedVariant.price)}</td>
                       <td className="p-4 font-medium tracking-tighter">{selectedVariant.stock}</td>
-                      <td className="p-4 font-medium tracking-tighter">{getCategoryName(selectedVariant.category_id)}</td>
+                      <td className="p-4 font-medium tracking-tighter">{getCategoryName(selectedVariant.category)}</td>
                     </>
                   )}
                   <td className="p-4 font-medium tracking-tighter">
@@ -135,11 +166,17 @@ export const TableProducts = () => {
                     </button>
                     {openMenu === index && (
                       <div className="absolute right-0 mt-2 bg-white border-slate-800 rounded-md shadow-xl z-10 w-[120px]" role="menu">
-                        <Link to={`/dashboard/productos/editar/${product.slug}`} className="flex items-center gap-1 w-full text-left px-4 py-2 text-xs font-medium text-cyan-700 hover:bg-cyan-100">
-                          Editar <TiEdit size={13} className="inline-block" />
+                        <Link
+                          to={`/dashboard/productos/editar/${product.slug}`}
+                          className="flex items-center gap-1 w-full text-left px-4 py-2 text-xs font-medium text-cyan-700 hover:bg-cyan-100"
+                        >
+                          Editar <TiEdit size={13} />
                         </Link>
-                        <button className="block w-full text-left px-4 py-2 text-xs font-medium text-red-700 hover:bg-red-100" onClick={() => handleDeleteProduct(product.id)}>
-                          Eliminar <MdDeleteForever size={15} className="inline-block" />
+                        <button
+                          className="block w-full text-left px-4 py-2 text-xs font-medium text-red-700 hover:bg-red-100"
+                          onClick={() => handleDeleteProduct(product.id)}
+                        >
+                          Eliminar <MdDeleteForever size={15} />
                         </button>
                       </div>
                     )}
@@ -154,4 +191,3 @@ export const TableProducts = () => {
     </div>
   );
 };
-

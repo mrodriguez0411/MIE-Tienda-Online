@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { generateSlug } from '../../../helpers';
 import { VariantsInput } from './VariantsInput';
 import { UploaderImages } from './UploaderImages';
-import { Editor } from './Editor';
+import { Editor } from './Editor-old';
 import {
 	useCreateProduct,
 	useProduct,
@@ -21,6 +21,7 @@ import {
 } from '../../../hooks';
 import { Loader } from '../../shared/Loader';
 import { JSONContent } from '@tiptap/react';
+import { transformProductFormToInput } from '../../../hooks/transformProductFormToInput';
 
 interface Props {
 	titleForm: string;
@@ -40,10 +41,13 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 
 	const { slug } = useParams<{ slug: string }>();
 
-	const { product, isLoading } = useProduct(slug ?? '');
+	//const { product, isLoading } = useProduct(slug || '');
+
+const { product, isLoading } = useProduct(slug || ''); 
+
 	const { mutate: createProduct, isPending } = useCreateProduct();
 	const { mutate: updateProduct, isPending: isUpdatePending } =
-		useUpdateProduct(product?.id ?? '');
+		useUpdateProduct(product?.id || '');
 
 	const navigate = useNavigate();
 
@@ -61,41 +65,55 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 			setValue(
 				'variants',
 				product.variants.map(v => ({
-					id: v.id ?? '',
+					id: v.id,
 					stock: v.stock,
 					price: v.price,
 					category: v.category,
+					category_id: v.category_id,
 					variantName: v.variant_name,
-					category_id: v.category_id ??'',
 				}))
 			);
 		}
 	}, [product, isLoading, setValue]);
 
-	const onSubmit = handleSubmit(data => {
-		console.log("Datos enviados:", data);
-	
+	/*const onSubmit = handleSubmit(data => {
 		const features = data.features.map(feature => feature.value);
-		
-		const payload = {
-			name: data.name,
-			brand: data.brand,
-			slug: data.slug,
-			variants: data.variants.map(variant => ({
-				...variant,
-				category_id: variant.category_id || null // Asegurar que se envía
-			})),
-			images: data.images,
-			description: data.description,
-			features,
-		};
+
+		if (slug) {
+			updateProduct({
+				name: data.name,
+				brand: data.brand,
+				slug: data.slug,
+				variants: data.variants,
+				images: data.images,
+				description: data.description,
+				features,
+			});
+		} else {
+			createProduct({
+				name: data.name,
+				brand: data.brand,
+				slug: data.slug,
+				variants: data.variants,
+				images: data.images,
+				description: data.description,
+				features,
+			});
+		}
+	});*/
+	const onSubmit = handleSubmit(data => {
+		console.log('ON SUBMIT', data);
+
+		const productInput = transformProductFormToInput(data);
 	
 		if (slug) {
-			updateProduct(payload);
+			updateProduct(productInput); // ✅ solo se pasa el input porque el hook ya tiene el ID
 		} else {
-			createProduct(payload);
+			createProduct(productInput);
 		}
 	});
+	
+
 	const watchName = watch('name');
 
 	useEffect(() => {
@@ -106,6 +124,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 	}, [watchName, setValue]);
 
 	if (isPending || isUpdatePending || isLoading) return <Loader />;
+	
 
 	return (
 		<div className='flex flex-col gap-6 relative'>
@@ -136,7 +155,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 				>
 					<InputForm
 						type='text'
-						placeholder='Ejemplo: Lapices de colores'
+						placeholder='Nombre del Producto'
 						label='nombre'
 						name='name'
 						register={register}
@@ -160,7 +179,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 						type='text'
 						label='Marca'
 						name='brand'
-						placeholder=''
+						placeholder='Marca del producto'
 						register={register}
 						errors={errors}
 						required
@@ -193,7 +212,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 					<Editor
 						setValue={setValue}
 						errors={errors}
-						initialContent={product?.description as JSONContent}
+						initialContent={product?.description}
 					/>
 				</SectionFormProduct>
 

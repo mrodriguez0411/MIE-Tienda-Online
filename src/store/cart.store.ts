@@ -18,40 +18,6 @@ const storeApi: StateCreator<CartState> = set => ({
     totalItemsInCart: 0,
     totalAmount: 0,
 
-    /*addItem: (item) => {
-        set(state => {
-            // Crear un identificador único usando variantId y productId
-            const uniqueId = `${item.variantId}-${item.productId}`;
-    
-            const existingItem = state.items.find(
-                i => `${i.variantId}-${i.productId}` === uniqueId
-            );
-    
-            let updatedItems;
-    
-            if (existingItem) {
-                // Si ya existe, sumamos la cantidad
-                updatedItems = state.items.map(i =>
-                    `${i.variantId}-${i.productId}` === uniqueId
-                        ? { ...i, quantity: i.quantity + item.quantity }
-                        : i
-                );
-            } else {
-                // Si no existe, lo añadimos como un nuevo producto
-                updatedItems = [...state.items, item];
-            }
-    
-            const newTotalItems = updatedItems.reduce((acc, i) => acc + i.quantity, 0);
-            const newTotalAmount = updatedItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
-    
-            return {
-                items: updatedItems,
-                totalAmount: newTotalAmount,
-                totalItemsInCart: newTotalItems,
-            };
-        });
-    },*/
-
     addItem: (item) => {
     set(state => {
         // Crear un identificador único con todas las propiedades relevantes

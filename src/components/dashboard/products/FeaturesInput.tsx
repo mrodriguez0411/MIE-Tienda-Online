@@ -44,8 +44,8 @@ export const FeaturesInput = ({ control, errors }: Props) => {
 						className='flex items-center justify-between gap-2'
 					>
 						<div className='flex items-center gap-2'>
-							<div className='bg-slate-500 h-2 w-2 rounded-full' />
-							<span className='text-sm text-slate-600 font-medium'>
+							<div className='bg-cyan-700 h-2 w-2 rounded-full' />
+							<span className='text-sm text-slate-500 font-medium'>
 								{field.value}
 							</span>
 						</div>

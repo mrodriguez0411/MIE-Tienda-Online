@@ -5,6 +5,7 @@ import { getProductBySlug } from "../../actions"
 
 export const useProduct = (slug: string) =>
 {
+    const isEnabled = Boolean(slug);
     const {
         data: product,
         isLoading,
@@ -12,6 +13,7 @@ export const useProduct = (slug: string) =>
     } = useQuery({
         queryKey: ["product", slug],
         queryFn: () =>getProductBySlug(slug),
+        enabled: isEnabled,
         retry: false,
     });
     return { product, isLoading, isError };

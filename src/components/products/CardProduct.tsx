@@ -34,7 +34,7 @@ export const CardProduct = ({ img, name, price, slug, variants }: Props) => {
 				productId: slug,
 				name,
 				image: img,
-				variant_name: activeVariant.variant_name,
+				variant_name: activeVariant.variantName,
 				category: activeVariant.category,
 				price: activeVariant.price,
 				quantity: 1,
@@ -75,13 +75,13 @@ export const CardProduct = ({ img, name, price, slug, variants }: Props) => {
 				<div className='flex gap-3'>
 					{variants.map(variant => (
 						<span
-							key={variant.variant_name}
+							key={variant.variantName}
 							className={`grid place-items-center px-3 py-1 cursor-pointer border rounded-full font-semibold ${
-								activeVariant?.variant_name === variant.variant_name ? 'border-black bg-cyan-700 text-white' : ''
+								activeVariant?.variantName === variant.variantName ? 'border-black bg-cyan-700 text-white' : ''
 							}`}
 							onClick={() => setActiveVariant(variant)}
 						>
-							{variant.variant_name}
+							{variant.variantName}
 						</span>
 					))}
 				</div>

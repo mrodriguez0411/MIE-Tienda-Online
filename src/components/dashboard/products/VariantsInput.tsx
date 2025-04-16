@@ -36,9 +36,9 @@ export const VariantsInput = ({
         append({
             stock: 0,
             price: 0,
-            category: '',
-            variant_name: '',
             category_id: '',
+            variantName: '',
+            category: '',
         });
     };
 
@@ -54,26 +54,12 @@ export const VariantsInput = ({
             if (error) {
                 console.error('Error fetching categories:', error);
             } else {
-                setCategories(data.map(category => ({ id: category.id.toString(), name: category.name })));
+                setCategories(data.map(category_id => ({ id: category_id.id.toString(), name: category_id.name })));
             }
         };
 
         fetchCategories();
-    }, []);
-    /*useEffect(() => {
-        const fetchCategories = async () => {
-            const { data, error } = await supabase
-                .from('categories')
-                .select('id, name');
-            if (error) {
-                console.error('Error fetching categories:', error);
-            } else {
-                setCategories(data);
-            }
-        };
-
-        fetchCategories();
-    }, []);*/
+    }, [fields]);
 
     return (
         <div className='flex flex-col gap-3'>
@@ -111,13 +97,15 @@ export const VariantsInput = ({
                             />
 
                             <select
-                                {...register(`variants.${index}.category_id`)} 
+                                {...register(`variants.${index}.category_id`, {
+                                    required: 'Seleccionar una categoría es obligatorio',
+                                })}
                                 className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
                             >
                                 <option value=''>Selecciona una categoría</option>
-                                {categories.map(category => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.name}
+                                {categories.map(category_id => (
+                                    <option key={category_id.id} value={category_id.id}>
+                                        {category_id.name}
                                     </option>
                                 ))}
                             </select>
@@ -125,7 +113,7 @@ export const VariantsInput = ({
                             <input
                                 type='text'
                                 placeholder='Caja/Envase'
-                                {...register(`variants.${index}.variant_name`)}
+                                {...register(`variants.${index}.variantName`)}
                                 className='border rounded-md px-3 py-1.5 text-xs font-semibold placeholder:font-normal focus:outline-none appearance-none'
                             />
 
@@ -139,10 +127,17 @@ export const VariantsInput = ({
                                 </button>
                             </div>
                         </div>
-
-                        {errors.variants?.[index] && (
+                        {
+                            /*errors.variants && errors.variants[index] && 
+                            (
+                                <p className='text-red-500 text-xs mt-1'>
+                                    error
+                                </p>
+                            )
+                        */}        
+                        {errors.variants?.[index]?.category_id && (
                             <p className='text-red-500 text-xs mt-1'>
-                                {/* Aquí puedes mostrar el primer error */}
+                                {errors.variants[index]?.category_id?.message}
                             </p>
                         )}
                     </div>

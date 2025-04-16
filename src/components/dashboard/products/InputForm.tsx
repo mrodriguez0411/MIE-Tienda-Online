@@ -3,7 +3,6 @@ import { ProductFormValues } from '../../../lib/validator';
 
 interface Props {
 	className?: string;
-
 	label: string;
 	placeholder?: string;
 	type: string;

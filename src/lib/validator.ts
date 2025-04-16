@@ -45,7 +45,7 @@ const isContentEmpty = (value: JSONContent): boolean =>{
     if (!value || !Array.isArray(value.content) || value.content.length == 0){
         return true;
     }
-    return value.content.some(
+    return !value.content.some(
         node=>
             node.type === 'paragraph'&& node.content && Array.isArray(node.content) && 
             node.content.some(
@@ -71,14 +71,14 @@ export const productSchema = z.object({
     description: z.custom<JSONContent>(value =>  !isContentEmpty(value), 
         { message: 'Debe cargar las descripciones del producto'}),
     
-        variants: z
+variants: z
 		.array(
 			z.object({
 				id: z.string().optional(),
 				stock: z.number(),
 				price: z.number().min(0.01, 'El precio debe ser mayor a 0'),
 				category: z.string().min(1, 'Debe Asignar una Categoria'),
-				variant_name: z
+				variantName: z
 					.string()
 					.min(1, 'Debe rellenar este campo'),
 				category_id: z.string().optional(),

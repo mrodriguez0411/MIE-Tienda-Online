@@ -35,7 +35,7 @@ npm install @hookform/resolvers
 
 --Instalar ZUSTAND
 es un gestor de estados globales, para controlar el carrito de compras
-
+npm install zustand
 
 --Mercado pago
 
