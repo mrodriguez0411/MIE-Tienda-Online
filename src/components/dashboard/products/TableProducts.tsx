@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { IoEllipsisVerticalCircleSharp } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { TiEdit } from "react-icons/ti";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useProducts, useDeleteProduct } from "../../../hooks";
 import { Loader } from "../../shared/Loader"; 
 import { Pagination } from "../../shared/Pagination";
-import { supabase } from "../../../supabase/client";
+//import { supabase } from "../../../supabase/client";
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat("es-AR", {
@@ -15,10 +15,10 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-interface Category {
+/*interface Category {
   id: string;
   name: string;
-}
+}*/
 
 interface Variant {
   id: string;
@@ -26,6 +26,7 @@ interface Variant {
   price: number;
   stock: number;
   category: string;
+  category_id: string;
 }
 
 interface Product {

@@ -24,15 +24,18 @@ export const PreparedProducts = (products: Product[]) => {
     products.forEach(product => {
         if (!uniqueProducts.has(product.id)) {
             const variantsGrouped = product.variants?.reduce((acc: Type[], variant: VariantProduct) => {
-                const existingVariant = acc.find(item => item.variant_name === variant.variant_name);
+                const existingVariant = acc.find(item => item.variantName === variant.variantName);
                 if (existingVariant) {
                     existingVariant.price = Math.min(existingVariant.price, variant.price);
                     existingVariant.stock += variant.stock; // Sumar stock de variantes con el mismo nombre
                 } else {
                     acc.push({
-                        variant_name: variant.variant_name,
+                        variantName: variant.variantName,
                         price: variant.price,
-                        stock: variant.stock, // Asegurar que se guarda el stock
+                        stock: variant.stock,
+                        category: "",
+                        created_at: "",
+                        id: ""
                     });
                 }
                 return acc;

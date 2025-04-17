@@ -15,7 +15,7 @@ export const Search = () => {
  const closeSheet = useGlobalStore(state => state.closeSheet);
  const navigate = useNavigate();
 
- const handleSearch = async (e: React.FormEvent) => {
+ const handleSearch = async (e: React.FormEvent) =>{
     e.preventDefault();
     if(searchTerm.trim()){
       //Buscar en la base de datos
@@ -60,7 +60,7 @@ export const Search = () => {
                 </p>
                 <p className="text-[13px] text-gray-600">
                   {product.variants[0].category}/{''}
-                  {product.variants[0].variant_name}
+                  {product.variants[0].variantName}
                 </p>
   
                 <p className="text-sm font-medium text-gray-600">

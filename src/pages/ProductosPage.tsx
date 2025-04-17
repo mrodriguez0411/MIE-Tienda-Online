@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CardProduct } from "../components/products/CardProduct";
-import { PreparedProducts } from "../helpers";
+import { PreparedProducts } from "../helpers"; // ✅ debe ser una función
 import { useFilterProducts } from "../hooks";
 import { Pagination } from "../components/shared/Pagination";
 import { ContainerFilter } from "../components/products/ContainerFilter";
@@ -9,12 +9,14 @@ export const ProductosPage = () => {
   const [page, setPage] = useState(1);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
 
-  const { data: products = [], isLoading, totalProduct } = useFilterProducts({
+  const {
+    data: products = [],
+    isLoading,
+    totalProduct = 0,
+  } = useFilterProducts({
     page,
     brands: selectedBrands,
   });
-
-  console.log(products, isLoading, totalProduct); // Debugging
 
   const preparedProducts = products ? PreparedProducts(products) : [];
 
@@ -56,7 +58,11 @@ export const ProductosPage = () => {
 
             {/* PAGINACIÓN */}
             {totalProduct > 0 && (
-              <Pagination totalItems={totalProduct} page={page} setPage={setPage} />
+              <Pagination
+                totalItems={totalProduct}
+                page={page}
+                setPage={setPage}
+              />
             )}
           </div>
         )}

@@ -46,13 +46,13 @@ export const getFilteredProducts = async ({ page = 1, brands = [] }: { page: num
 };
 
 export const getRecentProducts = async () => {
-	const { data, error } = await supabase
+	const { data: products, error } = await supabase
 		.from("products")
 		.select("*,variants(*)")
 		.order("created_at", { ascending: false })
 		.limit(4);
 	if (error) throw new Error(error.message);
-	return data;
+	return products;
 };
 
 export const getRandomProducts = async () => {

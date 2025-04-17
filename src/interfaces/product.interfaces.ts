@@ -20,12 +20,9 @@ export interface Product{
     description: Json;
     images: string[];
     created_at: string;
+    price: number;
     variants: VariantProduct[];
-    price?: number;
-    variantName?: string;
-    category: string;
-    category_id: string;
-}
+   }
 export interface VariantProduct{
     id : string;
     stock: number;
@@ -47,7 +44,9 @@ export interface PreparedProducts{
     images: string[];
     created_at: string;
     price: number;
-    variantName:string;
+    category: string;
+    category_id: string;
+    variantName: string;
     variants: VariantProduct[];
 }
 
