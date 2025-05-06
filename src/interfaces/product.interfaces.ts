@@ -21,7 +21,8 @@ export interface Product{
     images: string[];
     created_at: string;
     price: number;
-    
+    category: string;
+    category_id: string;
     variants: VariantProduct[];
    }
 export interface VariantProduct{
@@ -32,6 +33,7 @@ export interface VariantProduct{
     variantName: string;
     category_id: string;
     product_id: string;
+    created_at: string;
 }
 
 
