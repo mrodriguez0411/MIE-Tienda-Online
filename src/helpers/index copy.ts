@@ -1,4 +1,4 @@
-import { Product, Type, VariantProduct } from "../interfaces";
+//import { Product, Type, VariantProduct } from "../interfaces";
 
 // Función para formatear el precio a Pesos
 export const formatPrice = (price: number) => {
@@ -14,45 +14,46 @@ export const formatPrice = (price: number) => {
 
 export const PreparedProducts = (products: Product[]) => {
     if (!Array.isArray(products)) {
-      console.error('Expected an array of products, but received:', products);
-      return [];
+        console.error('Expected an array of products, but received:', products);
+        return [];
     }
-  
+
     // Filtramos productos únicos por ID
     const uniqueProducts = new Map();
-  
+
     products.forEach(product => {
-      if (!uniqueProducts.has(product.id)) {
-        const variantsGrouped = product.variants?.reduce((acc: Type[], variant: VariantProduct) => {
-          const existingVariant = acc.find(item => item.variantName === variant.variantName);
-          if (existingVariant) {
-            existingVariant.price = Math.min(existingVariant.price, variant.price);
-            existingVariant.stock += variant.stock;
-          } else {
-            acc.push({
-              variantName: variant.variantName,
-              price: variant.price,
-              stock: variant.stock,
-              category: variant.category, // Mantener la categoría de la variante
-              created_at: variant.created_at || "",
-              id: variant.id
+        if (!uniqueProducts.has(product.id)) {
+            const variantsGrouped = product.variants?.reduce((acc: Type[], variant: VariantProduct) => {
+                const existingVariant = acc.find(item => item.variantName === variant.variantName);
+                if (existingVariant) {
+                    existingVariant.price = Math.min(existingVariant.price, variant.price);
+                    existingVariant.stock += variant.stock; // Sumar stock de variantes con el mismo nombre
+                } else {
+                    acc.push({
+                        variantName: variant.variantName,
+                        price: variant.price,
+                        stock: variant.stock,
+                        category: "",
+                        created_at: "",
+                        id: ""
+                    });
+                }
+                return acc;
+            }, []) || []; // Asegurar que no haya problemas si `product.variants` es undefined
+
+            uniqueProducts.set(product.id, {
+                ...product,
+                price: Math.min(...variantsGrouped.map(item => item.price)),
+                stock: variantsGrouped.reduce((total, item) => total + item.stock, 0), // Calcular stock total
+                variants: variantsGrouped,
             });
-          }
-          return acc;
-        }, []) || [];
-  
-        uniqueProducts.set(product.id, {
-          ...product,
-          price: Math.min(...variantsGrouped.map(item => item.price)),
-          stock: variantsGrouped.reduce((total, item) => total + item.stock, 0),
-          variants: variantsGrouped,
-          category: product.category // Mantener la categoría del producto
-        });
-      }
+        }
     });
-  
-    return Array.from(uniqueProducts.values());
-  };
+
+    return Array.from(uniqueProducts.values()); // Ahora devuelve el array de productos procesados
+};
+
+
 
 // Función para formatear la fecha a formato 3 de enero de 2022
 export const formatDateLong = (date: string): string => {

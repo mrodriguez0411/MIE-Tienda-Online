@@ -83,7 +83,7 @@ export const FormNewProduct = ({ titleForm }: Props) => {
 			slug: data.slug,
 			variants: data.variants.map(variant => ({
 				...variant,
-				category_id: variant.category_id || null // Asegurar que se envía
+				category_id: variant.category_id // Asegurar que se envía
 			})),
 			images: data.images,
 			description: data.description,

@@ -81,7 +81,7 @@ variants: z
 				variantName: z
 					.string()
 					.min(1, 'Debe rellenar este campo'),
-				category_id: z.string().optional(),
+				category_id: z.string(),
 			})
 		)
 		.min(1, 'Debe haber al menos una variante'),

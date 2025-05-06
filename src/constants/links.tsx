@@ -17,6 +17,7 @@ export const navbarLinks = [
         text: "Productos",
         url: "/productos",
     },
+    
     {
         id: 3,
         text: "Sobre Nosotros",

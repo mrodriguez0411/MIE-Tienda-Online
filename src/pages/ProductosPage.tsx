@@ -51,6 +51,7 @@ export const ProductosPage = () => {
                     img={product.images?.[0]}
                     slug={product.slug}
                     variants={product.variants}
+                    category={product.category}
                   />
                 ))}
               </div>

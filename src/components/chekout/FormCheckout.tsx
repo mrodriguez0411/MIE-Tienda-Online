@@ -102,7 +102,7 @@ export const FormCheckout = () => {
 						className='border border-slate-200 rounded-md p-3'
 						{...register('country')}
 					>
-						<option value='Ecuador'>Ecuador</option>
+						<option value='Argentina'>Argentina</option>
 					</select>
 				</div>
 
@@ -144,7 +144,8 @@ export const FormCheckout = () => {
 
 				<button
 					type='submit'
-					className='bg-black text-white py-3.5 font-bold tracking-wide rounded-md mt-2'
+					className='bg-cyan-800 text-white py-3.5 font-bold tracking-wide rounded-md mt-2 hover:bg-cyan-700 '
+					
 				>
 					Finalizar Pedido
 				</button>

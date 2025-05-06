@@ -14,6 +14,7 @@ export const HomePage = () => {
 
 	return (
 		<div>
+			
 			<Features />
 
 			{isLoading ? (

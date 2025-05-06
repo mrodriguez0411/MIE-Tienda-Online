@@ -7,6 +7,7 @@ import { useGlobalStore } from "../../store/global.store";
 import { useCartStore } from "../../store/cart.store";
 import { useCustomer, useUser } from "../../hooks";
 import { LuLoader } from "react-icons/lu";
+import { CategoryDropdown } from "./CategoryDropdown";
 
 export const Navbar = () => {
   
@@ -26,6 +27,7 @@ export const Navbar = () => {
     <header className="bg-white text-black py-4 flex items-center justify-between px-5 border-b border-slate-200 lg:px-12">
       <Logo />
       <nav className="space-x-5 hidden md:flex">
+      
         {navbarLinks.map(link => (
           <NavLink
             key={link.id}
