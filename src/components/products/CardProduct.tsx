@@ -88,7 +88,7 @@ export const CardProduct = ({
 				<p className='text-[15px] font-medium'>
 					{formatPrice(selectedVariant?.price ?? price)}
 				</p>
-
+				<p className='text-sm text-gray-600'>Categoría: {category}</p>
 				{/* Selector de variantes (por nombre) */}
 				<div className='flex gap-2 flex-wrap justify-center mt-2'>
 					{variants.map(variant => (
