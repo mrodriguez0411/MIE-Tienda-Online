@@ -93,14 +93,55 @@ export const getProductBySlug = async (slug: string) => {
 	return data;
 };
 
-export const searchProducts = async (searchTerm: string) => {
+/*export const searchProducts = async (searchTerm: string) => {
 	const { data, error } = await supabase
 		.from("products")
 		.select("*, variants(*)")
 		.ilike('name', `%${searchTerm}%`);
 	if (error) throw new Error(error.message);
 	return data;
-};
+};*/
+export const searchProducts = async (searchTerm: string) => {
+	try {
+	  const { data: products, error } = await supabase
+		.from('products')
+		.select(`
+		  *,
+		  category:category_id (
+			id,
+			name,
+			slug
+		  ),
+		  variants (
+			*,
+			category:category_id (
+			  id,
+			  name,
+			  slug
+			)
+		  )
+		`)
+		.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+		.order('name');
+  
+	  if (error) throw error;
+  
+	  // Transformar los datos para que coincidan con la interfaz
+	  const formattedProducts = products?.map(product => ({
+		...product,
+		category: product.category, // Ya viene de la base de datos
+		variants: product.variants.map(variant => ({
+		  ...variant,
+		  category: variant.category // Ya viene de la base de datos
+		}))
+	  }));
+  
+	  return formattedProducts || [];
+	} catch (error) {
+	  console.error('Error searching products:', error);
+	  return [];
+	}
+  };
 
 // ======================== CREATE ======================== //
 

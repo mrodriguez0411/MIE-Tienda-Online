@@ -7,7 +7,6 @@ import { useGlobalStore } from "../../store/global.store";
 import { useCartStore } from "../../store/cart.store";
 import { useCustomer, useUser } from "../../hooks";
 import { LuLoader } from "react-icons/lu";
-import { CategoryDropdown } from "./CategoryDropdown";
 
 export const Navbar = () => {
   

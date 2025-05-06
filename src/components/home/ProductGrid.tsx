@@ -16,17 +16,17 @@ export const ProductGrid = ({ title, products }: Props) => {
         {products.length > 0 ? (
           products.map((product) => (
             <CardProduct
-              key={product.id}
-              name={product.name}
-              slug={product.slug}
-              price={product.price}
-              variant_name={product.variant_name}
-              img={
-                product.images && product.images.length > 0
-                  ? product.images[0]
-                  : "default-image.jpg"
-              }
-              variants={product.variants}
+            key={product.id}
+            name={product.name}
+            slug={product.slug}
+            price={product.price ?? 0}
+            img={
+              product.images && product.images.length > 0
+                ? product.images[0]
+                : "default-image.jpg"
+            }
+            variants={product.variants} // Esto ya está correcto
+            category={product.category.name}
             />
           ))
         ) : (
@@ -65,6 +65,7 @@ export const ProductGrid = ({ title, products }: Props) => {
                   : "default-image.jpg"
               }
               variants={product.variants}
+              category={product.category}
             />
           ))
         ) : (
