@@ -44,8 +44,16 @@ export const ProductoPage = () => {
   const preparedVariants: VariantProduct[] = useMemo(() => {
     return (
       product?.variants.map((v) => ({
-        ...v,
-        variantName: v.variant_name, // ⬅ convertimos a camelCase
+        id: v.id,
+        stock: v.stock,
+        price: v.price,
+        category: {
+          id: v.category_id,
+          name: v.category
+        },
+        variantName: v.variant_name,
+        category_id: v.category_id,
+        product_id: v.product_id
       })) ?? []
     );
   }, [product?.variants]);
@@ -103,7 +111,7 @@ export const ProductoPage = () => {
         name: product.name,
         image: product.images?.[0] || "",
         variant_name: selectedVariant.variantName,
-        category: selectedVariant.category,
+        category: selectedVariant.category.name,
         price: selectedVariant.price,
         quantity: count,
       });
@@ -121,7 +129,7 @@ export const ProductoPage = () => {
         name: product.name,
         image: product.images?.[0] || "",
         variant_name: selectedVariant.variantName,
-        category: selectedVariant.category,
+        category: selectedVariant.category.name,
         price: selectedVariant.price,
         quantity: count,
       });

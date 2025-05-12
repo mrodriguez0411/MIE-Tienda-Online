@@ -25,7 +25,6 @@ export interface VariantProduct {
   variantName: string;
   category_id: string;
   product_id: string;
-  created_at: string;
 }
 
 export interface Product {

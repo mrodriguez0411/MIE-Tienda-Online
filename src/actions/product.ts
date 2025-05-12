@@ -31,7 +31,13 @@ export const getFilteredProducts = async ({ page = 1, brands = [] }: { page: num
 
 	let query = supabase
 		.from("products")
-		.select("*, variants(*)", { count: "exact" })
+		.select(`
+			*,
+			variants (
+				*,
+				category:category_id (id, name)
+			)
+		`, { count: "exact" })
 		.order("created_at", { ascending: false })
 		.range(from, to);
 
@@ -48,7 +54,13 @@ export const getFilteredProducts = async ({ page = 1, brands = [] }: { page: num
 export const getRecentProducts = async () => {
 	const { data: products, error } = await supabase
 		.from("products")
-		.select("*,variants(*)")
+		.select(`
+			*,
+			variants (
+				*,
+				category:category_id (id, name)
+			)
+		`)
 		.order("created_at", { ascending: false })
 		.limit(4);
 	if (error) throw new Error(error.message);

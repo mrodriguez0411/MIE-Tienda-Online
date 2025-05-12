@@ -1,4 +1,4 @@
-import { Product, Type, VariantProduct, Category } from "../interfaces";
+import { Product, Type, VariantProduct} from "../interfaces";
 
 // Función para formatear el precio a Pesos
 export const formatPrice = (price: number) => {
@@ -17,10 +17,10 @@ export const PreparedProducts = (products: Product[]) => {
       console.error('Expected an array of products, but received:', products);
       return [];
     }
-  
+
     // Filtramos productos únicos por ID
     const uniqueProducts = new Map();
-  
+
     products.forEach(product => {
       if (!uniqueProducts.has(product.id)) {
         const variantsGrouped = product.variants?.reduce((acc: Type[], variant: VariantProduct) => {
@@ -42,18 +42,31 @@ export const PreparedProducts = (products: Product[]) => {
           }
           return acc;
         }, []) || [];
-  
-        uniqueProducts.set(product.id, {
-          ...product,
-          price: Math.min(...variantsGrouped.map(item => item.price)),
-          stock: variantsGrouped.reduce((total, item) => total + item.stock, 0),
-          variants: variantsGrouped,
-          category: product.category.name
-        });
+
+        // Asegurarnos de que todos los campos existan
+        const formattedProduct = {
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          brand: product.brand,
+          features: product.features || [],
+          description: product.description || {},
+          images: product.images || [],
+          created_at: product.created_at,
+          price: Math.min(...variantsGrouped.map(item => item.price)) || 0,
+          category_id: product.category_id,
+          category: {
+            id: product.category_id,
+            name: product.category.name
+          },
+          variants: variantsGrouped
+        };
+
+        uniqueProducts.set(product.id, formattedProduct);
       }
     });
-  
-    return Array.from(uniqueProducts.values());
+
+    return Array.from(uniqueProducts.values()) as Product[];
   };
 
 // Función para formatear la fecha a formato 3 de enero de 2022

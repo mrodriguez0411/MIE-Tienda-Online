@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabase/client';
-import { Category, Product, VariantProduct } from '../interfaces/products';
+import { Category, Product} from '../interfaces/products';
 
 export const useCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -28,8 +28,13 @@ export const useCategories = () => {
           .select(`
             *,
             variants (
-              *,
-              category:category_id (id, name)
+              id,
+              stock,
+              price,
+              category:category_id (id, name),
+              variant_name,
+              category_id,
+              product_id
             )
           `)
           .order('name');
@@ -52,18 +57,15 @@ export const useCategories = () => {
             name: product.variants[0]?.category?.name || ''
           },
           category_id: product.variants[0]?.category_id || '',
-          variants: product.variants.map(variant => ({
+          variants: product.variants.map((variant: any) => ({
             id: variant.id,
             stock: variant.stock,
             price: variant.price,
-            category: {
-              id: variant.category?.id || '',
-              name: variant.category?.name || ''
-            },
+            category: variant.category,
             variantName: variant.variant_name,
             category_id: variant.category_id,
-            productId: variant.product_id
-          }) as VariantProduct)
+            product_id: variant.product_id
+          }))
         })) || [];
 
         // Asegurarnos de que los datos coincidan con el tipo Product
