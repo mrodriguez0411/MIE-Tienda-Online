@@ -23,38 +23,39 @@ export const PreparedProducts = (products: Product[]) => {
 
     products.forEach(product => {
       if (!uniqueProducts.has(product.id)) {
-        const variantsGrouped = product.variants?.reduce((acc: Type[], variant: VariantProduct) => {
+        const variantsGrouped = product.variants?.reduce((acc: VariantProduct[], variant: VariantProduct) => {
           const existingVariant = acc.find(item => item.variantName === variant.variantName);
           if (existingVariant) {
             existingVariant.price = Math.min(existingVariant.price, variant.price);
             existingVariant.stock += variant.stock;
           } else {
             acc.push({
+              id: variant.id,
+              product_id: variant.product_id,
               variantName: variant.variantName,
               price: variant.price,
               stock: variant.stock,
-              category: variant.category.name,
+              category: variant.category,
               category_id: variant.category_id,
-              product_id: variant.product_id,
-              id: variant.id,
               created_at: product.created_at
-            } as Type);
+            });
           }
           return acc;
         }, []) || [];
 
-        // Asegurarnos de que todos los campos existan
-        const formattedProduct = {
+        // Asegurarnos de que todos los campos necesarios existan
+        const formattedProduct: Product = {
           id: product.id,
           name: product.name,
           slug: product.slug,
           brand: product.brand,
+          price: product.price || product.variants?.[0]?.price || 0,
+          category: product.category || product.variants?.[0]?.category || { id: '', name: 'Sin categoría' },
+          category_id: product.category_id || product.variants?.[0]?.category_id || '',
           features: product.features || [],
-          description: product.description || {},
+          description: product.description || '',
           images: product.images || [],
-          created_at: product.created_at,
-          price: Math.min(...variantsGrouped.map(item => item.price)) || 0,
-          category_id: product.category_id,
+          created_at: product.created_at || '',
           category: {
             id: product.category_id,
             name: product.variants[0]?.category.name || 'Sin categoría'

@@ -25,30 +25,38 @@ export const getProducts = async (page: number) => {
 };
 
 export const getFilteredProducts = async ({ page = 1, brands = [] }: { page: number; brands: string[] }) => {
-	const itemPerPage = 10;
-	const from = (page - 1) * itemPerPage;
-	const to = from + itemPerPage - 1;
+  const itemPerPage = 10;
+  const from = (page - 1) * itemPerPage;
+  const to = from + itemPerPage - 1;
 
-	let query = supabase
-		.from("products")
-		.select(`
-			*,
-			variants (
-				*,
-				category:category_id (id, name)
-			)
-		`, { count: "exact" })
-		.order("created_at", { ascending: false })
-		.range(from, to);
+  let query = supabase
+    .from("products")
+    .select(`
+      *,
+      variants (
+        *,
+        category:category_id (id, name)
+      )
+    `, { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
-	if (brands.length > 0) {
-		query = query.in('brand', brands);
-	}
+  if (brands.length > 0) {
+    query = query.in('brand', brands);
+  }
 
-	const { data, error, count } = await query;
-	if (error) throw new Error(error.message);
+  const { data, error, count } = await query;
+  if (error) throw new Error(error.message);
 
-	return { data, count };
+  // Asegurarnos de que todos los productos tengan los campos necesarios
+  const productsWithFields = data.map(product => ({
+    ...product,
+    price: product.variants[0]?.price || 0,
+    category: product.variants[0]?.category || { id: '', name: 'Sin categoría' },
+    category_id: product.variants[0]?.category_id || ''
+  }));
+
+  return { data: productsWithFields, count };
 };
 
 export const getRecentProducts = async () => {
@@ -78,8 +86,18 @@ export const getRandomProducts = async () => {
       )
     `)
     .limit(20);
+  
   if (error) throw new Error(error.message);
-  return data.sort(() => 0.5 - Math.random()).slice(0, 4);
+  
+  // Asegurarnos de que todos los productos tengan los campos necesarios
+  const productsWithFields = data.map(product => ({
+    ...product,
+    price: product.variants[0]?.price || 0,
+    category: product.variants[0]?.category || { id: '', name: 'Sin categoría' },
+    category_id: product.variants[0]?.category_id || ''
+  }));
+  
+  return productsWithFields.sort(() => 0.5 - Math.random()).slice(0, 4);
 };
 
 export const getDestacatedProducts = async () => {
@@ -103,8 +121,16 @@ export const getAllProducts = async () => {
       )
     `)
     .order("created_at", { ascending: false });
+  
   if (error) throw new Error(error.message);
-  return data;
+  
+  // Asegurarnos de que todos los productos tengan los campos necesarios
+  return data.map(product => ({
+    ...product,
+    price: product.variants[0]?.price || 0,
+    category: product.variants[0]?.category || { id: '', name: 'Sin categoría' },
+    category_id: product.variants[0]?.category_id || ''
+  }));
 };
 
 export const getProductBySlug = async (slug: string) => {
