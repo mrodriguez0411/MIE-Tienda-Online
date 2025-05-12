@@ -57,7 +57,7 @@ export const PreparedProducts = (products: Product[]) => {
           category_id: product.category_id,
           category: {
             id: product.category_id,
-            name: product.category.name
+            name: product.variants[0]?.category.name || 'Sin categoría'
           },
           variants: variantsGrouped
         };
