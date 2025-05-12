@@ -65,7 +65,7 @@ export const ProductGrid = ({ title, products }: Props) => {
                   : "default-image.jpg"
               }
               variants={product.variants}
-              category={product.category.name}
+              category={product.variants[0]?.category || { id: '', name: 'Sin categoría' }}
             />
           ))
         ) : (

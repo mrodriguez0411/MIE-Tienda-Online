@@ -68,12 +68,18 @@ export const getRecentProducts = async () => {
 };
 
 export const getRandomProducts = async () => {
-	const { data, error } = await supabase
-		.from('products')
-		.select('*, variants(*)')
-		.limit(20);
-	if (error) throw new Error(error.message);
-	return data.sort(() => 0.5 - Math.random()).slice(0, 4);
+  const { data, error } = await supabase
+    .from('products')
+    .select(`
+      *,
+      variants (
+        *,
+        category:category_id (id, name)
+      )
+    `)
+    .limit(20);
+  if (error) throw new Error(error.message);
+  return data.sort(() => 0.5 - Math.random()).slice(0, 4);
 };
 
 export const getDestacatedProducts = async () => {
@@ -87,12 +93,18 @@ export const getDestacatedProducts = async () => {
 };
 
 export const getAllProducts = async () => {
-	const { data, error } = await supabase
-		.from("products")
-		.select("*")
-		.order("created_at", { ascending: false });
-	if (error) throw new Error(error.message);
-	return data;
+  const { data, error } = await supabase
+    .from("products")
+    .select(`
+      *,
+      variants (
+        *,
+        category:category_id (id, name)
+      )
+    `)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return data;
 };
 
 export const getProductBySlug = async (slug: string) => {
