@@ -93,32 +93,63 @@ export const getProductBySlug = async (slug: string) => {
 	return data;
 };
 
-/*export const searchProducts = async (searchTerm: string) => {
-	const { data, error } = await supabase
-		.from("products")
-		.select("*, variants(*)")
-		.ilike('name', `%${searchTerm}%`);
-	if (error) throw new Error(error.message);
-	return data;
-};*/
 export const searchProducts = async (searchTerm: string) => {
-	try {
-	  const { data: products, error } = await supabase
-		.from('products')
-		.select(`
-		  *,
-		  category:category_id (
-			id,
-			name,
-			slug
-		  ),
-		  variants (
-			*,
-			category:category_id (
-			  id,
-			  name,
-			  slug
-			)
+  try {
+    const { data, error } = await supabase
+      .from('products')
+       .select(`
+         *,
+         variants (
+           *,
+           category:category_id (
+             id,
+             name
+           )
+         )
+       `)
+      .or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+      .order('name');
+
+    if (error) throw new Error(error.message);
+    
+    if (data) {
+      return data.map(product => ({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        slug: product.slug,
+        features: product.features,
+        description: product.description,
+        images: product.images,
+        created_at: product.created_at,
+        price: product.variants[0]?.price || 0,
+        category: {
+          id: product.variants[0]?.category?.id || '',
+          name: product.variants[0]?.category?.name || ''
+        },
+        category_id: product.variants[0]?.category_id || '',
+        variants: product.variants.map(variant => ({
+          id: variant.id,
+          stock: variant.stock,
+          price: variant.price,
+          category: {
+            id: variant.category?.id || '',
+            name: variant.category?.name || ''
+          },
+          variantName: variant.variant_name,
+          category_id: variant.category_id,
+          product_id: variant.product_id,
+          
+        }))
+      }));
+    }
+    
+    return [];
+  } catch (error) {
+    console.error('Error searching products:', error);
+    return [];
+  }
+};/*
 		  )
 		`)
 		.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
@@ -141,7 +172,7 @@ export const searchProducts = async (searchTerm: string) => {
 	  console.error('Error searching products:', error);
 	  return [];
 	}
-  };
+  };*/
 
 // ======================== CREATE ======================== //
 

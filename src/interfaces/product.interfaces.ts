@@ -1,18 +1,22 @@
 import { Json } from "../supabase/supabase";
 
-
+export interface Category {
+  id: string;
+  name: string;
+}
 
 export interface Type{
     variantName: string;
     price: number;
     stock: number;
     category: string;
+    category_id: string;
     created_at: string;
     id: string;
 }
 
 export interface Product{
-    id : string;
+    id: string;
     name: string;
     brand: string;
     slug: string;
@@ -21,19 +25,21 @@ export interface Product{
     images: string[];
     created_at: string;
     price: number;
-    category: string;
+    category: Category; // Ahora es de tipo Category
     category_id: string;
     variants: VariantProduct[];
-   }
+}
 export interface VariantProduct{
-    id : string;
+    id: string;
     stock: number;
     price: number;
-    category: string;
+    category: {
+      id: string;
+      name: string;
+    };
     variantName: string;
     category_id: string;
     product_id: string;
-    created_at: string;
 }
 
 

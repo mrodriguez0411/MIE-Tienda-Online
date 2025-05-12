@@ -1,4 +1,4 @@
-import { Product, Type, VariantProduct } from "../interfaces";
+import { Product, Type, VariantProduct, Category } from "../interfaces";
 
 // Función para formatear el precio a Pesos
 export const formatPrice = (price: number) => {
@@ -33,10 +33,12 @@ export const PreparedProducts = (products: Product[]) => {
               variantName: variant.variantName,
               price: variant.price,
               stock: variant.stock,
-              category: variant.category, // Mantener la categoría de la variante
-              created_at: variant.created_at || "",
-              id: variant.id
-            });
+              category: variant.category.name,
+              category_id: variant.category_id,
+              product_id: variant.product_id,
+              id: variant.id,
+              created_at: product.created_at
+            } as Type);
           }
           return acc;
         }, []) || [];
@@ -46,7 +48,7 @@ export const PreparedProducts = (products: Product[]) => {
           price: Math.min(...variantsGrouped.map(item => item.price)),
           stock: variantsGrouped.reduce((total, item) => total + item.stock, 0),
           variants: variantsGrouped,
-          category: product.category // Mantener la categoría del producto
+          category: product.category.name
         });
       }
     });

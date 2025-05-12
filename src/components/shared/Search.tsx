@@ -59,7 +59,7 @@ export const Search = () => {
                   {product.name}
                 </p>
                 <p className="text-[13px] text-gray-600">
-                  {product.variants[0].category}/{''}
+                  {product.variants[0].category.name}/{''}
                   {product.variants[0].variantName}
                 </p>
   
