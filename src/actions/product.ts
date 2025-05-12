@@ -48,15 +48,30 @@ export const getFilteredProducts = async ({ page = 1, brands = [] }: { page: num
   const { data, error, count } = await query;
   if (error) throw new Error(error.message);
 
-  // Asegurarnos de que todos los productos tengan los campos necesarios
-  const productsWithFields = data.map(product => ({
+  // Asegurarnos de que los productos tengan los campos necesarios
+  const productsWithFields = data?.map(product => ({
     ...product,
     price: product.variants[0]?.price || 0,
-    category: product.variants[0]?.category || { id: '', name: 'Sin categoría' },
-    category_id: product.variants[0]?.category_id || ''
-  }));
+    category: {
+      id: product.variants[0]?.category_id || '',
+      name: product.variants[0]?.category?.name || 'Sin categoría'
+    },
+    category_id: product.variants[0]?.category_id || '',
+    variants: product.variants?.map(variant => ({
+      id: variant.id,
+      product_id: variant.product_id,
+      variantName: variant.variant_name,
+      price: variant.price,
+      stock: variant.stock,
+      category: {
+        id: variant.category_id,
+        name: variant.category?.name || 'Sin categoría'
+      },
+      category_id: variant.category_id
+    })) || []
+  })) || [];
 
-  return { data: productsWithFields, count };
+  return { products: productsWithFields, count };
 };
 
 export const getRecentProducts = async () => {
