@@ -1,4 +1,4 @@
-import { Product, Type, VariantProduct} from "../interfaces";
+import { Product, VariantProduct} from "../interfaces";
 
 // Función para formatear el precio a Pesos
 export const formatPrice = (price: number) => {
@@ -37,7 +37,7 @@ export const PreparedProducts = (products: Product[]) => {
               stock: variant.stock,
               category: variant.category,
               category_id: variant.category_id,
-              created_at: product.created_at
+              //created_at: product.created_at
             });
           }
           return acc;
@@ -56,10 +56,6 @@ export const PreparedProducts = (products: Product[]) => {
           description: product.description || '',
           images: product.images || [],
           created_at: product.created_at || '',
-          category: {
-            id: product.category_id,
-            name: product.variants[0]?.category.name || 'Sin categoría'
-          },
           variants: variantsGrouped
         };
 
