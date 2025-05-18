@@ -19,39 +19,34 @@ const storeApi: StateCreator<CartState> = set => ({
     totalAmount: 0,
 
     addItem: (item) => {
-    set(state => {
-        // Crear un identificador único con todas las propiedades relevantes
-        const uniqueId = `${item.variantId}-${item.productId}-${item.variant_name}-${item.category}`;
+        set(state => {
+            // Buscar si ya existe un producto con el mismo variantId
+            const existingItem = state.items.find(i => i.variantId === item.variantId);
 
-        // Buscar si ya existe un producto con el mismo identificador
-        const existingItem = state.items.find(
-            i => `${i.variantId}-${i.productId}-${i.variant_name}-${i.category}` === uniqueId
-        );
+            let updatedItems;
 
-        let updatedItems;
+            if (existingItem) {
+                // Si ya existe, sumamos la cantidad
+                updatedItems = state.items.map(i =>
+                    i.variantId === item.variantId
+                        ? { ...i, quantity: i.quantity + item.quantity }
+                        : i
+                );
+            } else {
+                // Si no existe, lo añadimos como un nuevo producto
+                updatedItems = [...state.items, item];
+            }
 
-        if (existingItem) {
-            // Si ya existe, sumamos la cantidad
-            updatedItems = state.items.map(i =>
-                `${i.variantId}-${i.productId}-${i.variant_name}-${i.category}` === uniqueId
-                    ? { ...i, quantity: i.quantity + item.quantity }
-                    : i
-            );
-        } else {
-            // Si no existe, lo añadimos como un nuevo producto
-            updatedItems = [...state.items, item];
-        }
+            const newTotalItems = updatedItems.reduce((acc, i) => acc + i.quantity, 0);
+            const newTotalAmount = updatedItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
 
-        const newTotalItems = updatedItems.reduce((acc, i) => acc + i.quantity, 0);
-        const newTotalAmount = updatedItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
-
-        return {
-            items: updatedItems,
-            totalAmount: newTotalAmount,
-            totalItemsInCart: newTotalItems,
-        };
-    });
-},
+            return {
+                items: updatedItems,
+                totalAmount: newTotalAmount,
+                totalItemsInCart: newTotalItems,
+            };
+        });
+    },
 
     removeItem: variantId => {
         set(state => {
