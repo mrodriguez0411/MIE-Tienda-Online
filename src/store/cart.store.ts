@@ -26,10 +26,12 @@ const storeApi: StateCreator<CartState> = set => ({
             let updatedItems;
 
             if (existingItem) {
-                // Si ya existe, sumamos la cantidad
+                // Si ya existe, sumamos la cantidad y calculamos el nuevo precio
+                const newQuantity = existingItem.quantity + item.quantity;
+                const newPrice = existingItem.price * newQuantity;
                 updatedItems = state.items.map(i =>
                     i.variantId === item.variantId
-                        ? { ...i, quantity: i.quantity + item.quantity }
+                        ? { ...i, quantity: newQuantity, price: newPrice }
                         : i
                 );
             } else {
@@ -74,8 +76,10 @@ const storeApi: StateCreator<CartState> = set => ({
 
     updateQuantity: (variantId, quantity) => {
         set(state => {
-            const updatedItems = state.items.map(i =>
-                i.variantId === variantId ? { ...i, quantity } : i
+            const updatedItems = state.items.map(i => 
+                i.variantId === variantId 
+                    ? { ...i, quantity, price: i.price / i.quantity * quantity }
+                    : i
             );
 
             const newTotalItems = updatedItems.reduce(
@@ -84,7 +88,7 @@ const storeApi: StateCreator<CartState> = set => ({
             );
 
             const newTotalAmount = updatedItems.reduce(
-                (acc, i) => acc + i.price * i.quantity,
+                (acc, i) => acc + i.price,
                 0
             );
 
