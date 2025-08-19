@@ -8,6 +8,9 @@ import { Loader } from "../components/shared/Loader";
 
 //validación del form con zod
 
+// Roles permitidos
+const ROLES = ['customer', 'admin'] as const;
+
 export const userRegisterSchema = z.object({
   email: z.string().email("Ingrese una dirección de correo válida"),
   password: z
@@ -22,6 +25,7 @@ export const userRegisterSchema = z.object({
   firstName: z.string().min(1, "Debe ingresar un nombre"),
   lastName: z.string().min(1, "Debe ingresar el apellido"),
   phone: z.string().optional(),
+  role: z.enum(ROLES).default('customer'),
 });
 export type UserRegisterFormValues = z.infer<typeof userRegisterSchema>;
 
@@ -43,9 +47,10 @@ export const RegisterPage = () => {
   const{mutate, isPending} = useRegister();
   
   const onRegister = handleSubmit((data) => {
-    const{email, password, firstName, lastName, phone} = data;
-
-    mutate({email, password, firstName, lastName, phone})
+    const{email, password, firstName, lastName, phone, role} = data;
+    console.log('Datos del registro:', {email, role});
+    
+    mutate({email, password, firstName, lastName, phone, role})
   });
 
   const {session, isLoading} = useUser();
@@ -100,6 +105,15 @@ export const RegisterPage = () => {
             className="border border-cyan-800 text-black px-5 py-4 placeholder: text-black text-sm rounded-full w-full"
             {...register("email")}
           />
+          
+          <select
+            {...register("role")}
+            className="border border-cyan-800 text-black px-5 py-4 text-sm rounded-full w-full"
+            defaultValue="customer"
+          >
+            <option value="customer">Cliente</option>
+            <option value="admin">Administrador</option>
+          </select>
           {errors.email && <p className="text-red-600">{errors.email.message}</p>}
 
           <input
