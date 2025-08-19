@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { signOut } from '../actions';
 import { useRoleUser, useUser } from '../hooks';
 import { useEffect } from 'react';
-import { supabase } from '../supabase/client';
+import supabase from '../supabase/client';
 import { Loader } from '../components/shared/Loader';
 import { HiOutlineExternalLink } from 'react-icons/hi';
 

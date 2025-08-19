@@ -3,7 +3,7 @@ import { useCartStore } from '../store/cart.store';
 import { useUser } from '../hooks';
 import { Loader } from '../components/shared/Loader';
 import { useEffect } from 'react';
-import { supabase } from '../supabase/client';
+import supabase from '../supabase/client';
 import { FormCheckout } from '../components/chekout/FormCheckout';
 import { ItemsCheckout } from '../components/chekout/ItemsCheckout';
 

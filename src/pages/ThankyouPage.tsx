@@ -4,7 +4,7 @@ import { Loader } from '../components/shared/Loader';
 import { CiCircleCheck } from 'react-icons/ci';
 import { formatPrice } from '../helpers';
 import { useEffect } from 'react';
-import { supabase } from '../supabase/client';
+import supabase from '../supabase/client';
 
 export const ThankyouPage = () => {
 	const { id } = useParams<{ id: string }>();

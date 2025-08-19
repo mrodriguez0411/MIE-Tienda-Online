@@ -9,8 +9,11 @@ export const useUser = () => {
 		refetchOnWindowFocus: true,
 	});
 
+	const user = data?.session?.user;
+
 	return {
 		session: data?.session,
+		user,
 		isLoading,
 	};
 };

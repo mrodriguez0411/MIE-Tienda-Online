@@ -32,15 +32,44 @@ export const useProductHome = () =>{
 
     // Asegurarnos de que todos los productos tengan los campos necesarios y que la categoría sea del tipo correcto
     const formatProducts = (products: any[]) => {
-      return products.map(product => ({
-        ...product,
-        price: product.variants[0]?.price || 0,
-        category: {
-          id: product.variants[0]?.category_id || '',
-          name: product.variants[0]?.category?.name || 'Sin categoría'
-        },
-        category_id: product.variants[0]?.category_id || ''
-      }));
+      if (!Array.isArray(products)) {
+        console.log('formatProducts received non-array input:', products);
+        return [];
+      }
+      
+      console.log('Raw products data:', products);
+      
+      const formattedProducts = products.map(product => {
+        // Si el producto ya tiene variantes, lo devolvemos con la estructura correcta
+        if (product.variants && product.variants.length > 0) {
+          return {
+            ...product,
+            price: product.price || product.variants[0]?.price || 0,
+            category: product.category || product.variants[0]?.category || { id: '', name: 'Sin categoría' },
+            category_id: product.category_id || product.variants[0]?.category_id || ''
+          };
+        }
+        
+        // Si no tiene variantes, creamos una variante por defecto
+        return {
+          ...product,
+          variants: [{
+            id: product.id,
+            variantName: 'Único',
+            price: product.price || 0,
+            stock: product.stock || 0,
+            category: product.category || { id: '', name: 'Sin categoría' },
+            category_id: product.category_id || '',
+            product_id: product.id
+          }],
+          price: product.price || 0,
+          category: product.category || { id: '', name: 'Sin categoría' },
+          category_id: product.category_id || ''
+        };
+      });
+      
+      console.log('Formatted products:', formattedProducts);
+      return formattedProducts;
     };
 
     return {

@@ -11,7 +11,7 @@ import {
   IoIosAddCircleOutline,
   IoIosCloseCircleOutline,
 } from 'react-icons/io';
-import { supabase } from '../../../supabase/client';
+import supabase from '../../../supabase/client';
 
 interface Props {
   control: Control<ProductFormValues>;

@@ -1,4 +1,5 @@
 export * from "./Sidebar";
+export * from "./UsersTable";
 
 //ordenes
 export * from "./orders/TableOrdersAdmin";
@@ -15,6 +16,7 @@ export * from "./products/InputImages";
 export * from "./products/Editor";
 export * from "./products/UploaderImages";
 export * from "./products/SeccionFormProduct";
+
 
 
 //export * from "./products/ManageTypeCategories";

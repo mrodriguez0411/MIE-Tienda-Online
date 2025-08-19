@@ -1,6 +1,6 @@
 import { IoBagAdd } from "react-icons/io5";
 import { useEffect, useState } from "react";
-import { supabase } from "../../supabase/client";
+import supabase from "../../supabase/client";
 import toast from "react-hot-toast";
 export const DashboardCategorys = () => {
   const [newCategory, setNewCategory] = useState("");

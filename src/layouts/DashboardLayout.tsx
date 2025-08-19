@@ -1,45 +1,44 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, Navigate } from "react-router-dom";
 import { Sidebar } from "../components/dashboard";
 import { useUser } from "../hooks";
 import { useEffect, useState } from "react";
-import { getSession, getUserRole } from "../actions";
-import { Loader } from "../components/shared/Loader";
-import { supabase } from "../supabase/client";
+import supabase from "../supabase/client";
 
 export const DashboardLayout = () => {
+  const { session } = useUser();
   const navigate = useNavigate();
-
-  const { isLoading, session } = useUser();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [roleLoading, setRoleLoading] = useState(true);
 
   useEffect(() => {
     const checkRole = async () => {
       setRoleLoading(true);
-      const session = await getSession();
       if (!session) {
-        navigate("/login");
+        return;
       }
 
-      const role = await getUserRole(session.session?.user.id as string);
-
-      if (role !== "admin") {
-        navigate("/", { replace: true });
-      }
-
+      const role = session.user.user_metadata?.role;
+      setIsAdmin(role === 'admin');
       setRoleLoading(false);
     };
     checkRole();
+  }, [session]);
 
-    
+  useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_OUT' || !session) {
+      if (event === 'SIGNED_OUT' || !session) {
         navigate('/login', {replace: true});
       }
     });
-      
   }, [navigate]);
 
-  if (isLoading || !session || roleLoading) return <Loader />;
+  if (!session?.user || roleLoading) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/productos" replace />;
+  }
 
   return (
     <div className="flex bg-gray-100 min-h-screen font-roboto">

@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { RootLayout } from "../layouts/RootLayout";
-import { HomePage, AboutPage, DashboardProductsPage, DashboardNewProductsPage, LoginPage, RegisterPage, DashboardProductSlugPage, ProductosPage, ProductoPage, OrdersUserPage, CheckoutPage, OrderUserPage, DashboardOrdersPage, DashboardOrderPage, DashboardCategorys} from "../pages";
+import { HomePage, AboutPage, DashboardProductsPage, DashboardNewProductsPage, LoginPage, RegisterPage, DashboardProductSlugPage, ProductosPage, ProductoPage, OrdersUserPage, CheckoutPage, OrderUserPage, DashboardOrdersPage, DashboardOrderPage, DashboardCategorys, UsersPage } from "../pages";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 import { ClientLayout } from "../layouts/ClientLayout";
 import { ThankyouPage } from "../pages/ThankyouPage";
@@ -96,6 +96,10 @@ export const router = createBrowserRouter([
             {
                 path: 'categorias',
                 element: <DashboardCategorys/>
+            },
+            {
+                path: 'users',
+                element: <UsersPage/>,
             },
         ]
     },

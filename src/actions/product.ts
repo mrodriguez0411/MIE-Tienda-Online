@@ -1,6 +1,6 @@
 import { extractFilePath } from "../helpers";
 import { ProductInput } from "../interfaces";
-import { supabase } from "../supabase/client";
+import supabase from "../supabase/client";
 
 // ======================== GETTERS ======================== //
 
@@ -75,19 +75,60 @@ export const getFilteredProducts = async ({ page = 1, brands = [] }: { page: num
 };
 
 export const getRecentProducts = async () => {
-	const { data: products, error } = await supabase
-		.from("products")
-		.select(`
-			*,
-			variants (
-				*,
-				category:category_id (id, name)
-			)
-		`)
-		.order("created_at", { ascending: false })
-		.limit(4);
-	if (error) throw new Error(error.message);
-	return products;
+  const { data, error } = await supabase
+    .from('products')
+    .select(`
+      *,
+      variants (
+        *,
+        category:category_id (id, name)
+      )
+    `)
+    .order('created_at', { ascending: false })
+    .limit(4);
+  
+  if (error) throw new Error(error.message);
+  
+  // Asegurarnos de que todos los productos tengan los campos necesarios
+  return data.map(product => {
+    // Si no hay variantes, creamos una por defecto
+    if (!product.variants || product.variants.length === 0) {
+      return {
+        ...product,
+        price: 0,
+        category: { id: '', name: 'Sin categoría' },
+        category_id: '',
+        variants: [{
+          id: product.id,
+          product_id: product.id,
+          variantName: 'Único',
+          price: 0,
+          stock: 0,
+          category: { id: '', name: 'Sin categoría' },
+          category_id: ''
+        }]
+      };
+    }
+    
+    // Si hay variantes, aseguramos que tengan el formato correcto
+    const formattedVariants = product.variants.map((variant: any) => ({
+      ...variant,
+      // Usamos el variantName de la base de datos o intentamos extraerlo de variant_name o name
+      variantName: variant.variantName || variant.variant_name || variant.name || 'Variante',
+      price: variant.price || 0,
+      stock: variant.stock || 0,
+      category: variant.category || { id: variant.category_id || '', name: 'Sin categoría' },
+      category_id: variant.category_id || ''
+    }));
+    
+    return {
+      ...product,
+      price: formattedVariants[0]?.price || 0,
+      category: formattedVariants[0]?.category || { id: '', name: 'Sin categoría' },
+      category_id: formattedVariants[0]?.category_id || '',
+      variants: formattedVariants
+    };
+  });
 };
 
 export const getRandomProducts = async () => {
@@ -105,12 +146,45 @@ export const getRandomProducts = async () => {
   if (error) throw new Error(error.message);
   
   // Asegurarnos de que todos los productos tengan los campos necesarios
-  const productsWithFields = data.map(product => ({
-    ...product,
-    price: product.variants[0]?.price || 0,
-    category: product.variants[0]?.category || { id: '', name: 'Sin categoría' },
-    category_id: product.variants[0]?.category_id || ''
-  }));
+  const productsWithFields = data.map(product => {
+    // Si no hay variantes, creamos una por defecto
+    if (!product.variants || product.variants.length === 0) {
+      return {
+        ...product,
+        price: 0,
+        category: { id: '', name: 'Sin categoría' },
+        category_id: '',
+        variants: [{
+          id: product.id,
+          product_id: product.id,
+          variantName: 'Único',
+          price: 0,
+          stock: 0,
+          category: { id: '', name: 'Sin categoría' },
+          category_id: ''
+        }]
+      };
+    }
+    
+    // Si hay variantes, aseguramos que tengan el formato correcto
+    const formattedVariants = product.variants.map((variant: any) => ({
+      ...variant,
+      // Usamos el variantName de la base de datos o intentamos extraerlo de variant_name o name
+      variantName: variant.variantName || variant.variant_name || variant.name || 'Variante',
+      price: variant.price || 0,
+      stock: variant.stock || 0,
+      category: variant.category || { id: variant.category_id || '', name: 'Sin categoría' },
+      category_id: variant.category_id || ''
+    }));
+    
+    return {
+      ...product,
+      price: formattedVariants[0]?.price || 0,
+      category: formattedVariants[0]?.category || { id: '', name: 'Sin categoría' },
+      category_id: formattedVariants[0]?.category_id || '',
+      variants: formattedVariants
+    };
+  });
   
   return productsWithFields.sort(() => 0.5 - Math.random()).slice(0, 4);
 };
