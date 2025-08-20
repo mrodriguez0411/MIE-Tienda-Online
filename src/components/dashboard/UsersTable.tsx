@@ -96,74 +96,254 @@ const userSchema = yup.object().shape({
 
 // API functions
 const fetchUsers = async (): Promise<UserRow[]> => {
-  const { data: { users }, error } = await supabase
-    .from('profiles')
-    .select('*');
+  try {
+    // First, get all customers
+    const { data: customers, error: customersError } = await supabaseAdmin
+      .from('customers')
+      .select('*');
     
-  if (error) {
+    if (customersError) {
+      console.error('Error fetching customers:', customersError);
+      throw customersError;
+    }
+    
+    if (!customers || customers.length === 0) return [];
+    
+    // Then get all user roles
+    const { data: userRoles, error: rolesError } = await supabaseAdmin
+      .from('user_roles')
+      .select('*');
+      
+    if (rolesError) {
+      console.error('Error fetching user roles:', rolesError);
+      throw rolesError;
+    }
+    
+    // Create a map of user_id to role for quick lookup
+    const roleMap = new Map<string, UserRole>();
+    userRoles?.forEach(ur => {
+      roleMap.set(ur.user_id, ur.role as UserRole);
+    });
+    
+    // Map the customers to our UserRow format
+    return customers.map(customer => ({
+      id: customer.user_id,
+      email: customer.email || '',
+      first_name: customer.first_name || '',
+      last_name: customer.last_name || '',
+      phone: customer.phone || '',
+      role: roleMap.get(customer.user_id) || 'customer',
+      created_at: customer.created_at,
+    } as UserRow));
+  } catch (error) {
+    console.error('Error in fetchUsers:', error);
     throw error;
   }
-  
-  return users || [];
 };
 
 const createUser = async (userData: Omit<UserFormValues, 'isEdit' | 'confirmPassword'>): Promise<UserRow> => {
-  const { data, error } = await supabase.auth.admin.createUser({
-    email: userData.email,
-    password: userData.password || '',
-    email_confirm: true,
-    user_metadata: {
+  if (!userData.password) {
+    throw new Error('Password is required for new users');
+  }
+
+  let userId: string;
+  
+  try {
+    // First create the auth user
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email: userData.email,
+      password: userData.password,
+      email_confirm: true // Auto-confirm the email
+    });
+    
+    if (authError) throw authError;
+    if (!authData.user) throw new Error('Failed to create user: No user data returned');
+    
+    userId = authData.user.id;
+    const role = userData.role || 'customer';
+    
+    // Create customer in customers table
+    const { error: customerError } = await supabaseAdmin
+      .from('customers')
+      .insert({
+        user_id: userId,
+        email: userData.email,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        phone: userData.phone || null,
+      });
+      
+    if (customerError) {
+      console.error('Error creating customer:', customerError);
+      throw customerError;
+    }
+    
+    // Create the user role
+    const { error: roleError } = await supabaseAdmin
+      .from('user_roles')
+      .insert([{
+        user_id: userId,
+        role: role
+      }]);
+      
+    if (roleError) throw roleError;
+    
+    // Return the created user in our format
+    return {
+      id: userId,
+      email: userData.email,
       first_name: userData.first_name,
       last_name: userData.last_name,
-      phone: userData.phone,
-      role: userData.role
+      phone: userData.phone || '',
+      role: role as UserRole,
+      created_at: new Date().toISOString(),
+    };
+    
+  } catch (error) {
+    console.error('Error in createUser:', error);
+    
+    // Clean up if user was created but something else failed
+    if (userId) {
+      await Promise.all([
+        supabaseAdmin.from('profiles').delete().eq('user_id', userId),
+        supabaseAdmin.from('user_roles').delete().eq('user_id', userId),
+        supabaseAdmin.auth.admin.deleteUser(userId)
+      ]).catch(console.error);
     }
-  });
-  
-  if (error) {
+    
     throw error;
   }
-  
-  return {
-    id: data.user.id,
-    email: data.user.email || '',
-    first_name: userData.first_name,
-    last_name: userData.last_name,
-    phone: userData.phone,
-    role: userData.role,
-    created_at: data.user.created_at,
-  };
 };
 
 const updateUser = async (userId: string, userData: Partial<UserFormValues>): Promise<UserRow> => {
-  const { data, error } = await supabase.auth.admin.updateUserById(userId, {
-    email: userData.email,
-    user_metadata: {
-      first_name: userData.first_name,
-      last_name: userData.last_name,
-      phone: userData.phone,
-      role: userData.role
+  try {
+    const profileUpdates: Record<string, any> = {};
+    let roleUpdate: UserRole | null = null;
+    
+    // Prepare profile updates
+    if (userData.email !== undefined) profileUpdates.email = userData.email;
+    if (userData.first_name !== undefined) profileUpdates.first_name = userData.first_name;
+    if (userData.last_name !== undefined) profileUpdates.last_name = userData.last_name;
+    if (userData.phone !== undefined) profileUpdates.phone = userData.phone;
+    
+    // Check if role is being updated
+    if (userData.role !== undefined) {
+      roleUpdate = userData.role as UserRole;
     }
-  });
-  
-  if (error) {
+    
+    // Update customer if there are updates
+    if (Object.keys(profileUpdates).length > 0) {
+      const { error: customerError } = await supabaseAdmin
+        .from('customers')
+        .update(profileUpdates)
+        .eq('user_id', userId);
+        
+      if (customerError) {
+        console.error('Error updating customer:', customerError);
+        throw customerError;
+      }
+    }
+    
+    // Update role in user_roles table if needed
+    if (roleUpdate !== null) {
+      // Check if user already has a role entry
+      const { data: existingRole, error: roleFetchError } = await supabaseAdmin
+        .from('user_roles')
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle();
+        
+      if (roleFetchError) throw roleFetchError;
+      
+      if (existingRole) {
+        // Update existing role
+        const { error: updateRoleError } = await supabaseAdmin
+          .from('user_roles')
+          .update({ role: roleUpdate })
+          .eq('user_id', userId);
+          
+        if (updateRoleError) throw updateRoleError;
+      } else {
+        // Insert new role
+        const { error: insertRoleError } = await supabaseAdmin
+          .from('user_roles')
+          .insert([{ user_id: userId, role: roleUpdate }]);
+          
+        if (insertRoleError) throw insertRoleError;
+      }
+    }
+    
+    // Fetch updated user data and role separately
+    const [
+      { data: updatedProfile, error: profileFetchError },
+      { data: updatedRole, error: roleFetchError }
+    ] = await Promise.all([
+      supabaseAdmin
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single(),
+      supabaseAdmin
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .maybeSingle()
+    ]);
+    
+    if (profileFetchError) throw profileFetchError;
+    if (roleFetchError) throw roleFetchError;
+    
+    if (!updatedProfile) {
+      throw new Error('Failed to fetch updated profile');
+    }
+    
+    return {
+      id: userId,
+      email: updatedProfile.email || '',
+      first_name: updatedProfile.first_name || '',
+      last_name: updatedProfile.last_name || '',
+      phone: updatedProfile.phone || '',
+      role: (updatedRole?.role as UserRole) || 'customer',
+      created_at: updatedProfile.created_at,
+    };
+  } catch (error) {
+    console.error('Error in updateUser:', error);
     throw error;
   }
-  
-  return {
-    id: data.user.id,
-    email: data.user.email || '',
-    first_name: data.user.user_metadata?.first_name || '',
-    last_name: data.user.user_metadata?.last_name || '',
-    phone: data.user.user_metadata?.phone || '',
-    role: data.user.user_metadata?.role || 'customer',
-    created_at: data.user.created_at,
-  };
 };
 
 const deleteUser = async (userId: string): Promise<void> => {
-  const { error } = await supabase.auth.admin.deleteUser(userId);
-  if (error) {
+  try {
+    // Delete from user_roles first
+    const { error: roleError } = await supabaseAdmin
+      .from('user_roles')
+      .delete()
+      .eq('user_id', userId);
+      
+    if (roleError) {
+      console.error('Error deleting user role:', roleError);
+      throw roleError;
+    }
+    
+    // First delete the customer
+    const { error: customerError } = await supabaseAdmin
+      .from('customers')
+      .delete()
+      .eq('user_id', userId);
+      
+    if (customerError) {
+      console.error('Error deleting customer:', customerError);
+      throw customerError;
+    }
+    
+    // Finally, delete the auth user
+    const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    if (authError) {
+      console.error('Error deleting auth user:', authError);
+      throw authError;
+    }
+  } catch (error) {
+    console.error('Error in deleteUser:', error);
     throw error;
   }
 };
@@ -245,45 +425,7 @@ const UsersTable: React.FC = () => {
     reset();
   }, [reset, setEditingUser]);
 
-  // Handle delete dialog
-  const handleOpenDeleteDialog = useCallback((user: UserRow) => {
-    setUserToDelete(user);
-    setIsDeleteDialogOpen(true);
-  }, [setUserToDelete]);
-
-  const handleCloseDeleteDialog = useCallback(() => {
-    setIsDeleteDialogOpen(false);
-    setUserToDelete(null);
-  }, []);
-
-  const handleDeleteUser = useCallback(async () => {
-    if (!userToDelete) return;
-    
-    try {
-      await deleteUserMutation.mutateAsync(userToDelete.id);
-      handleCloseDeleteDialog();
-      showSnackbar('Usuario eliminado correctamente', 'success');
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      showSnackbar('Error al eliminar el usuario', 'error');
-    }
-  }, [userToDelete, deleteUserMutation, handleCloseDeleteDialog, showSnackbar]);
-
-  // Fetch users
-  const { data: usersData = [], isLoading, error } = useQuery<UserRow[], Error>({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
-  });
-
-  // Handle query errors
-  useEffect(() => {
-    if (error) {
-      console.error('Error fetching users:', error);
-      showSnackbar('Error al cargar los usuarios', 'error');
-    }
-  }, [error, showSnackbar]);
-
-  // Mutations
+  // Mutations - Defined first to avoid reference errors
   const createUserMutation = useMutation({
     mutationFn: (data: Omit<UserFormValues, 'isEdit' | 'confirmPassword'>) => 
       createUser(data),
@@ -321,6 +463,44 @@ const UsersTable: React.FC = () => {
       showSnackbar('Error al eliminar el usuario', 'error');
     }
   });
+
+  // Handle delete dialog
+  const handleOpenDeleteDialog = useCallback((user: UserRow) => {
+    setUserToDelete(user);
+    setIsDeleteDialogOpen(true);
+  }, []);
+
+  const handleCloseDeleteDialog = useCallback(() => {
+    setIsDeleteDialogOpen(false);
+    setUserToDelete(null);
+  }, []);
+
+  const handleDeleteUser = useCallback(async () => {
+    if (!userToDelete) return;
+    
+    try {
+      await deleteUserMutation.mutateAsync(userToDelete.id);
+      handleCloseDeleteDialog();
+      showSnackbar('Usuario eliminado correctamente', 'success');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      showSnackbar('Error al eliminar el usuario', 'error');
+    }
+  }, [userToDelete, deleteUserMutation, handleCloseDeleteDialog, showSnackbar]);
+
+  // Fetch users
+  const { data: usersData = [], isLoading, error } = useQuery<UserRow[], Error>({
+    queryKey: ['users'],
+    queryFn: fetchUsers,
+  });
+
+  // Handle query errors
+  useEffect(() => {
+    if (error) {
+      console.error('Error fetching users:', error);
+      showSnackbar('Error al cargar los usuarios', 'error');
+    }
+  }, [error, showSnackbar]);
 
   // Handle form submission
   const onSubmit = useCallback(async (data: UserFormValues) => {
@@ -401,7 +581,7 @@ const UsersTable: React.FC = () => {
                   <TableRow key={user.id}>
                     <TableCell>{`${user.first_name} ${user.last_name}`}</TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phone}</TableCell>
+                    <TableCell>{user.phone || '-'}</TableCell>
                     <TableCell>
                       <Chip 
                         label={user.role === 'admin' ? 'Administrador' : 'Cliente'}
