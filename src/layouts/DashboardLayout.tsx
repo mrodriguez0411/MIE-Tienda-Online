@@ -1,105 +1,99 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Sidebar } from "../components/dashboard";
 import { useUser } from "../hooks";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import supabase from "../supabase/client";
 
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-700"></div>
+  </div>
+);
+
 export const DashboardLayout = () => {
-  const { session, isAdmin: isUserAdmin } = useUser();
+  const { session, isAdmin: isUserAdmin, isLoading } = useUser();
   const navigate = useNavigate();
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
-  const checkAuthAndRole = useCallback(async () => {
-    console.log('Verificando autenticación y rol...');
-    
-    // Si no hay sesión, redirigir a login
-    if (!session?.user) {
-      console.log('No hay sesión activa, redirigiendo a login');
-      return { shouldRedirect: true, redirectTo: '/login' };
-    }
-
-    console.log('Usuario autenticado, verificando rol...');
-    
-    // Si el hook useUser ya nos dice que es admin, continuar
-    if (isUserAdmin) {
-      console.log('Usuario es administrador (según useUser)');
-      return { shouldRedirect: false };
-    }
-
-    // Si no es admin según useUser, verificar en la base de datos
-    try {
-      console.log('Buscando rol en la base de datos para el usuario:', session.user.id);
-      
-      const { data: userRole, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .single();
-
-      if (error || !userRole) {
-        console.log('No se encontró rol en la base de datos, revisando metadatos...');
-        const role = session.user.user_metadata?.role || 'customer';
-        console.log('Rol en metadatos:', role);
-        
-        if (role !== 'admin') {
-          console.log('Usuario no es administrador, redirigiendo a /productos');
-          return { shouldRedirect: true, redirectTo: '/productos' };
-        }
-      } else if (userRole.role !== 'admin') {
-        console.log('Usuario no es administrador según la base de datos, redirigiendo a /productos');
-        return { shouldRedirect: true, redirectTo: '/productos' };
-      }
-
-      console.log('Usuario es administrador');
-      return { shouldRedirect: false };
-      
-    } catch (error) {
-      console.error('Error al verificar el rol:', error);
-      return { shouldRedirect: true, redirectTo: '/productos' };
-    }
-  }, [session, isUserAdmin]);
-
+  // Handle authentication and authorization
   useEffect(() => {
     let isMounted = true;
 
-    const initialize = async () => {
-      if (!isMounted) return;
-      
-      setIsLoading(true);
-      const { shouldRedirect, redirectTo } = await checkAuthAndRole();
-      
-      if (!isMounted) return;
-      
-      if (shouldRedirect && redirectTo) {
-        console.log(`Redirigiendo a: ${redirectTo}`);
-        navigate(redirectTo, { replace: true });
-      } else {
-        console.log('Usuario autorizado, mostrando dashboard');
-        setIsInitialized(true);
+    const checkAuthAndRole = async () => {
+      try {
+        // If still loading user data, wait
+        if (isLoading) {
+          console.log('Loading user data...');
+          return;
+        }
+
+        // If no session, redirect to login
+        if (!session?.user) {
+          console.log('No active session, redirecting to login');
+          navigate('/login', { replace: true, state: { from: location } });
+          return;
+        }
+
+        console.log('User session found, checking admin status...');
+        
+        // Check if user is admin from useUser hook or user metadata
+        let isAdmin = isUserAdmin || session.user.user_metadata?.role === 'admin';
+        
+        // If not admin yet, check database
+        if (!isAdmin) {
+          console.log('Checking admin status in database for user:', session.user.id);
+          const { data: userRole, error } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .single();
+
+          if (error || !userRole || userRole.role !== 'admin') {
+            console.log('User is not an admin, redirecting to /productos');
+            if (isMounted) {
+              navigate('/productos', { replace: true });
+            }
+            return;
+          }
+          isAdmin = true;
+        }
+
+        console.log('User is authorized as admin');
+        if (isMounted) {
+          setIsAuthorized(true);
+        }
+      } catch (error) {
+        console.error('Error during authentication check:', error);
+        if (isMounted) {
+          navigate('/login', { replace: true, state: { from: location } });
+        }
+      } finally {
+        if (isMounted) {
+          setIsCheckingAuth(false);
+        }
       }
-      
-      setIsLoading(false);
     };
 
-    initialize();
+    checkAuthAndRole();
 
     return () => {
       isMounted = false;
     };
-  }, [checkAuthAndRole, navigate]);
+  }, [session, isUserAdmin, isLoading, navigate, location]);
 
-  // Mostrar indicador de carga mientras se verifica todo
-  if (isLoading || !isInitialized) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-700"></div>
-      </div>
-    );
+  // Show loading spinner while checking auth
+  if (isCheckingAuth || isLoading) {
+    return <LoadingSpinner />;
   }
 
-  // Si llegamos aquí, el usuario está autenticado y es administrador
+  // If not authorized, don't render anything (will be redirected)
+  if (!isAuthorized) {
+    return null;
+  }
 
+  // If we get here, the user is authenticated and is an admin
   return (
     <div className="flex bg-gray-100 min-h-screen font-roboto">
       <Sidebar />
