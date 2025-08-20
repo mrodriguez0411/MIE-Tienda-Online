@@ -9,6 +9,7 @@ import { ItemsCheckout } from './ItemsCheckout';
 import { useCreateOrder } from '../../hooks';
 import { useCartStore } from '../../store/cart.store';
 import { ImSpinner2 } from 'react-icons/im';
+import { MercadoPagoButton } from '../payment/MercadoPagoButton';
 
 export const FormCheckout = () => {
 	const {
@@ -24,6 +25,12 @@ export const FormCheckout = () => {
 	const cleanCart = useCartStore(state => state.cleanCart);
 	const cartItems = useCartStore(state => state.items);
 	const totalAmount = useCartStore(state => state.totalAmount);
+
+	const handlePaymentSuccess = () => {
+		// Aquí puedes agregar lógica adicional después de un pago exitoso
+		// como redirigir a una página de agradecimiento o mostrar un mensaje
+		console.log('Pago exitoso');
+	};
 
 	const onSubmit = handleSubmit(data => {
 		const orderInput = {
@@ -115,22 +122,40 @@ export const FormCheckout = () => {
 					</div>
 				</div>
 
-				<div className='flex flex-col'>
-					<div className='flex justify-between items-center text-sm border border-slate-600 bg-stone-100 py-4 rounded-ss-md rounded-se-md px-6'>
-						<span>Depósito Bancario</span>
+				<div className='flex flex-col gap-4'>
+					{/* MercadoPago Payment */}
+					<div className='flex flex-col'>
+						<div className='flex justify-between items-center text-sm border border-slate-600 bg-stone-100 py-4 rounded-ss-md rounded-se-md px-6'>
+							<span>Pago con MercadoPago</span>
+						</div>
+						<div className='bg-stone-100 text-[13px] p-5 space-y-4 border border-gray-200 rounded-es-md rounded-ee-md'>
+							<p>Paga de forma segura con MercadoPago</p>
+							<MercadoPagoButton 
+								total={totalAmount}
+								onPaymentSuccess={handlePaymentSuccess}
+								onPaymentError={(error) => console.error('Payment error:', error)}
+							/>
+						</div>
 					</div>
 
-					<div className='bg-stone-100 text-[13px] p-5 space-y-0.5 border border-gray-200 rounded-es-md rounded-ee-md'>
-						<p>Compra a traves de transferencia bancaria</p>
-						<p>BANCO PICHINCHA</p>
-						<p>Razón Social: CelularesBaratos</p>
-						<p>RUC: 123456789000</p>
-						<p>Tipo de cuenta: Corriente</p>
-						<p>Número de cuenta: 1234567890</p>
-						<p>
-							La información será compartida nuevamente una vez que se
-							haya finalizado la compra
-						</p>
+					{/* Bank Transfer */}
+					<div className='flex flex-col'>
+						<div className='flex justify-between items-center text-sm border border-slate-600 bg-stone-100 py-4 rounded-ss-md rounded-se-md px-6'>
+							<span>Depósito Bancario</span>
+						</div>
+
+						<div className='bg-stone-100 text-[13px] p-5 space-y-0.5 border border-gray-200 rounded-es-md rounded-ee-md'>
+							<p>Compra a traves de transferencia bancaria</p>
+							<p>BANCO PICHINCHA</p>
+							<p>Razón Social: CelularesBaratos</p>
+							<p>RUC: 123456789000</p>
+							<p>Tipo de cuenta: Corriente</p>
+							<p>Número de cuenta: 1234567890</p>
+							<p>
+								La información será compartida nuevamente una vez que se
+								haya finalizado la compra
+							</p>
+						</div>
 					</div>
 				</div>
 
