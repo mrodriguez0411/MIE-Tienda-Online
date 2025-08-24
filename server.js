@@ -93,7 +93,8 @@ app.post('/mercadopago/create-preference', async (req, res) => {
         failure: `${baseUrl}/checkout/failure`,
         pending: `${baseUrl}/checkout/pending`,
       },
-      auto_return: 'approved',
+      // Only set auto_return if we have a success URL
+      ...(baseUrl && baseUrl.includes('localhost') ? {} : { auto_return: 'approved' }),
       binary_mode: true,
     };
     

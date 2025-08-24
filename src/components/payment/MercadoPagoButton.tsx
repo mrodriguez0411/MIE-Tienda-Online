@@ -1,19 +1,17 @@
 'use client';
 
-import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
+import { initMercadoPago } from '@mercadopago/sdk-react';
 import { useEffect, useState } from 'react';
 
 interface MercadoPagoButtonProps {
   total: number;
-  onPaymentSuccess: () => void;
   onPaymentError: (error: any) => void;
 }
 
 export const MercadoPagoButton = ({
   total,
-  onPaymentSuccess,
   onPaymentError,
-}: MercadoPagoButtonProps) => {
+}: Omit<MercadoPagoButtonProps, 'onPaymentSuccess'>) => {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -21,11 +19,20 @@ export const MercadoPagoButton = ({
   useEffect(() => {
     const initializeMercadoPago = async () => {
       try {
-        // En Vite, las variables expuestas al cliente deben empezar con VITE_
-        // Asegúrate de tener VITE_MERCADOPAGO_PUBLIC_KEY en tu .env
-        await initMercadoPago(import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY || '', {
+        const publicKey = import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY ||
+                         process.env.VITE_MERCADOPAGO_PUBLIC_KEY ||
+                         'YOUR_PUBLIC_KEY_HERE';
+        
+        if (!publicKey || publicKey === 'YOUR_PUBLIC_KEY_HERE') {
+          throw new Error('MercadoPago public key is not configured. Please check your .env file.');
+        }
+
+        console.log('Initializing MercadoPago with public key:', publicKey ? '***' + publicKey.slice(-4) : 'Not found');
+        
+        await initMercadoPago(publicKey, {
           locale: 'es-AR',
         });
+        console.log('MercadoPago initialized successfully');
         setIsInitialized(true);
       } catch (error) {
         console.error('Error initializing MercadoPago:', error);
@@ -75,10 +82,6 @@ export const MercadoPagoButton = ({
     createPreference();
   }, [isInitialized, total, onPaymentError]);
 
-  const handlePaymentSuccess = () => {
-    onPaymentSuccess();
-  };
-
   if (!isInitialized || !preferenceId) {
     return (
       <button
@@ -92,15 +95,12 @@ export const MercadoPagoButton = ({
 
   return (
     <div className="mt-4">
-      <Wallet
-        initialization={{ preferenceId }}
-        onReady={() => console.log('MercadoPago Wallet ready')}
-        onSubmit={() => console.log('Submit')}
-        onError={(error) => {
-          console.error('MercadoPago error:', error);
-          onPaymentError(error);
-        }}
-        onReadyForSaving={() => console.log('Ready for saving')}
+      <div id="wallet_container" className="w-full" />
+      <script
+        src="https://sdk.mercadopago.com/js/v2"
+        data-preference-id={preferenceId}
+        data-button-label="Pagar con MercadoPago"
+        data-elements="true"
       />
     </div>
   );
