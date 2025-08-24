@@ -21,7 +21,9 @@ export const MercadoPagoButton = ({
   useEffect(() => {
     const initializeMercadoPago = async () => {
       try {
-        await initMercadoPago('YOUR_PUBLIC_KEY', {
+        // En Vite, las variables expuestas al cliente deben empezar con VITE_
+        // Asegúrate de tener VITE_MERCADOPAGO_PUBLIC_KEY en tu .env
+        await initMercadoPago(import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY || '', {
           locale: 'es-AR',
         });
         setIsInitialized(true);
@@ -40,7 +42,8 @@ export const MercadoPagoButton = ({
 
     const createPreference = async () => {
       try {
-        const response = await fetch('http://localhost:3001/mercadopago/create-preference', {
+        const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+        const response = await fetch(`${apiBase}/mercadopago/create-preference`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -53,6 +56,7 @@ export const MercadoPagoButton = ({
                 quantity: 1,
               },
             ],
+            total: total
           }),
         });
 
