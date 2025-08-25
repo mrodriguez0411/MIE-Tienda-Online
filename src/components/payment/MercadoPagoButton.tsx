@@ -87,6 +87,16 @@ export const MercadoPagoButton = ({
         });
 
         if (!response.ok) {
+          // Intentar leer el cuerpo de error para diagnosticar
+          try {
+            const errBody = await response.json();
+            console.error('Backend error body:', errBody);
+          } catch (_) {
+            try {
+              const errText = await response.text();
+              console.error('Backend error text:', errText);
+            } catch {}
+          }
           throw new Error('Error al crear preferencia de pago');
         }
 
@@ -174,3 +184,4 @@ export const MercadoPagoButton = ({
     </div>
   );
 };
+

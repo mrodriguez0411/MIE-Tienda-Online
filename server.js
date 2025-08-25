@@ -81,6 +81,10 @@ app.post('/mercadopago/create-preference', async (req, res) => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5173';
     console.log('Usando URL base:', baseUrl);
     
+    if (!baseUrl || typeof baseUrl !== 'string' || !baseUrl.startsWith('http')) {
+      console.warn('Advertencia: NEXT_PUBLIC_BASE_URL inválida. Usando fallback http://localhost:5173');
+    }
+
     const preferenceData = {
       items: items.map(item => ({
         title: item.title,
@@ -93,8 +97,6 @@ app.post('/mercadopago/create-preference', async (req, res) => {
         failure: `${baseUrl}/checkout/failure`,
         pending: `${baseUrl}/checkout/pending`,
       },
-      // Only set auto_return if we have a success URL
-      ...(baseUrl && baseUrl.includes('localhost') ? {} : { auto_return: 'approved' }),
       binary_mode: true,
     };
     
@@ -118,6 +120,10 @@ app.post('/mercadopago/create-preference', async (req, res) => {
         response: error?.response?.data || error?.response,
       };
       console.error('Error details (parsed):', JSON.stringify(mpDetails, null, 2));
+      return res.status(500).json({ 
+        error: 'Error al crear preferencia de pago',
+        details: mpDetails,
+      });
     } catch (e) {
       console.error('Error al parsear detalles del error:', e);
     }

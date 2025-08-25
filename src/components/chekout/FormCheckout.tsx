@@ -138,7 +138,7 @@ export const FormCheckout = () => {
 						</div>
 					</div>
 
-					{/* Bank Transfer */}
+					{/* Bank Transfer 
 					<div className='flex flex-col'>
 						<div className='flex justify-between items-center text-sm border border-slate-600 bg-stone-100 py-4 rounded-ss-md rounded-se-md px-6'>
 							<span>Depósito Bancario</span>
@@ -156,7 +156,7 @@ export const FormCheckout = () => {
 								haya finalizado la compra
 							</p>
 						</div>
-					</div>
+					</div>*/}
 				</div>
 
 				<div className='flex flex-col gap-6'>
